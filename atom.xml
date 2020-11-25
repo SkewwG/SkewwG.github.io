@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>ske的博客</title>
+  
+  <subtitle>xxxxxxxx</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://skewwg.github.io/"/>
+  <updated>2020-11-25T11:05:29.642Z</updated>
+  <id>https://skewwg.github.io/</id>
+  
+  <author>
+    <name>ske</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>基于白名单注册表bypassUAC</title>
+    <link href="https://skewwg.github.io/2020/11/25/regeditbypassuac/"/>
+    <id>https://skewwg.github.io/2020/11/25/regeditbypassuac/</id>
+    <published>2020-11-25T12:25:00.000Z</published>
+    <updated>2020-11-25T11:05:29.642Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;基于白名单注册表bypassUAC&quot;&gt;&lt;a href=&quot;#基于白名单注册表bypassUAC&quot; class=&quot;headerlink&quot; title=&quot;基于白名单注册表bypassUAC&quot;&gt;&lt;/a&gt;基于白名单注册表bypassUAC&lt;/h1&gt;&lt;h2
+        
+      
+    
+    </summary>
+    
+      <category term="BypassUAC" scheme="https://skewwg.github.io/categories/BypassUAC/"/>
+    
+    
+      <category term="BypassUAC" scheme="https://skewwg.github.io/tags/BypassUAC/"/>
+    
+  </entry>
+  
+</feed>
