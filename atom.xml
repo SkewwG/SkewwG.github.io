@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://skewwg.github.io/"/>
-  <updated>2020-11-26T02:46:30.396Z</updated>
+  <updated>2020-11-26T03:28:48.698Z</updated>
   <id>https://skewwg.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>钓鱼与社工系列之dll劫持（白加黑）</title>
+    <link href="https://skewwg.github.io/2020/11/26/diao-yu-yu-she-gong-xi-lie-zhi-dll-jie-chi/"/>
+    <id>https://skewwg.github.io/2020/11/26/diao-yu-yu-she-gong-xi-lie-zhi-dll-jie-chi/</id>
+    <published>2020-11-26T12:50:00.000Z</published>
+    <updated>2020-11-26T03:28:48.698Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;钓鱼与社工系列之dll劫持（白加黑）&quot;&gt;&lt;a href=&quot;#钓鱼与社工系列之dll劫持（白加黑）&quot; class=&quot;headerlink&quot; title=&quot;钓鱼与社工系列之dll劫持（白加黑）&quot;&gt;&lt;/a&gt;钓鱼与社工系列之dll劫持（白加黑）&lt;/h1&gt;&lt;h2
+        
+      
+    
+    </summary>
+    
+      <category term="钓鱼与社工" scheme="https://skewwg.github.io/categories/%E9%92%93%E9%B1%BC%E4%B8%8E%E7%A4%BE%E5%B7%A5/"/>
+    
+    
+      <category term="dll劫持" scheme="https://skewwg.github.io/tags/dll%E5%8A%AB%E6%8C%81/"/>
+    
+  </entry>
   
   <entry>
     <title>组策略之LAPS</title>
@@ -39,6 +65,32 @@
     
     
       <category term="LAPS" scheme="https://skewwg.github.io/tags/LAPS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>钓鱼与社工系列之寻鱼</title>
+    <link href="https://skewwg.github.io/2020/11/26/diao-yu-yu-she-gong-xi-lie-zhi-xun-yu/"/>
+    <id>https://skewwg.github.io/2020/11/26/diao-yu-yu-she-gong-xi-lie-zhi-xun-yu/</id>
+    <published>2020-11-26T12:40:00.000Z</published>
+    <updated>2020-11-26T03:50:25.606Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;钓鱼与社工系列之寻鱼&quot;&gt;&lt;a href=&quot;#钓鱼与社工系列之寻鱼&quot; class=&quot;headerlink&quot; title=&quot;钓鱼与社工系列之寻鱼&quot;&gt;&lt;/a&gt;钓鱼与社工系列之寻鱼&lt;/h1&gt;&lt;h2 id=&quot;0x01-广撒网&quot;&gt;&lt;a href=&quot;#0x01-广撒网&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="钓鱼与社工" scheme="https://skewwg.github.io/categories/%E9%92%93%E9%B1%BC%E4%B8%8E%E7%A4%BE%E5%B7%A5/"/>
+    
+    
+      <category term="寻鱼" scheme="https://skewwg.github.io/tags/%E5%AF%BB%E9%B1%BC/"/>
     
   </entry>
   
