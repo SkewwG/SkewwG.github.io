@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>动态调试360安全浏览器获取密钥</title>
+      <link href="/2020/11/26/dong-tai-diao-shi-360-an-quan-liu-lan-qi-huo-qu-mi-yao/"/>
+      <url>/2020/11/26/dong-tai-diao-shi-360-an-quan-liu-lan-qi-huo-qu-mi-yao/</url>
+      
+        <content type="html"><![CDATA[<h1 id="动态调试360安全浏览器获取密钥"><a href="#动态调试360安全浏览器获取密钥" class="headerlink" title="动态调试360安全浏览器获取密钥"></a>动态调试360安全浏览器获取密钥</h1><p><img src="/img/360SafeBrowser/28edde14-bc20-4f6d-a3e2-90d61e7d4093.png" alt="img"></p><p>按F9开启调试</p><p><img src="/img/360SafeBrowser/c6a9bd27-653c-4000-a59a-d4c427beb610.png" alt="img"></p><p>将启动的所有的异常都忽略，不然总是暂停</p><p><img src="/img/360SafeBrowser/8c02793e-6d28-4749-99b9-e8177b8d016e.png" alt="img"></p><p><img src="/img/360SafeBrowser/3316bb99-5a8b-4834-841d-604786c2b753.png" alt="img"></p><p>这样就不会因为异常暂停了，直接就打开了360安全浏览器</p><p><img src="/img/360SafeBrowser/7521b024-57b7-44e7-bb0b-d79dcafebd5d.png" alt="img"></p><p><img src="/img/360SafeBrowser/3557fbcb-b98e-46f7-8ce6-d834e60deadb.png" alt="img"></p><p>因为浏览器保存了账号密码，刚才打开网站时自动填充了密码，那么这个过程中的字符串肯定都被x32dbg保存着了。于是在所有模块的字符串里搜索password等可能会存在的关键字符串去定位解密的输入点，然后断点调试。</p><p><img src="/img/360SafeBrowser/c6bed575-d28d-4023-96cb-ce236e7cdbcd.png" alt="img"></p><p><img src="/img/360SafeBrowser/1fb574ae-d7de-4794-831b-502fed4d177d.png" alt="img"></p><p>双击跟入，在688C530B下断点，双击右侧空白处可以添加注释</p><p><img src="/img/360SafeBrowser/445b96d4-5bb2-4daa-a54b-973e20e65edf.png" alt="img"></p><p>进入到解密的函数里，可以如下图操作进入，也可以按回车进入</p><p><img src="/img/360SafeBrowser/3418d97e-3f45-4e61-989a-25377abf0687.png" alt="img"></p><p><img src="/img/360SafeBrowser/79eb9701-7f70-40e2-a425-cf15beb5cfeb.png" alt="img"></p><p>然后重新按F9让程序跑完，然后刷新浏览器页面</p><p><img src="/img/360SafeBrowser/6c64d98b-39b9-4ea6-9a06-4b83a59e0e20.png" alt="img"></p><p><img src="/img/360SafeBrowser/744152db-0da6-4aa3-bd6e-cb3b34e0980a.png" alt="img"></p><p>按F8步过调试</p><p><img src="/img/360SafeBrowser/d4b5455f-056f-4b94-9475-d33860c95995.png" alt="img"></p><p>设置断点后，回车跟入</p><p><img src="/img/360SafeBrowser/39514d23-7832-40d8-99a8-58a15a2e863b.png" alt="img"></p><p>设置断点</p><p><img src="/img/360SafeBrowser/be67cb69-a035-4cb0-a5bb-1afc2d5e3c65.png" alt="img"></p><p>重新F9让程序跑完后，再刷新页面，停到691FE582断点处</p><p><img src="/img/360SafeBrowser/329097e4-5d2a-4e42-94bd-34b238890f4a.png" alt="img"></p><p><img src="/img/360SafeBrowser/ed5eabe2-4954-4101-900c-244cc78b1214.png" alt="img"></p><p><img src="/img/360SafeBrowser/f7375b32-8d09-4e7a-8edf-19fe0bb455d7.png" alt="img"></p><p><img src="/img/360SafeBrowser/fb64a57b-2a95-4afa-8d52-ba1e0c3166fc.png" alt="img"></p><p><img src="/img/360SafeBrowser/0189aff0-2c48-4c04-ad88-89cb09375184.png" alt="img"></p><p>重新F9让程序跑完后，再刷新页面，停到691F4E7E断点处。一直F8步入调试</p><p><img src="/img/360SafeBrowser/01fa40c0-0c0b-49ff-a0ca-b42330e5ac93.png" alt="img"></p><p>再一次找到了密文解密的点</p><p><img src="/img/360SafeBrowser/e04828cb-e63d-46b4-929f-539b7aeea317.png" alt="img"></p><p><img src="/img/360SafeBrowser/12cd9644-ae02-413a-9818-dc2df507d52a.png" alt="img"></p><p>重新F9让程序跑完后，再刷新页面，停到691F5328断点处。一直F8步入调试</p><p><img src="/img/360SafeBrowser/b6545905-8973-4e89-ace3-b78df91bc6a1.png" alt="img"></p><pre><code>1560A2E8  01 13 73 0D 78 62 71 32 33 4D 7A 15 78 61 41 5F  ..s.xbq23Mz.xaA_  1560A2F8  52 5F 4D 39 77 06 71 47 38 21 48 1A 4D 0D 78 19  R_M9w.qG8!H.M.x.  1560A308  4E 5E 4F 52 67 0C 53 30 7A 00 00 00 00 00 00 00  N^ORg.S0z.......  </code></pre><p><img src="/img/360SafeBrowser/3fb10444-94b5-439b-8505-add24917c8f8.png" alt="img"></p><p>那么这就有一个问题了，进入到691F5328断点前，其实已经解密了，691F5328只是处理解密后的字符串得到密码。</p><p>回到691F5328断点前寻找解密函数。</p><p><img src="/img/360SafeBrowser/2ec8837d-c531-42ee-bb96-1065e2be8f47.png" alt="img"></p><p><img src="/img/360SafeBrowser/92383bbb-0ae3-4997-8712-b8241f844ba2.png" alt="img"></p><p><img src="/img/360SafeBrowser/99968427-6908-45b0-8cfe-40e74c97a3a4.png" alt="img"></p><p><img src="/img/360SafeBrowser/88c55d5f-96e6-4ba8-beb9-1074ded4ef7a.png" alt="img"></p><p><img src="/img/360SafeBrowser/7699ac5d-dc36-4ff3-b614-97b43079e31b.png" alt="img"><img src="/img/360SafeBrowser/c8a1f11e-fed0-4dac-8f89-7023423e2ef8.png" alt="img"></p><p>这时候突然想到，既然691F50A0是解密的函数，那么密钥可能是从外部传参进来的，那么就不应该再691F50A0里找密钥，而是在691F50A0上面找</p><p><img src="/img/360SafeBrowser/660487aa-9ac7-4627-a060-e21cbb7fa3a7.png" alt="img"></p><pre><code>0E25F104  63 66 36 36 66 62 35 38 66 35 63 61 33 34 38 35  cf66fb58f5ca3485  </code></pre><p><img src="/img/360SafeBrowser/0602fd2f-9ad9-4989-a35d-fac7fd55cd96.png" alt="img"></p><p>判断奇偶得到密码</p><pre><code>sxq3zxARMwq8HMxNOgSz</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 逆向 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 动态调试360安全浏览器获取密钥 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>钓鱼与社工系列之dll劫持（白加黑）</title>
       <link href="/2020/11/26/diao-yu-yu-she-gong-xi-lie-zhi-dll-jie-chi/"/>
       <url>/2020/11/26/diao-yu-yu-she-gong-xi-lie-zhi-dll-jie-chi/</url>
