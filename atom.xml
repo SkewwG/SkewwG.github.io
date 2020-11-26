@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://skewwg.github.io/"/>
-  <updated>2020-11-25T14:37:58.200Z</updated>
+  <updated>2020-11-26T02:46:30.396Z</updated>
   <id>https://skewwg.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>组策略之LAPS</title>
+    <link href="https://skewwg.github.io/2020/11/26/zu-ce-lue-zhi-laps/"/>
+    <id>https://skewwg.github.io/2020/11/26/zu-ce-lue-zhi-laps/</id>
+    <published>2020-11-26T12:40:00.000Z</published>
+    <updated>2020-11-26T02:46:30.396Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;组策略之Local-Administrator-Password-Solution&quot;&gt;&lt;a href=&quot;#组策略之Local-Administrator-Password-Solution&quot; class=&quot;headerlink&quot; title=&quot;组策略之Local
+        
+      
+    
+    </summary>
+    
+      <category term="域渗透" scheme="https://skewwg.github.io/categories/%E5%9F%9F%E6%B8%97%E9%80%8F/"/>
+    
+    
+      <category term="LAPS" scheme="https://skewwg.github.io/tags/LAPS/"/>
+    
+  </entry>
   
   <entry>
     <title>约束委派利用</title>
