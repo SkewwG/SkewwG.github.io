@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>ske的博客</title>
   
-  <subtitle>xxxxxxxx</subtitle>
+  <subtitle>记录学习中的一些笔记</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://skewwg.github.io/"/>
