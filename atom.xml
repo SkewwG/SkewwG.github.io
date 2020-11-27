@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://skewwg.github.io/"/>
-  <updated>2020-11-27T10:16:44.144Z</updated>
+  <updated>2020-11-27T10:23:32.899Z</updated>
   <id>https://skewwg.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://skewwg.github.io/2020/11/27/cobalstrike-sao-mang/"/>
     <id>https://skewwg.github.io/2020/11/27/cobalstrike-sao-mang/</id>
     <published>2020-11-27T13:40:00.000Z</published>
-    <updated>2020-11-27T10:16:44.144Z</updated>
+    <updated>2020-11-27T10:23:32.899Z</updated>
     
     <summary type="html">
     
@@ -29,7 +29,7 @@
       
         
         
-          &lt;h1 id=&quot;0x09-CobalStrike&quot;&gt;&lt;a href=&quot;#0x09-CobalStrike&quot; class=&quot;headerlink&quot;
+          &lt;h1 id=&quot;CobalStrike&quot;&gt;&lt;a href=&quot;#CobalStrike&quot; class=&quot;headerlink&quot;
         
       
     
@@ -39,6 +39,32 @@
     
     
       <category term="CobalStrike扫盲" scheme="https://skewwg.github.io/tags/CobalStrike%E6%89%AB%E7%9B%B2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>内网穿透</title>
+    <link href="https://skewwg.github.io/2020/11/27/nei-wang-chuan-tou/"/>
+    <id>https://skewwg.github.io/2020/11/27/nei-wang-chuan-tou/</id>
+    <published>2020-11-27T12:40:00.000Z</published>
+    <updated>2020-11-27T10:32:24.873Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;0x03-内网穿透&quot;&gt;&lt;a href=&quot;#0x03-内网穿透&quot; class=&quot;headerlink&quot; title=&quot;0x03-内网穿透&quot;&gt;&lt;/a&gt;0x03-内网穿透&lt;/h1&gt;&lt;h2 id=&quot;0x00-环境-工具&quot;&gt;&lt;a href=&quot;#0x00-环境-工具&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="内网渗透" scheme="https://skewwg.github.io/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
+    
+    
+      <category term="内网穿透" scheme="https://skewwg.github.io/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/"/>
     
   </entry>
   
