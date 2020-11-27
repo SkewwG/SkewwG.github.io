@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://skewwg.github.io/"/>
-  <updated>2020-11-26T04:14:39.408Z</updated>
+  <updated>2020-11-27T10:16:44.144Z</updated>
   <id>https://skewwg.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CobalStrike扫盲</title>
+    <link href="https://skewwg.github.io/2020/11/27/cobalstrike-sao-mang/"/>
+    <id>https://skewwg.github.io/2020/11/27/cobalstrike-sao-mang/</id>
+    <published>2020-11-27T13:40:00.000Z</published>
+    <updated>2020-11-27T10:16:44.144Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;0x09-CobalStrike&quot;&gt;&lt;a href=&quot;#0x09-CobalStrike&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="CobalStrike" scheme="https://skewwg.github.io/categories/CobalStrike/"/>
+    
+    
+      <category term="CobalStrike扫盲" scheme="https://skewwg.github.io/tags/CobalStrike%E6%89%AB%E7%9B%B2/"/>
+    
+  </entry>
   
   <entry>
     <title>动态调试360安全浏览器获取密钥</title>
