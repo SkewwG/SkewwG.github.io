@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://skewwg.github.io/"/>
-  <updated>2020-12-05T07:37:24.887Z</updated>
+  <updated>2020-12-05T07:48:51.804Z</updated>
   <id>https://skewwg.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MSF扫盲</title>
+    <link href="https://skewwg.github.io/2020/12/05/msf-sao-mang/"/>
+    <id>https://skewwg.github.io/2020/12/05/msf-sao-mang/</id>
+    <published>2020-12-05T08:40:00.000Z</published>
+    <updated>2020-12-05T07:48:51.804Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Metasplot-Framework&quot;&gt;&lt;a href=&quot;#Metasplot-Framework&quot; class=&quot;headerlink&quot; title=&quot;Metasplot Framework&quot;&gt;&lt;/a&gt;Metasplot Framework&lt;/h1&gt;&lt;h2
+        
+      
+    
+    </summary>
+    
+      <category term="MetasplotFramework" scheme="https://skewwg.github.io/categories/MetasplotFramework/"/>
+    
+    
+      <category term="MSF扫盲" scheme="https://skewwg.github.io/tags/MSF%E6%89%AB%E7%9B%B2/"/>
+    
+  </entry>
   
   <entry>
     <title>钓鱼与社工系列之office宏</title>
