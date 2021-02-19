@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://skewwg.github.io/"/>
-  <updated>2021-02-07T09:02:55.954Z</updated>
+  <updated>2021-02-19T07:40:38.268Z</updated>
   <id>https://skewwg.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>上传漏洞</title>
+    <link href="https://skewwg.github.io/2021/02/19/shang-chuan-lou-dong/"/>
+    <id>https://skewwg.github.io/2021/02/19/shang-chuan-lou-dong/</id>
+    <published>2021-02-19T08:40:00.000Z</published>
+    <updated>2021-02-19T07:40:38.268Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;上传漏洞&quot;&gt;&lt;a href=&quot;#上传漏洞&quot; class=&quot;headerlink&quot; title=&quot;上传漏洞&quot;&gt;&lt;/a&gt;上传漏洞&lt;/h1&gt;&lt;h2 id=&quot;0x01-概要说明&quot;&gt;&lt;a href=&quot;#0x01-概要说明&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="Web漏洞" scheme="https://skewwg.github.io/categories/Web%E6%BC%8F%E6%B4%9E/"/>
+    
+    
+      <category term="上传漏洞" scheme="https://skewwg.github.io/tags/%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/"/>
+    
+  </entry>
   
   <entry>
     <title>组策略之xml保存的密码</title>

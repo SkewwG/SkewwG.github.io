@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://skewwg.github.io/2021/02/19/shang-chuan-lou-dong/</loc>
+    
+    <lastmod>2021-02-19T07:40:38.268Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://skewwg.github.io/2021/02/07/zu-ce-lue-zhi-xml-bao-cun-de-mi-ma/</loc>
     
     <lastmod>2021-02-07T09:02:55.954Z</lastmod>
@@ -128,14 +135,14 @@
   </url>
   
   <url>
-    <loc>https://skewwg.github.io/archives/index.html</loc>
+    <loc>https://skewwg.github.io/categories/index.html</loc>
     
     <lastmod>2020-04-05T02:43:43.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://skewwg.github.io/categories/index.html</loc>
+    <loc>https://skewwg.github.io/archives/index.html</loc>
     
     <lastmod>2020-04-05T02:43:43.000Z</lastmod>
     
