@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://skewwg.github.io/"/>
-  <updated>2021-06-15T08:24:49.509Z</updated>
+  <updated>2021-07-09T01:58:47.816Z</updated>
   <id>https://skewwg.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Java代码审计之致远HtmlOfficeServlet漏洞分析</title>
+    <link href="https://skewwg.github.io/2021/07/05/java-dai-ma-shen-ji-zhi-zhi-yuan-htmlofficeservlet-lou-dong-fen-xi/"/>
+    <id>https://skewwg.github.io/2021/07/05/java-dai-ma-shen-ji-zhi-zhi-yuan-htmlofficeservlet-lou-dong-fen-xi/</id>
+    <published>2021-07-05T08:40:00.000Z</published>
+    <updated>2021-07-09T01:58:47.816Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Java代码审计之致远HtmlOfficeServlet漏洞分析&quot;&gt;&lt;a href=&quot;#Java代码审计之致远HtmlOfficeServlet漏洞分析&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="Java代码审计" scheme="https://skewwg.github.io/categories/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+    
+      <category term="致远" scheme="https://skewwg.github.io/tags/%E8%87%B4%E8%BF%9C/"/>
+    
+  </entry>
   
   <entry>
     <title>钓鱼与社工系列之某信聊天记录解密</title>

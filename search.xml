@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>Java代码审计之致远HtmlOfficeServlet漏洞分析</title>
+      <link href="/2021/07/05/java-dai-ma-shen-ji-zhi-zhi-yuan-htmlofficeservlet-lou-dong-fen-xi/"/>
+      <url>/2021/07/05/java-dai-ma-shen-ji-zhi-zhi-yuan-htmlofficeservlet-lou-dong-fen-xi/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Java代码审计之致远HtmlOfficeServlet漏洞分析"><a href="#Java代码审计之致远HtmlOfficeServlet漏洞分析" class="headerlink" title="Java代码审计之致远HtmlOfficeServlet漏洞分析"></a>Java代码审计之致远HtmlOfficeServlet漏洞分析</h1><p><img src="/img/SeeyonHtmlOfficeServlet/1ffb497e-588d-4b85-8b54-ce9ab63c9acd.png" alt="img"></p><p>command+单击，跟进到jar包里的HtmlOfficeServlet.class文件，对doGet方法的第一行打断点</p><p><img src="/img/SeeyonHtmlOfficeServlet/b9413951-a489-496d-bb76-6758734be3f8.png" alt="img"></p><p>burp发包</p><p><img src="/img/SeeyonHtmlOfficeServlet/578a524b-c8ac-47af-b55d-0ea9f0b547e0.png" alt="img"></p><p>成功到了断点处</p><p><img src="/img/SeeyonHtmlOfficeServlet/148287b2-1703-4a1f-967b-f7a708273ffb.png" alt="img"></p><p>切换到Console标签，Mac会出现下面三个图标。</p><p>第一个是按照流程代码一行行的往下跑，遇见方法时不会进入该方法体内     等价于 F8 步过</p><p>第二个是如果有方法则进入方法内部      等价于 F7 步入</p><p>第三个是当前流程的代码块跑完，跳到上一层代码块    等价于 SHIFT+F8 步出</p><p><img src="/img/SeeyonHtmlOfficeServlet/c23fe177-a813-43cd-b01a-3e197799a7ca.jpg" alt="img"></p><p>按F9到下一个调试点，如果没有调试点了，则直接把程序跑完，burp那边就有响应包了。</p><p>第29、30行通过getBean获取实例化对象（handWriteManager、htmlHandWriteManager）</p><p>第31行实例化iMsgServer2000对象</p><p><img src="/img/SeeyonHtmlOfficeServlet/eb626e6b-d3ae-4b92-bad8-a7bb8205d4bb.png" alt="img"></p><p>第34行 handWriteManager.readVariant(request, msgObj); 从请求中获取传递的值</p><p><img src="/img/SeeyonHtmlOfficeServlet/7f37f229-9445-4c6c-b5b0-968cf6b760b0.png" alt="img"></p><p>选择第二个按钮，即F7步入  跟入到对应的handWriteManager.class文件里</p><p><img src="/img/SeeyonHtmlOfficeServlet/f1fb9749-8fda-4220-a329-6f0fcf9aaeb0.png" alt="img"></p><p>选择第一个按钮，即F8步过</p><p>例如 msgObj.GetMsgByName(“originalFileId”) 是读取请求包的originalFileId的值，并按照致远自定义的base64解码得到值</p><p>关于致远自定义的base64的编码和解码，后面会介绍如何自己实现</p><p><img src="/img/SeeyonHtmlOfficeServlet/0af0654c-275d-4751-a64a-830bf1f2d037.png" alt="img"></p><p><img src="/img/SeeyonHtmlOfficeServlet/66662841-0200-4f00-b217-01e4807df072.png" alt="img"></p><p>继续选择第一个按钮，即F8步过，此时程序运行完了readVariant，跳回到doGet代码块里，来到了下一行代码if判断语句里</p><p><img src="/img/SeeyonHtmlOfficeServlet/79c8dac5-2db5-4699-ad0c-fafc9b12e5a4.png" alt="img"></p><p>继续选择第一个按钮，即F8步过，获取OPTION的值，并base64解码后得到值为SAVEASIMG</p><p><img src="/img/SeeyonHtmlOfficeServlet/7343f8ce-043d-42d9-9b31-2da19dfa0e35.png" alt="img"></p><p>此时代码跳到了SAVEASIMG的if判断代码块里，获取FILENAME的值，并base64解码后得到值为自定义的shell的路径</p><p><img src="/img/SeeyonHtmlOfficeServlet/e4b536c9-c94a-4f72-9bc0-9303ad250b83.png" alt="img"></p><p>到MsgFileSave方法，传递参数值为shell的路径</p><p><img src="/img/SeeyonHtmlOfficeServlet/3e3a5eb9-947f-4789-96e1-e872b858c2e9.png" alt="img"></p><p>选择第二个按钮，即F7步入  跟入到对应的iMsgServer2000.class文件里的MsgFileSave方法</p><p>就是很简单的文件流写入内容</p><p><img src="/img/SeeyonHtmlOfficeServlet/c347b7bb-b71d-4972-af33-5c9ad388aba0.png" alt="img"></p><p>到这里就结束了。</p><p>这里注意的是POC里的666是要写入内容的长度，在Debug里也能看到共写入666长度的内容，如果少于666，则用null填充</p><p><img src="/img/SeeyonHtmlOfficeServlet/7054d686-ea4e-4715-bd1f-b19489b37ebe.png" alt="img"></p><p><img src="/img/SeeyonHtmlOfficeServlet/452b29aa-98d4-4b58-ba45-0b75b33d417c.png" alt="img"></p><p><img src="/img/SeeyonHtmlOfficeServlet/8a05b618-ad83-43d5-9759-32c996fcf027.png" alt="img"></p><p>参考链接</p><pre><code>https://cloud.tencent.com/developer/article/1817235</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> Java代码审计 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 致远 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>钓鱼与社工系列之某信聊天记录解密</title>
       <link href="/2021/06/15/diao-yu-yu-she-gong-xi-lie-zhi-wei-xin-liao-tian-ji-lu-jie-mi/"/>
       <url>/2021/06/15/diao-yu-yu-she-gong-xi-lie-zhi-wei-xin-liao-tian-ji-lu-jie-mi/</url>
