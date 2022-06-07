@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>CodeQL系列之安装CodeQL</title>
+      <link href="/2021/11/17/codeql-xi-lie-zhi-an-zhuang-codeql/"/>
+      <url>/2021/11/17/codeql-xi-lie-zhi-an-zhuang-codeql/</url>
+      
+        <content type="html"><![CDATA[<h1 id="CodeQL系列之安装CodeQL"><a href="#CodeQL系列之安装CodeQL" class="headerlink" title="CodeQL系列之安装CodeQL"></a>CodeQL系列之安装CodeQL</h1><h2 id="0x01-下载"><a href="#0x01-下载" class="headerlink" title="0x01 下载"></a>0x01 下载</h2><p>将CodeQL CLI的可执行文件添加到环境变量</p><p><a href="https://github.com/github/codeql-cli-binaries/releases/latest/download/codeql.zip" target="_blank" rel="noopener">https://github.com/github/codeql-cli-binaries/releases/latest/download/codeql.zip</a></p><p><img src="/img/CodeQLInstall/image-20211117214922819.png" alt="image-20211117214922819"></p><p><img src="/img/CodeQLInstall/image-20211117215003120.png" alt="image-20211117215003120"></p><p>CodeQL 标准库</p><p><a href="https://codeload.github.com/github/codeql/zip/refs/heads/main" target="_blank" rel="noopener">https://codeload.github.com/github/codeql/zip/refs/heads/main</a></p><p><img src="/img/CodeQLInstall/image-20211117215020543.png" alt="image-20211117215020543"></p><p>Visual Studio Code CodeQL插件</p><p>Ctrl+Shift+X =&gt; 输入CodeQL =&gt; install</p><p>在CodeQL扩展中配置CodeQL CLI的路径，例如<code>C:\Users\xxxxx\Desktop\codeql\codeql\codeql\codeql.exe</code></p><p><img src="/img/CodeQLInstall/image-20211117214851608.png" alt="image-20211117214851608"></p><h2 id="0x02-编译QL数据库"><a href="#0x02-编译QL数据库" class="headerlink" title="0x02 编译QL数据库"></a>0x02 编译QL数据库</h2><h3 id="常规编译"><a href="#常规编译" class="headerlink" title="常规编译"></a>常规编译</h3><p>在开源项目的根目录下运行如下命令建库，前提是该项目能够编译成功</p><p><code>codeql database create catMaster -l java</code></p><p>如果上面编译失败，就用下面的命令编译</p><h3 id="Gadle项目"><a href="#Gadle项目" class="headerlink" title="Gadle项目"></a>Gadle项目</h3><p><code>codeql database create XXXXXXXXXX--language=java --command=&quot;gradle.bat&quot; --overwrite</code></p><p><code>codeql database create XXXXXXXXXXXX --source-root=D:\Study\Java\XXXXXXXXXX --language=java --command=&quot;gradle clean build -x test --no-daemon -Dfile.encoding=UTF-8&quot;</code></p><h3 id="Maven项目"><a href="#Maven项目" class="headerlink" title="Maven项目"></a>Maven项目</h3><p><code>codeql database create JEECMS -l java -c &quot;mvn lean install --file pom.xml&quot;</code></p><h3 id="delombok"><a href="#delombok" class="headerlink" title="delombok"></a>delombok</h3><p>如果发现数据库少文件，大概率原因是少的文件都用了lombok，使用下面的命令删除该注解</p><pre><code>wget https://projectlombok.org/downloads/lombok.jar -O &quot;lombok.jar&quot;java -jar D:\tools\CodeQL\lombok.jar delombok XXXXXXXXXX -d XXXXXXXXXXX-Delombok --encoding=UTF-8</code></pre><p>然后重新创建数据库</p><pre><code>codeql database create XXXXXXXXXX --language=java --command=&quot;gradle clean build -x test --no-daemon -Dfile.encoding=UTF-8&quot; --overwrite</code></pre><p>生成了catMaster目录</p><p><img src="/img/CodeQLInstall/image-20211117215321577.png" alt="image-20211117215321577"></p><h2 id="0x03-使用"><a href="#0x03-使用" class="headerlink" title="0x03 使用"></a>0x03 使用</h2><p>创建你的第一个QL包</p><p>你需要创建一个文件夹，用来存放后续你编写的CodeQL脚本，CodeQL官方称这个文件夹为QL Pack。</p><p>例如名为Cat-codeql的文件夹，并在里面创建1个QL Pack的配置文件，名称固定为<code>qlpack.yml</code>;再创建一个ql后缀的文件，名称随意。</p><p><img src="/img/CodeQLInstall/image-20211117215430967.png" alt="image-20211117215430967"></p><p>将如下信息填入qlpack.yml文件</p><pre><code>name: example-queryversion: 0.0.0libraryPathDependencies: codeql-java</code></pre><p>第一行表示这个QL包的名称为example-query，必选，如果你在VSCode中同时打开多个QL包时，要保证这个name的值唯一不重复;</p><p>第二行表示这个QL包的版本号，必选;</p><p>第三行表示这个QL包的依赖，必选，codeql-java表示需要Java语言的QL标准库依赖。</p><p><img src="/img/CodeQLInstall/image-20211117215537605.png" alt="image-20211117215537605"></p><p>VSCode工作区增加CodeQL标准库</p><p>VSCode - 文件 - 将文件夹加入工作区 - 选择存放CodeQL标准库的文件夹</p><p><img src="/img/CodeQLInstall/image-20211117215647554.png" alt="image-20211117215647554"></p><p><img src="/img/CodeQLInstall/image-20211117215718097.png" alt="image-20211117215718097"></p><p>在VSCode的CodeQL插件中添加之前用CodeQL创建的CatMaster的数据库。</p><p><img src="/img/CodeQLInstall/image-20211117215803775.png" alt="image-20211117215803775"></p><p>添加成功的样子</p><p><img src="/img/CodeQLInstall/image-20211117215829470.png" alt="image-20211117215829470"></p><p>编写第一个查询</p><pre><code>import javafrom Method mselect m</code></pre><p><img src="/img/CodeQLInstall/image-20211117215908674.png" alt="image-20211117215908674"></p><h2 id="0x04-参考链接"><a href="#0x04-参考链接" class="headerlink" title="0x04 参考链接"></a>0x04 参考链接</h2><pre><code>https://mp.weixin.qq.com/s?__biz=Mzg4ODU4ODYzOQ==&amp;mid=2247484326&amp;idx=1&amp;sn=fd055d23efe80f5c6758ce9bd01307c9&amp;chksm=cff99396f88e1a80cd1e52c2a17649f6f20da7fe45b743925c80a90b3997395963a9afe84691&amp;scene=178&amp;cur_album_id=1970201600723910658#rd</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> CodeQL </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> CodeQL系列之安装CodeQL </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Java代码审计之致远HtmlOfficeServlet漏洞分析</title>
       <link href="/2021/07/05/java-dai-ma-shen-ji-zhi-zhi-yuan-htmlofficeservlet-lou-dong-fen-xi/"/>
       <url>/2021/07/05/java-dai-ma-shen-ji-zhi-zhi-yuan-htmlofficeservlet-lou-dong-fen-xi/</url>

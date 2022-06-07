@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://skewwg.github.io/"/>
-  <updated>2021-07-09T01:58:47.816Z</updated>
+  <updated>2022-06-07T08:03:26.190Z</updated>
   <id>https://skewwg.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CodeQL系列之安装CodeQL</title>
+    <link href="https://skewwg.github.io/2021/11/17/codeql-xi-lie-zhi-an-zhuang-codeql/"/>
+    <id>https://skewwg.github.io/2021/11/17/codeql-xi-lie-zhi-an-zhuang-codeql/</id>
+    <published>2021-11-17T15:50:00.000Z</published>
+    <updated>2022-06-07T08:03:26.190Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;CodeQL系列之安装CodeQL&quot;&gt;&lt;a href=&quot;#CodeQL系列之安装CodeQL&quot; class=&quot;headerlink&quot; title=&quot;CodeQL系列之安装CodeQL&quot;&gt;&lt;/a&gt;CodeQL系列之安装CodeQL&lt;/h1&gt;&lt;h2
+        
+      
+    
+    </summary>
+    
+      <category term="CodeQL" scheme="https://skewwg.github.io/categories/CodeQL/"/>
+    
+    
+      <category term="CodeQL系列之安装CodeQL" scheme="https://skewwg.github.io/tags/CodeQL%E7%B3%BB%E5%88%97%E4%B9%8B%E5%AE%89%E8%A3%85CodeQL/"/>
+    
+  </entry>
   
   <entry>
     <title>Java代码审计之致远HtmlOfficeServlet漏洞分析</title>
