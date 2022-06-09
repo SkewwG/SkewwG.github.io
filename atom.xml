@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://skewwg.github.io/"/>
-  <updated>2022-06-07T08:03:26.190Z</updated>
+  <updated>2022-06-09T03:46:52.240Z</updated>
   <id>https://skewwg.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CodeQL系列之基础语法</title>
+    <link href="https://skewwg.github.io/2021/12/30/codeql-xi-lie-zhi-ji-chu-yu-fa/"/>
+    <id>https://skewwg.github.io/2021/12/30/codeql-xi-lie-zhi-ji-chu-yu-fa/</id>
+    <published>2021-12-30T15:23:00.000Z</published>
+    <updated>2022-06-09T03:46:52.240Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;CodeQL系列之基础语法&quot;&gt;&lt;a href=&quot;#CodeQL系列之基础语法&quot; class=&quot;headerlink&quot; title=&quot;CodeQL系列之基础语法&quot;&gt;&lt;/a&gt;CodeQL系列之基础语法&lt;/h1&gt;&lt;h2 id=&quot;0x01-语法规则&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="CodeQL" scheme="https://skewwg.github.io/categories/CodeQL/"/>
+    
+    
+      <category term="CodeQL系列之基础语法" scheme="https://skewwg.github.io/tags/CodeQL%E7%B3%BB%E5%88%97%E4%B9%8B%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/"/>
+    
+  </entry>
   
   <entry>
     <title>CodeQL系列之安装CodeQL</title>

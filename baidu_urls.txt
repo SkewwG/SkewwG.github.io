@@ -1,3 +1,4 @@
+https://skewwg.github.io/2021/12/30/codeql-xi-lie-zhi-ji-chu-yu-fa/
 https://skewwg.github.io/2021/11/17/codeql-xi-lie-zhi-an-zhuang-codeql/
 https://skewwg.github.io/2021/07/05/java-dai-ma-shen-ji-zhi-zhi-yuan-htmlofficeservlet-lou-dong-fen-xi/
 https://skewwg.github.io/2021/06/15/diao-yu-yu-she-gong-xi-lie-zhi-wei-xin-liao-tian-ji-lu-jie-mi/
