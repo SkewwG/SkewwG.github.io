@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://skewwg.github.io/"/>
-  <updated>2022-06-09T03:46:52.240Z</updated>
+  <updated>2022-08-04T03:41:19.101Z</updated>
   <id>https://skewwg.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CodeQL系列之Spring</title>
+    <link href="https://skewwg.github.io/2022/01/04/codeql-xi-lie-zhi-spring/"/>
+    <id>https://skewwg.github.io/2022/01/04/codeql-xi-lie-zhi-spring/</id>
+    <published>2022-01-04T15:50:00.000Z</published>
+    <updated>2022-08-04T03:41:19.101Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;CodeQL系列之Spring&quot;&gt;&lt;a href=&quot;#CodeQL系列之Spring&quot; class=&quot;headerlink&quot; title=&quot;CodeQL系列之Spring&quot;&gt;&lt;/a&gt;CodeQL系列之Spring&lt;/h1&gt;&lt;h2
+        
+      
+    
+    </summary>
+    
+      <category term="CodeQL" scheme="https://skewwg.github.io/categories/CodeQL/"/>
+    
+    
+      <category term="CodeQL系列之Spring" scheme="https://skewwg.github.io/tags/CodeQL%E7%B3%BB%E5%88%97%E4%B9%8BSpring/"/>
+    
+  </entry>
   
   <entry>
     <title>CodeQL系列之基础语法</title>
@@ -507,32 +533,6 @@
     
     
       <category term="约束委派利用" scheme="https://skewwg.github.io/tags/%E7%BA%A6%E6%9D%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>基于资源的约束委派利用</title>
-    <link href="https://skewwg.github.io/2020/11/25/ji-yu-zi-yuan-de-yue-shu-wei-pai-li-yong/"/>
-    <id>https://skewwg.github.io/2020/11/25/ji-yu-zi-yuan-de-yue-shu-wei-pai-li-yong/</id>
-    <published>2020-11-25T14:30:00.000Z</published>
-    <updated>2020-11-25T14:39:22.119Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;0x09-基于资源的约束委派利用&quot;&gt;&lt;a href=&quot;#0x09-基于资源的约束委派利用&quot; class=&quot;headerlink&quot; title=&quot;0x09 基于资源的约束委派利用&quot;&gt;&lt;/a&gt;0x09 基于资源的约束委派利用&lt;/h1&gt;&lt;h2
-        
-      
-    
-    </summary>
-    
-      <category term="域渗透" scheme="https://skewwg.github.io/categories/%E5%9F%9F%E6%B8%97%E9%80%8F/"/>
-    
-    
-      <category term="基于资源的约束委派利用" scheme="https://skewwg.github.io/tags/%E5%9F%BA%E4%BA%8E%E8%B5%84%E6%BA%90%E7%9A%84%E7%BA%A6%E6%9D%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/"/>
     
   </entry>
   
