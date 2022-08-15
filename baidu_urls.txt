@@ -1,3 +1,4 @@
+https://skewwg.github.io/2022/08/11/k8s-shen-tou-api-pei-zhi-bu-dang-huo-wei-jian-quan/
 https://skewwg.github.io/2022/08/03/docker-tao-yi/
 https://skewwg.github.io/2022/01/04/codeql-xi-lie-zhi-spring/
 https://skewwg.github.io/2021/12/30/codeql-xi-lie-zhi-ji-chu-yu-fa/
