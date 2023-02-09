@@ -1,0 +1,1842 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="CodeQL系列之域敏感和兜底规则冲突的解决过程, 内网渗透 Python Windows API 钓鱼社工">
+    <meta name="baidu-site-verification" content="fmlEuI34ir">
+    <meta name="google-site-verification" content="yCy2azpds5XSuGZvis6OuA-XIGF5GuGpYRAaGfD6o48">
+    <meta name="360-site-verification" content="b7c11a830ef90fd1464ad6206bb7b6e7">
+    <meta name="description" content="CodeQL系列之域敏感和兜底规则冲突的解决过程效果: 检测SQL注入漏洞准确率达到90%以上，几乎无误报漏报。
+0x01 问题起初isAdditionalTaintStep的污染转播链规则是将所有情况都标记为污染。目的是为了避免漏报的情况">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>CodeQL系列之域敏感和兜底规则冲突的解决过程 | ske的博客</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?46e79e71af0709a5b9106bf20cecc493";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    
+        <script>
+            (function(){
+                var bp = document.createElement('script');
+                var curProtocol = window.location.protocol.split(':')[0];
+                if (curProtocol === 'https') {
+                    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+                }
+                else {
+                    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                }
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(bp, s);
+            })();
+        </script>
+    
+
+    <script>
+        (function(){
+        var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+        document.write('<script src="' + src + '" id="sozz"><\/script>');
+        })();
+    </script>
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">ske的博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/contact" class="waves-effect waves-light">
+            
+            <i class="fa fa-comments"></i>
+            
+            <span>留言板</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">ske的博客</div>
+        <div class="logo-desc">
+            
+            内网渗透 | Python | Windows API | 钓鱼社工
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        <li>
+            <a href="/contact" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-comments"></i>
+                
+                留言板
+            </a>
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/SkewwG/hexo-matery-modified" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/SkewwG/hexo-matery-modified" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+<script src="/libs/cryptojs/crypto-js.min.js"></script>
+<script>
+    (function() {
+        let pwd = '';
+        if (pwd && pwd.length > 0) {
+            if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
+                alert('密码错误，将返回主页！');
+                location.href = '/';
+            }
+        }
+    })();
+</script>
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/img/CodeQLDomainSensitiveSQL/image-20220708151742789.png')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        CodeQL系列之域敏感和兜底规则冲突的解决过程
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="container content">
+
+    
+    <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                        <a href="/tags/CodeQL系列之域敏感和兜底规则冲突的解决过程/" target="_blank">
+                            <span class="chip bg-color">CodeQL系列之域敏感和兜底规则冲突的解决过程</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                        <a href="/categories/CodeQL/" class="post-category" target="_blank">
+                            CodeQL
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-07-21
+                </div>
+
+                <div class="post-author info-break-policy">
+                    <i class="fa fa-user-o fa-fw"></i>作者:&nbsp;&nbsp;
+                    
+                    ske
+                    
+                </div>
+
+                
+                
+                <div class="info-break-policy">
+                    <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    5.6k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    24 分
+                </div>
+                
+                
+
+                
+                <div id="busuanzi_container_page_pv" class="info-break-policy">
+                    <i class="fa fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                    <span id="busuanzi_value_page_pv"></span>
+                </div>
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="CodeQL系列之域敏感和兜底规则冲突的解决过程"><a href="#CodeQL系列之域敏感和兜底规则冲突的解决过程" class="headerlink" title="CodeQL系列之域敏感和兜底规则冲突的解决过程"></a>CodeQL系列之域敏感和兜底规则冲突的解决过程</h1><p><strong>效果: 检测SQL注入漏洞准确率达到90%以上，几乎无误报漏报。</strong></p>
+<h2 id="0x01-问题"><a href="#0x01-问题" class="headerlink" title="0x01 问题"></a>0x01 问题</h2><p>起初isAdditionalTaintStep的污染转播链规则是将所有情况都标记为污染。目的是为了避免漏报的情况发生。</p>
+<p><img src="imgs/image-20220708151742789.png" alt="image-20220708151742789"></p>
+<p>例如：此种情况下CodeQL默认的TaintStep不会扫出链路，加了兜底规则后则会扫出该链路。</p>
+<p><img src="imgs/image-20220708152117102.png" alt="image-20220708152117102"></p>
+<p>但是因为兜底规则将所有的情况都标记为了污染，那么也会出现误报的情况。</p>
+<p>例如：模拟XML的SQL注入漏洞情况，在XML文件里，直接是获取对象的属性然后执行sql语句，而在触发SQL语句的入口点却传入的是对象。如下例子vul11testExec，souce传递进来后赋值给dsUser的cmd属性，然后dsUser的user属性赋值为常量，最后将整个对象dsUser传递给执行SQL语句的函数，在xml里的sql语句可能是select cmd from table或者是select user from table。那么当sql语句里是cmd属性时，那么是存在漏洞的，如果是user属性时，则不存在漏洞。但是因为兜底规则的影响，将dsUser整个对象标记为了污染，因此无论xml里的sql语句是cmd属性还是user属性，都会认为该链路存在SQL注入漏洞。这样就造成了误报。</p>
+<p><img src="imgs/image-20220708152338938.png" alt="image-20220708152338938"></p>
+<h2 id="0x02-解决过程"><a href="#0x02-解决过程" class="headerlink" title="0x02 解决过程"></a>0x02 解决过程</h2><h3 id="0x02-1-方案1（解决了部分误报）"><a href="#0x02-1-方案1（解决了部分误报）" class="headerlink" title="0x02-1 方案1（解决了部分误报）"></a>0x02-1 方案1（解决了部分误报）</h3><p>链路中出现getXXX、setXXX时，不走兜底规则，走CodeQL默认的链路，这样就不会因为当出现setXXX赋值的语句时，将整个对象标记为污染，从而解决了部分误报漏报的情况。</p>
+<h4 id="第一次优化"><a href="#第一次优化" class="headerlink" title="第一次优化"></a>第一次优化</h4><p>isAdditionalTaintStep只有兜底规则</p>
+<p><img src="imgs/image-20220711204819242.png" alt="image-20220711204819242"></p>
+<p>则会出现如下的误报，因为在<code>dstest.setCmd(cmd);</code>中，node1是cmd，node2是dstest，将对象dstest标记为污染了。所以最终能够扫出下面的误报链路。</p>
+<p><img src="imgs/image-20220711204722358.png" alt="image-20220711204722358"></p>
+<p><strong>解决方案：CodeQL默认是会处理域敏感问题，那么当链路中出现了setXXX、getXXX方法时，不让走我们定义的兜底规则，走CodeQL默认的域敏感处理规则，那么就会将dstest的cmd属性标记为污染，不会将整个dstest对象标记污染，因此解决该误报链路问题。</strong></p>
+<p>在<code>isAdditionalTaintStep</code>方法里，通过if判断条件，如果链路中存在setXXX、getXXX方法，那么执行none语句，即不走兜底规则，走CodeQL默认的域敏感处理规则。可以看到结果里没有了getUsername这条链路了。的确解决了误报问题。</p>
+<p><img src="imgs/image-20220711205217191.png" alt="image-20220711205217191"></p>
+<h4 id="第二次优化"><a href="#第二次优化" class="headerlink" title="第二次优化"></a>第二次优化</h4><p>但是发现该if判断条件较简单粗暴，是直接粗暴的将所有setXXX、getXXX方法都走默认的CodeQL规则,但是没有将其和node1、node2连接起来。</p>
+<p>忘记当时的场景是什么状况了，反正要优化下，将node1和node2连接起来。</p>
+<p><img src="imgs/image-20220711213340269.png" alt="image-20220711213340269"></p>
+<h4 id="第三次优化"><a href="#第三次优化" class="headerlink" title="第三次优化"></a>第三次优化</h4><p>后面又发现一处bug，通过下面的if判断条件，居然扫出了一条误报链路</p>
+<p>误报情况如下，dstest对象仍然被标记为污染</p>
+<p><img src="imgs/8b6ddf1bcdd2f81fc461c33e9ad8aac041479e20.png" alt="8b6ddf1bcdd2f81fc461c33e9ad8aac041479e20"></p>
+<p>解决方案：isAdditionalTaintStep里Method m起初放在最外层的exists中，会出现dstest.setUsername(“zhangsan”);的误报链路，将Method m移到if判断语句里，解决了该误报问题。</p>
+<p><img src="imgs/5922b5fd611140cd7d82c551b2074650961e989f.png" alt="5922b5fd611140cd7d82c551b2074650961e989f"></p>
+<p>优化后如下</p>
+<p><img src="imgs/d5447e44cdf6e812a9cc32fe20578eb453c89df9.png" alt="d5447e44cdf6e812a9cc32fe20578eb453c89df9"></p>
+<p>解决了误报问题。</p>
+<h4 id="第四次优化"><a href="#第四次优化" class="headerlink" title="第四次优化"></a>第四次优化</h4><p>下图红框走了兜底规则，将dsUser对象标记为污染。</p>
+<p><img src="imgs/image-20220711213556190.png" alt="image-20220711213556190"></p>
+<p>解决方案：实例化对象的时候，不走兜底规则，走codeql默认的TaintStep，则添加一条规则，判断call是不是实例化。即下图红框里的代码。</p>
+<p>优化后如下，成功解决了上面的误报问题。</p>
+<p><img src="imgs/image-20220711213711929.png" alt="image-20220711213711929"></p>
+<h4 id="最终规则"><a href="#最终规则" class="headerlink" title="最终规则"></a>最终规则</h4><p>优化后代码如下：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 链路里的所有可能污染的地方</span>
+  override predicate <span class="token function">isAdditionalTaintStep</span><span class="token punctuation">(</span>DataFlow<span class="token operator">:</span><span class="token operator">:</span>Node node1<span class="token punctuation">,</span> DataFlow<span class="token operator">:</span><span class="token operator">:</span>Node node2<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">exists</span><span class="token punctuation">(</span>Call call<span class="token punctuation">,</span> Callable callable <span class="token operator">|</span> 
+      <span class="token comment" spellcheck="true">// storeStep(src, c, sink) and</span>
+      call<span class="token punctuation">.</span><span class="token function">getCallee</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> callable and
+      <span class="token keyword">if</span> <span class="token function">exists</span><span class="token punctuation">(</span>Method m <span class="token operator">|</span> 
+          <span class="token comment" spellcheck="true">// 如果是object.setXXXXXX(YYYYYY)时，则走codeql默认的TaintStep，这样只会污染object的XXXXXX属性，不会将整个对象污染</span>
+          <span class="token punctuation">(</span>
+            node1<span class="token punctuation">.</span><span class="token function">asExpr</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> call<span class="token punctuation">.</span><span class="token function">getAnArgument</span><span class="token punctuation">(</span><span class="token punctuation">)</span> and
+            node2<span class="token punctuation">.</span><span class="token function">asExpr</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> call<span class="token punctuation">.</span><span class="token function">getQualifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span> and
+            m <span class="token operator">=</span> call<span class="token punctuation">.</span><span class="token function">getCallee</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token function">and</span>
+            <span class="token punctuation">(</span>
+              m <span class="token keyword">instanceof</span> <span class="token class-name">SetterMethod</span> or
+              m <span class="token keyword">instanceof</span> <span class="token class-name">GetterMethod</span>
+            <span class="token punctuation">)</span>
+          <span class="token punctuation">)</span>
+          <span class="token comment" spellcheck="true">// 如果是DSUser dsUser = new DSUser(command)时，则走codeql默认的TaintStep</span>
+          <span class="token function">or</span>
+          <span class="token punctuation">(</span>
+            node1<span class="token punctuation">.</span><span class="token function">asExpr</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> call<span class="token punctuation">.</span><span class="token function">getAnArgument</span><span class="token punctuation">(</span><span class="token punctuation">)</span> and
+            node2<span class="token punctuation">.</span><span class="token function">asExpr</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> call and
+            call <span class="token keyword">instanceof</span> <span class="token class-name">ConstructorCall</span>
+          <span class="token punctuation">)</span> 
+        <span class="token punctuation">)</span>
+      then
+          <span class="token function">none</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token keyword">else</span>
+          <span class="token comment" spellcheck="true">// none()</span>
+        <span class="token comment" spellcheck="true">// 兜底函数，避免漏报</span>
+        <span class="token punctuation">(</span>
+          <span class="token punctuation">(</span>
+            node1<span class="token punctuation">.</span><span class="token function">asExpr</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> call<span class="token punctuation">.</span><span class="token function">getAnArgument</span><span class="token punctuation">(</span><span class="token punctuation">)</span> or 
+            node1<span class="token punctuation">.</span><span class="token function">asExpr</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> call<span class="token punctuation">.</span><span class="token function">getQualifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span> 
+          <span class="token punctuation">)</span> <span class="token function">and</span> 
+          <span class="token punctuation">(</span>
+            node2<span class="token punctuation">.</span><span class="token function">asExpr</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> call or
+            node2<span class="token punctuation">.</span><span class="token function">asExpr</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> call<span class="token punctuation">.</span><span class="token function">getQualifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+          <span class="token punctuation">)</span>
+        <span class="token punctuation">)</span> 
+
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="0x02-2-方案2（最终解决思路可行，方式错误）"><a href="#0x02-2-方案2（最终解决思路可行，方式错误）" class="headerlink" title="0x02-2 方案2（最终解决思路可行，方式错误）"></a>0x02-2 方案2（最终解决思路可行，方式错误）</h3><p>在XML格式的SQL注入里，例如selectByExample函数的orderByClause注入，sink点是example对象，而xml文件里直接是调用了orderByClause属性，并没有通过getXXX方法获取orderByClause值，因此前面的通过过滤getXXX方法走CodeQL默认的规则并不适用。分析CodeQL展现结果的链路，发现当对象的属性被污染时，展现的是dsUser [cmd]:String类似的格式，即dsUser对象的cmd属性被污染。<strong>因此想到的解决方案是获取最后sink点的污染属性名字，再和xml文件里的注入点名字做对比</strong>。从而解决误报问题。</p>
+<h4 id="跟踪CodeQL默认的污染传播链路"><a href="#跟踪CodeQL默认的污染传播链路" class="headerlink" title="跟踪CodeQL默认的污染传播链路"></a>跟踪CodeQL默认的污染传播链路</h4><p>为了读取Sink点的污染属性，起初想到的是寻找方法能够读取最后sink点被污染的属性（最终证实该方法并不可行，因为当sink是对象的链路打印出来后，其实整个对象就已经被标记为污染了，那么就不可能打印出被污染的属性，但是当时没有想到这一点）。于是一步步的分析跟踪CodeQL默认的污染传播链路。</p>
+<p><strong><code>TaintTracking::Configuration#isAdditionalFlowStep</code>方法入口开始分析</strong></p>
+<p>发现<code>isAdditionalFlowStep</code>方法里调用了<code>isAdditionalTaintStep</code>（我们自写的污染转播规则）和<code>defaultAdditionalTaintStep</code>（CodeQL默认的污点传播规则）</p>
+<p><img src="imgs/image-20220708155345397.png" alt="image-20220708155345397"></p>
+<p>跟入到<code>defaultAdditionalTaintStep</code>（CodeQL默认的污点传播规则）里</p>
+<p><img src="imgs/image-20220708155633318.png" alt="image-20220708155633318"></p>
+<p>后面一顿分析</p>
+<p><img src="imgs/image-20220708161047400.png" alt="image-20220708161047400"></p>
+<h4 id="分析PathNode节点"><a href="#分析PathNode节点" class="headerlink" title="分析PathNode节点"></a>分析PathNode节点</h4><p><strong>PathNode入口开始分析</strong></p>
+<p>发现了<code>PathNodeImpl</code>类，该类继承于<code>PathNode</code></p>
+<p><img src="imgs/image-20220708161255114.png" alt="image-20220708161255114"></p>
+<p>看了下所有的方法，发现了<code>toString</code>方法，猜测可能是通过该方法打印每条链路里的每一节点信息。于是继续深入跟踪测试。</p>
+<p>更改了原先的<code>toString</code>方法里的内容，添加了一下<code>---</code>字符串做测试，发现的确影响到了链路里的每一个节点的内容。</p>
+<p><img src="imgs/image-20220708161417531.png" alt="image-20220708161417531"></p>
+<p>跟入<code>this.ppAp()</code>方法里，发现如果节点PathNode是PathNodeSink时，则返回空，如果节点PathNode是PathNodeMid时，返回getAp()方法的结果。</p>
+<p><img src="imgs/image-20220708163903532.png" alt="image-20220708163903532"></p>
+<p>那么PathNodeSink和PathNodeMid的区别是什么？在toString方法里，添加打印this.getAQlClass()方法</p>
+<p><img src="imgs/image-20220708164109822.png" alt="image-20220708164109822"></p>
+<p>从结果中可以分析出来，PathNodeSink是链路中最后的一个节点，PathNodeMid是链路中的每个过程的中间节点</p>
+<p><img src="imgs/image-20220708164242863.png" alt="image-20220708164242863"></p>
+<p>接下来分析PathNodeMid的getAp()方法返回了什么内容，通过PathNodeMid的定义知道，getAp()返回了AccessPath对象。</p>
+<p><img src="imgs/image-20220708164409004.png" alt="image-20220708164409004"></p>
+<p>继续跟入分析AccessPath类，通过介绍猜测是链路中的每条路径里的信息</p>
+<p><img src="imgs/image-20220708164759222.png" alt="image-20220708164759222"></p>
+<p>继续分析发现不少类继承了AccessPath类，通过一个个测试发现AccessPathCons类的toString()方法会影响到我们结果的内容</p>
+<p><img src="imgs/image-20220708164653390.png" alt="image-20220708164653390"></p>
+<p><img src="imgs/image-20220708165911028.png" alt="image-20220708165911028"></p>
+<p>继续跟入到<code>AccessPathCons#toStringImpl()</code>方法里，红框里的内容就是展示结果里打印的内容。</p>
+<p><img src="imgs/image-20220708165957056.png" alt="image-20220708165957056"></p>
+<p>有意思的地方是<code>head.toSting()</code>，该方法打印了对象被污染了的属性。于是分析下head的类<code>TypedContent</code></p>
+<p><img src="imgs/image-20220708170119931.png" alt="image-20220708170119931"></p>
+<p>类<code>TypedContent</code></p>
+<p><img src="imgs/image-20220708170140420.png" alt="image-20220708170140420"></p>
+<p>执行<code>TypedContent#toString()</code>方法，发现打印的结果均是对象的属性。</p>
+<p><img src="imgs/image-20220708170229912.png" alt="image-20220708170229912"></p>
+<p>那么就能理解了为什么<code>AccessPathCons#toStringImpl()</code>里的<code>head.toSting()</code>能够将对象里被污染的属性打印出来了。</p>
+<p>将打印污染属性的中括号里加上*测试效果</p>
+<p><img src="imgs/image-20220708170640172.png" alt="image-20220708170640172"></p>
+<p><img src="imgs/image-20220708170718953.png" alt="image-20220708170718953"></p>
+<p>效果如下：的确将source传递给dstest对象的cmd属性污染了，在链路中打印出了[*cmd*]</p>
+<p><img src="imgs/image-20220708170611336.png" alt="image-20220708170611336"></p>
+<p>此时想的是以为已经能够打印对象被污染的属性，那么在PathNodeSink节点时也通过getAp()方法将对象被污染的属性打印出来。如下例子，将dsUser对象的cmd属性打印出来。</p>
+<p><img src="imgs/image-20220708171701421.png" alt="image-20220708171701421"></p>
+<p>但是发现PathNodeSink没有getAp()方法，那么可能就得需要改动大量源码，给PathNodeSink增加类似PathNodeMid的getAp()方法。但是因为感觉改动太大，就先暂时放一边了。<strong>后面重新回顾了下，发现该方案不可行。因为当出现该链路时，dsUser整个对象就已经被标记为污染了，不再存在dsUser对象没被污染，dsUser的cmd属性被污染的情况。</strong></p>
+<p>证明如下例子：</p>
+<p>之所以vul11testExec扫不出来，而vul12testExec能够扫出来，问题出在sink点一个是对象，一个是对象的属性，当sink是对象时，因为污染的是对象的属性，所以对象dsUser并不认为被污染，因此没扫出来<br>当重构isAdditionalTaintStep时，因为默认的TaintStep没扫出来，然后经过我们的规则，在DSUser dsUser = new DSUser(cmd);时将dsUser设置为污染，因此到test.testExecDSUser(dsUser)时，sink点dsUser也是污染的。所以能够扫出来，但也会因此造成误报。</p>
+<p><img src="imgs/image-20220708173950316.png" alt="image-20220708173950316"></p>
+<h3 id="0x02-3-方案三（获取存在漏洞链路）"><a href="#0x02-3-方案三（获取存在漏洞链路）" class="headerlink" title="0x02-3 方案三（获取存在漏洞链路）"></a>0x02-3 方案三（获取存在漏洞链路）</h3><p>解决方案：将对象的属性设置为Sink点</p>
+<h4 id="allowImplicitRead-匹配对象被污染的属性"><a href="#allowImplicitRead-匹配对象被污染的属性" class="headerlink" title="allowImplicitRead-匹配对象被污染的属性"></a>allowImplicitRead-匹配对象被污染的属性</h4><p>没有重构<code>allowImplicitRead</code>方法，打印出来的链路是走了我们的兜底规则，直接将example对象标记为污染。</p>
+<p><img src="imgs/image-20220712154022109.png" alt="image-20220712154022109"></p>
+<p><img src="imgs/image-20220712154102349.png" alt="image-20220712154102349"></p>
+<p>重构<code>allowImplicitRead</code>方法，将Content类对象c的值设置为sink对象污染属性的值，下面例子就是匹配example对象的orderByClause属性。可以看到结果里多出了一条链路，并且打印出污染属性orderByClause。</p>
+<pre class="line-numbers language-java"><code class="language-java">override predicate <span class="token function">allowImplicitRead</span><span class="token punctuation">(</span>DataFlow<span class="token operator">:</span><span class="token operator">:</span>Node node<span class="token punctuation">,</span> DataFlow<span class="token operator">:</span><span class="token operator">:</span>Content c<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">isSink</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span> or <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">isAdditionalTaintStep</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> _<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token function">and</span>
+    <span class="token punctuation">(</span>
+        <span class="token function">defaultImplicitTaintRead</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> c<span class="token punctuation">)</span> or
+        c<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token string">"orderByClause"</span>
+    <span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="imgs/image-20220712154301015.png" alt="image-20220712154301015"></p>
+<p>SQL注入实践效果，成功的打印出对象属性被污染的链路。</p>
+<p><img src="imgs/image-20220712161450560.png" alt="image-20220712161450560"></p>
+<p><img src="imgs/image-20220712161547815.png" alt="image-20220712161547815"></p>
+<p><strong>但是最后测试发现，误报链路还是存在，说明allowImplicitRead只能增加真实存在漏洞的链路，但是并不能过滤掉误报链路。</strong></p>
+<h3 id="0x03-方案四（sink点分类讨论，彻底解决了误报）"><a href="#0x03-方案四（sink点分类讨论，彻底解决了误报）" class="headerlink" title="0x03 方案四（sink点分类讨论，彻底解决了误报）"></a>0x03 方案四（sink点分类讨论，彻底解决了误报）</h3><p>发现新的问题：大量的误报还来源于将sql函数的所有参数标记为sink点的原因，然后结合了兜底规则造成了大量的误报。</p>
+<p>解决方案：针对sink点分类讨论，共三种情况（Object.getAttrName()，String，Obejct）</p>
+<h4 id="Object-getAttrName-对象调用get获取属性值"><a href="#Object-getAttrName-对象调用get获取属性值" class="headerlink" title="Object.getAttrName() 对象调用get获取属性值"></a>Object.getAttrName() 对象调用get获取属性值</h4><p>漏洞代码如下：</p>
+<p><code>test.testExampleTwoString(request.getSortType(), request.getCmd());</code></p>
+<p>如果sink点是object.getAttrName()会造成大量的误报，那么思路就是将getAttrName中的AttrName取出来，然后和xml里的注入点参数名一一做对比，只有相同时才说明是个漏洞，这样可以减少大量的误报。代码<code>arg.toString().substring(3, arg.toString().length()-5)</code>取出Object.getAttrName()的AttrName值，然后全部转换成小写，和xml里取出来的注入点参数名作比较。</p>
+<p><img src="imgs/image-20220720200323555.png" alt="image-20220720200323555"></p>
+<h4 id="String-字符串"><a href="#String-字符串" class="headerlink" title="String 字符串"></a>String 字符串</h4><p>漏洞代码如下：</p>
+<p><code>test.testExampleTwoString(sortType, cmd);</code></p>
+<p>如果sink点是字符串类型，那么就直接和xml里的注入点参数名一一做对比即可。</p>
+<p><img src="imgs/image-20220720200745625.png" alt="image-20220720200745625"></p>
+<h4 id="Object-对象"><a href="#Object-对象" class="headerlink" title="Object 对象"></a>Object 对象</h4><p>漏洞代码如下：</p>
+<p><code>test.testExampleTwoString(dsUser);</code></p>
+<p>如果sink点是对象，检测sink点打印是否有   [被污染的属性]    ，如果有则提取出被污染的属性，然后和xml的注入点参数名做比较，如果一样则是真实链路，如果不一样则是误报。如果没有，就是对象本身，那么获取对象的所有属性名,然后比较对象的属性里面有没有注入点参数名。</p>
+<p><img src="imgs/image-20220721173541870.png" alt="image-20220721173541870"></p>
+<p>sink点没有    [被污染的属性]     ，提取出对象的所有属性名,然后比较对象的属性里面有没有注入点参数名。下图认为是真实存在漏洞的链路</p>
+<p><img src="imgs/image-20220721173657521.png" alt="image-20220721173657521"></p>
+<p>sink点有    [被污染的属性]     ，提取出被污染的属性，然后和xml的注入点参数名做比较。下图认为是真实存在漏洞的链路</p>
+<p><img src="imgs/image-20220721173714418.png" alt="image-20220721173714418"></p>
+<p>sink点有    [被污染的属性]     ，提取出被污染的属性，然后和xml的注入点参数名做比较。因为不一致，所以下图认为是误报链路。</p>
+<p><img src="imgs/image-20220721173741205.png" alt="image-20220721173741205"></p>
+<p>最终判断代码如下（添加到isMyBatisXMLSQL方法里）：经过测试，的确大幅度的提升了漏洞的准确率。</p>
+<pre><code>// 如果sink点是object.getAttrName()会造成大量的误报，如下例子。那么通过正则将attrName取出来，然后和xml里的参数名一一做对比，这样可以减少大量的误报
+// test.testExampleTwoString(request.getSortType(), request.getCmd());
+if arg.toString().regexpMatch(&quot;get[A-Z].*&quot;)
+then
+  funcArgName = arg.toString().substring(3, arg.toString().length()-5).toLowerCase() and
+  funcArgName.toLowerCase() = argumentName.toLowerCase()
+  // funcArgName.toLowerCase() = &quot;platformName&quot;.toLowerCase()
+else
+  funcArgName = &quot;&quot; and
+  // 如果sink点是字符串
+  if arg.getType() instanceof TypeString
+  then
+    arg.toString() = argumentName
+  // 最后一种情况，sink点是对象
+  else
+    // 检测sink点是否有     [被污染的属性]        
+    if sink.toString().regexpMatch(&quot;.*\\[.*\\]&quot;)
+    then
+      // 如果sink点有     [被污染的属性]        ，则提取出被污染的属性，然后和xml的注入点参数名做比较，如果一样则是真实链路，如果不一样则是误报
+      objectAttrName = sink.toString().regexpFind(&quot;[^\\[\\]]*&quot;, _, _) and
+      objectAttrName = argumentName
+    else
+      // 如果sink点没有     [被污染的属性]        ，就是对象本身，那么获取对象的所有属性名,然后比较对象的属性里面有没有注入点参数名。
+      objectAttrName = arg.getType().(RefType).getAField().toString() and
+      objectAttrName = argumentName</code></pre><p><img src="imgs/image-20220720201238618.png" alt="image-20220720201238618"></p>
+<h2 id="0x03-总结"><a href="#0x03-总结" class="headerlink" title="0x03 总结"></a>0x03 总结</h2><h3 id="问题的根源"><a href="#问题的根源" class="headerlink" title="问题的根源"></a>问题的根源</h3><p>是在sink点的定义上，之前是将sink点标记为每一个参数，然后又通过兜底规则将整个对象也标记为污染，所以造成了大量的误报。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>是将兜底规则直接删除，然后增加allowImplicitRead方法（可以打印出真实存在漏洞的链路），再对sink点分类讨论过滤误报。最终几乎0误报检测出SQL注入漏洞。</p>
+<h3 id="技术难点突破"><a href="#技术难点突破" class="headerlink" title="技术难点突破"></a>技术难点突破</h3><p>其实很多的误报都是来源于sink点为对象时导致的，其实通过<code>PartialPathNode</code>可以打印出sink点为对象时被污染的属性。那么为什么<code>PartialPathNode</code>可以打印出对象被污染的属性，而<code>PathNode</code>却不能打印出来（之前在这里研究了好久），通过定义可以看出<code>PartialPathNode</code>的<code>toString()</code>打印出了<code>ppAp()</code>，而ppAP在之前分析过，就是AccessPath，也可以理解为路径吧。所以在最后的链路中，通过<code>PartialPathNode</code>的<code>toString()</code>就能够取出被污染的属性，而如果使用<code>PathNode</code>就不行了。</p>
+<p><img src="imgs/image-20220721175019359.png" alt="image-20220721175019359"></p>
+<p><img src="imgs/image-20220721175031901.png" alt="image-20220721175031901"></p>
+<h2 id="0x04-靶场测试代码"><a href="#0x04-靶场测试代码" class="headerlink" title="0x04 靶场测试代码"></a>0x04 靶场测试代码</h2><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">package</span> org<span class="token punctuation">.</span>joychou<span class="token punctuation">.</span>controller<span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>commons<span class="token punctuation">.</span>lang<span class="token punctuation">.</span>StringUtils<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>joychou<span class="token punctuation">.</span>dao<span class="token punctuation">.</span>*<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>web<span class="token punctuation">.</span>bind<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>GetMapping<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>web<span class="token punctuation">.</span>bind<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>RequestMapping<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>web<span class="token punctuation">.</span>bind<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>RestController<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>slf4j<span class="token punctuation">.</span>Logger<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>slf4j<span class="token punctuation">.</span>LoggerFactory<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>web<span class="token punctuation">.</span>bind<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>*<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>IOException<span class="token punctuation">;</span>
+<span class="token keyword">import</span> freemarker<span class="token punctuation">.</span>cache<span class="token punctuation">.</span>StringTemplateLoader<span class="token punctuation">;</span>
+<span class="token keyword">import</span> freemarker<span class="token punctuation">.</span>template<span class="token punctuation">.</span>Configuration<span class="token punctuation">;</span>
+<span class="token keyword">import</span> freemarker<span class="token punctuation">.</span>template<span class="token punctuation">.</span>Template<span class="token punctuation">;</span>
+<span class="token keyword">import</span> freemarker<span class="token punctuation">.</span>template<span class="token punctuation">.</span>TemplateException<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>StringWriter<span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>*<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>HashMap<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>Map<span class="token punctuation">;</span>
+
+
+<span class="token comment" spellcheck="true">/**
+ * Java code execute
+ *
+ * @author JoyChou @ 2018-05-24
+ */</span>
+<span class="token annotation punctuation">@RestController</span>
+<span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/domainSensitive"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DomainSensitive</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> String<span class="token operator">></span> sortFieldMap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> String SORT_STR <span class="token operator">=</span> <span class="token string">"ISNULL(%s),%s %s"</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> String <span class="token function">testExecDSTestCmdGet</span><span class="token punctuation">(</span>DSTest dsTest<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">{</span>
+        Runtime run <span class="token operator">=</span> Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Process p <span class="token operator">=</span> run<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span>dsTest<span class="token punctuation">.</span><span class="token function">getCmd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">// vul1, vul2</span>
+        <span class="token keyword">return</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">testExecDSTestCmdDot</span><span class="token punctuation">(</span>DSTest dsTest<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">{</span>
+        Runtime run <span class="token operator">=</span> Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Process p <span class="token operator">=</span> run<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span>dsTest<span class="token punctuation">.</span>cmd<span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment" spellcheck="true">// vul1, vul2</span>
+        <span class="token keyword">return</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">testExecDSTestUserNameGet</span><span class="token punctuation">(</span>DSTest dsTest<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">{</span>
+        Runtime run <span class="token operator">=</span> Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Process p <span class="token operator">=</span> run<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span>dsTest<span class="token punctuation">.</span><span class="token function">getUsername</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 安全</span>
+        <span class="token keyword">return</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">testExecDSTestUserNameDot</span><span class="token punctuation">(</span>DSTest dsTest<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">{</span>
+        Runtime run <span class="token operator">=</span> Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Process p <span class="token operator">=</span> run<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span>dsTest<span class="token punctuation">.</span>username<span class="token punctuation">)</span><span class="token punctuation">;</span>         <span class="token comment" spellcheck="true">// 安全</span>
+        <span class="token keyword">return</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+
+
+
+    <span class="token keyword">public</span> String <span class="token function">testExecDSUserCmdGet</span><span class="token punctuation">(</span>DSUser dsUser<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">{</span>
+        Runtime run <span class="token operator">=</span> Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Process p <span class="token operator">=</span> run<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">.</span><span class="token function">getCmd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">testExecDSUserCmdDot</span><span class="token punctuation">(</span>DSUser dsUser<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">{</span>
+        Runtime run <span class="token operator">=</span> Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Process p <span class="token operator">=</span> run<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">.</span>cmd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">testExecDSUserUserGet</span><span class="token punctuation">(</span>DSUser dsUser<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">{</span>
+        Runtime run <span class="token operator">=</span> Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Process p <span class="token operator">=</span> run<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">.</span><span class="token function">getUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">testExecDSUserUserDot</span><span class="token punctuation">(</span>DSUser dsUser<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">{</span>
+        Runtime run <span class="token operator">=</span> Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Process p <span class="token operator">=</span> run<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">.</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">testExecDSUserPassGet</span><span class="token punctuation">(</span>DSUser dsUser<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">{</span>
+        Runtime run <span class="token operator">=</span> Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Process p <span class="token operator">=</span> run<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">.</span><span class="token function">getPass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">testExecDSUserPassDot</span><span class="token punctuation">(</span>DSUser dsUser<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">{</span>
+        Runtime run <span class="token operator">=</span> Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Process p <span class="token operator">=</span> run<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">.</span>pass<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">testExecDSUser</span><span class="token punctuation">(</span>DSUser dsUser<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">{</span>
+        Runtime run <span class="token operator">=</span> Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Process p <span class="token operator">=</span> run<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">// vul5, vul6, vul7</span>
+        <span class="token keyword">return</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+    <span class="token comment" spellcheck="true">// [+] CodeQL默认的TaintStep可以扫出来</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul1testExecDSTestCmdGet"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">vul1testExecDSTestCmdGet</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        DSTest dstest <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span><span class="token function">setCmd</span><span class="token punctuation">(</span>cmd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span><span class="token function">setUsername</span><span class="token punctuation">(</span><span class="token string">"zhangsan"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">testExecDSTestCmdGet</span><span class="token punctuation">(</span>dstest<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// [+] CodeQL默认的TaintStep可以扫出来</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul2testExecDSTestCmdDot"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">vul2testExecDSTestCmdDot</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        DSTest dstest <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span>cmd <span class="token operator">=</span> cmd<span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span>username <span class="token operator">=</span> <span class="token string">"zhangsan"</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">testExecDSTestCmdDot</span><span class="token punctuation">(</span>dstest<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/sec3testExecDSTestUserNameGet"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">sec3testExecDSTestUserNameGet</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        DSTest dstest <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span><span class="token function">setCmd</span><span class="token punctuation">(</span>cmd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span><span class="token function">setUsername</span><span class="token punctuation">(</span><span class="token string">"zhangsan"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">testExecDSTestUserNameGet</span><span class="token punctuation">(</span>dstest<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/sec4testExecDSTestUserNameGet"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">sec4testExecDSTestUserNameGet</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        DSTest dstest <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span>cmd <span class="token operator">=</span> cmd<span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span>username <span class="token operator">=</span> <span class="token string">"zhangsan"</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">testExecDSTestUserNameDot</span><span class="token punctuation">(</span>dstest<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+    <span class="token comment" spellcheck="true">// [+] CodeQL默认的TaintStep可以扫出来</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul5testExecDSUserCmdGet"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">vul5testExecDSUserCmdGet</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        DSTest dstest <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span>cmd <span class="token operator">=</span> cmd<span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span>username <span class="token operator">=</span> <span class="token string">"zhangsan"</span><span class="token punctuation">;</span>
+        String command <span class="token operator">=</span> dstest<span class="token punctuation">.</span><span class="token function">getCmd</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> dstest<span class="token punctuation">.</span><span class="token function">getUsername</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        DSUser dsUser <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSUser</span><span class="token punctuation">(</span>command<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// 新对象被污染</span>
+        <span class="token keyword">return</span> <span class="token function">testExecDSUserCmdGet</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/sec6testExecDSUserUserGet"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">sec6testExecDSUserUserGet</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        DSTest dstest <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span>cmd <span class="token operator">=</span> cmd<span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span>username <span class="token operator">=</span> <span class="token string">"zhangsan"</span><span class="token punctuation">;</span>
+        String command <span class="token operator">=</span> dstest<span class="token punctuation">.</span><span class="token function">getCmd</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> dstest<span class="token punctuation">.</span><span class="token function">getUsername</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        DSUser dsUser <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSUser</span><span class="token punctuation">(</span>command<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// 新对象被污染</span>
+        <span class="token keyword">return</span> <span class="token function">testExecDSUserUserGet</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// [+] CodeQL默认的TaintStep可以扫出来</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul7"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">vul7</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        DSTest dstest <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span>cmd <span class="token operator">=</span> cmd<span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span>username <span class="token operator">=</span> <span class="token string">"zhangsan"</span><span class="token punctuation">;</span>
+        String command <span class="token operator">=</span> dstest<span class="token punctuation">.</span><span class="token function">getCmd</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> dstest<span class="token punctuation">.</span><span class="token function">getUsername</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        DSUser dsUser <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSUser</span><span class="token punctuation">(</span><span class="token string">"111"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dsUser<span class="token punctuation">.</span>pass <span class="token operator">=</span> command<span class="token punctuation">;</span>                      <span class="token comment" spellcheck="true">// 新对象的属性被污染</span>
+        <span class="token keyword">return</span> <span class="token function">testExecDSUserPassGet</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/sec8testExecDSUserUserGet"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">sec8testExecDSUserUserGet</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        DSTest dstest <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span>cmd <span class="token operator">=</span> cmd<span class="token punctuation">;</span>
+        dstest<span class="token punctuation">.</span>username <span class="token operator">=</span> <span class="token string">"zhangsan"</span><span class="token punctuation">;</span>
+        String command <span class="token operator">=</span> dstest<span class="token punctuation">.</span><span class="token function">getCmd</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> dstest<span class="token punctuation">.</span><span class="token function">getUsername</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        DSUser dsUser <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSUser</span><span class="token punctuation">(</span><span class="token string">"111"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dsUser<span class="token punctuation">.</span>pass <span class="token operator">=</span> command<span class="token punctuation">;</span>                      <span class="token comment" spellcheck="true">// 新对象的属性被污染</span>
+        <span class="token keyword">return</span> <span class="token function">testExecDSUserUserGet</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+    <span class="token comment" spellcheck="true">// 下面的例子分析构造函数是否会处理域敏感问题，结果显示是会处理的</span>
+    <span class="token comment" spellcheck="true">// codeql默认的TaintStep不会扫出下面的链路，</span>
+    <span class="token comment" spellcheck="true">// codeql默认的TaintStep在DSUser dsUser = new DSUser(cmd)表达式中会将dsUser的cmd属性污染，但是因为后面重构的isAdditionalTaintStep，导致将整个对象标记为污染了。所以产生了如下的误报。</span>
+    <span class="token comment" spellcheck="true">// 因此通过m instanceof GetterMethod的方法将所有调用了getXXXX的链路都走codeql默认的TaintStep，从而解决了如下的误报</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/sec9testExecDSUserUserGet"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">sec9testExecDSUserUserGet</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        DSUser dsUser <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSUser</span><span class="token punctuation">(</span>cmd<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// 新对象被污染</span>
+        dsUser<span class="token punctuation">.</span><span class="token function">setUser</span><span class="token punctuation">(</span><span class="token string">"aaa"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">testExecDSUserUserGet</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// [+] CodeQL默认的TaintStep可以扫出来</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul10testExecDSUserCmdGet"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">vul10testExecDSUserCmdGet</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        DSUser dsUser <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSUser</span><span class="token punctuation">(</span>cmd<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// 新对象被污染</span>
+        dsUser<span class="token punctuation">.</span><span class="token function">setUser</span><span class="token punctuation">(</span><span class="token string">"aaa"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">testExecDSUserCmdGet</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+
+
+    <span class="token comment" spellcheck="true">// 场景</span>
+    <span class="token comment" spellcheck="true">// 模拟xml的sql注入-orderByCause的注入点,vul11testExec和vul12testExec作比较</span>
+
+    <span class="token comment" spellcheck="true">// 问题：</span>
+    <span class="token comment" spellcheck="true">// 之所以vul11testExec扫不出来，而vul12testExec能够扫出来，问题出在sink点一个是对象，一个是对象的属性，当sink是对象时，因为污染的是对象的属性，所以对象dsUser并不认为被污染，因此没扫出来</span>
+    <span class="token comment" spellcheck="true">// 当重构isAdditionalTaintStep时，因为默认的TaintStep没扫出来，然后经过我们的规则，在DSUser dsUser = new DSUser(cmd);时将dsUser设置为污染，</span>
+    <span class="token comment" spellcheck="true">// 因此到test.testExecDSUser(dsUser)时，sink点dsUser也是污染的。所以能够扫出来，但也会因此造成误报。</span>
+
+    <span class="token comment" spellcheck="true">// 解决方案</span>
+    <span class="token comment" spellcheck="true">// 获取sink的被污染的属性</span>
+
+
+    <span class="token comment" spellcheck="true">// [-] CodeQL默认的TaintStep扫不出来</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul11testExec"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">vul11testExec</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        DSUser dsUser <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSUser</span><span class="token punctuation">(</span>cmd<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// 新对象被污染</span>
+        dsUser<span class="token punctuation">.</span><span class="token function">setUser</span><span class="token punctuation">(</span><span class="token string">"aaa"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        TestExec test <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TestExec</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> test<span class="token punctuation">.</span><span class="token function">testExecDSUser</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">)</span><span class="token punctuation">;</span>             <span class="token comment" spellcheck="true">// select cmd form</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// [+] CodeQL默认的TaintStep扫出来</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul12testExec"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">vul12testExec</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        DSUser dsUser <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSUser</span><span class="token punctuation">(</span>cmd<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// 新对象被污染</span>
+        dsUser<span class="token punctuation">.</span><span class="token function">setUser</span><span class="token punctuation">(</span><span class="token string">"aaa"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        TestExec test <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TestExec</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> test<span class="token punctuation">.</span><span class="token function">testExecDSUserCmd</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">.</span><span class="token function">getCmd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// [-] CodeQL默认的TaintStep扫不出来</span>
+    <span class="token comment" spellcheck="true">// 模拟DA186DE56A57D9697A1791B37D6E0E20漏洞的误报</span>
+    <span class="token comment" spellcheck="true">// 经过了一层函数exampleAssemble</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul13testExec"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">vul13testExec</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        DSTest dsTest <span class="token operator">=</span> <span class="token function">exampleAssemble</span><span class="token punctuation">(</span>cmd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        TestExec test <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TestExec</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> test<span class="token punctuation">.</span><span class="token function">testExecDSTest</span><span class="token punctuation">(</span>dsTest<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> DSTest <span class="token function">exampleAssemble</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        DSTest dsTest <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dsTest<span class="token punctuation">.</span>cmd <span class="token operator">=</span> cmd<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> dsTest<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// CodeQL默认扫不出来</span>
+    <span class="token comment" spellcheck="true">// 不走过滤构造函数-即走兜底的规则 应该要扫出来</span>
+    <span class="token comment" spellcheck="true">// 走过滤构造函数 应该要扫不出来      主要解决该情况</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul14testExec"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">vul14testExec</span><span class="token punctuation">(</span>String templateContent<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">,</span> TemplateException <span class="token punctuation">{</span>
+        Configuration cfg <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Configuration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        StringTemplateLoader stringLoader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringTemplateLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        DSUser dsUser <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSUser</span><span class="token punctuation">(</span>templateContent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        stringLoader<span class="token punctuation">.</span><span class="token function">putTemplate</span><span class="token punctuation">(</span><span class="token string">"tpl"</span><span class="token punctuation">,</span> String<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>dsUser<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        cfg<span class="token punctuation">.</span><span class="token function">setTemplateLoader</span><span class="token punctuation">(</span>stringLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Template template <span class="token operator">=</span> cfg<span class="token punctuation">.</span><span class="token function">getTemplate</span><span class="token punctuation">(</span><span class="token string">"tpl"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        StringWriter stringWriter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringWriter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//在模版上执行插值操作，并输出到制定的输出流中</span>
+        template<span class="token punctuation">.</span><span class="token function">process</span><span class="token punctuation">(</span>null<span class="token punctuation">,</span> stringWriter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String resultStr <span class="token operator">=</span> stringWriter<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>resultStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// CodeQL默认扫不出来</span>
+    <span class="token comment" spellcheck="true">// 走了兜底函数，在 stringLoader.putTemplate("tpl", dsUser.getCmd()); 这里经过我们的兜底函数，将stringLoader污染了，所以能够扫出来</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul15testExec"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">vul15testExec</span><span class="token punctuation">(</span>String templateContent<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">,</span> TemplateException <span class="token punctuation">{</span>
+        Configuration cfg <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Configuration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        StringTemplateLoader stringLoader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringTemplateLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        DSUser dsUser <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DSUser</span><span class="token punctuation">(</span>templateContent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        stringLoader<span class="token punctuation">.</span><span class="token function">putTemplate</span><span class="token punctuation">(</span><span class="token string">"tpl"</span><span class="token punctuation">,</span> dsUser<span class="token punctuation">.</span><span class="token function">getCmd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        cfg<span class="token punctuation">.</span><span class="token function">setTemplateLoader</span><span class="token punctuation">(</span>stringLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Template template <span class="token operator">=</span> cfg<span class="token punctuation">.</span><span class="token function">getTemplate</span><span class="token punctuation">(</span><span class="token string">"tpl"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        StringWriter stringWriter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringWriter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//在模版上执行插值操作，并输出到制定的输出流中</span>
+        template<span class="token punctuation">.</span><span class="token function">process</span><span class="token punctuation">(</span>null<span class="token punctuation">,</span> stringWriter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String resultStr <span class="token operator">=</span> stringWriter<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>resultStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+    <span class="token comment" spellcheck="true">// CodeQL默认扫出来</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul16testExec"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">vul16testExec</span><span class="token punctuation">(</span>QueryRequest request<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        QueryExample example <span class="token operator">=</span> <span class="token function">buildExample</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        TestExec test <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TestExec</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> test<span class="token punctuation">.</span><span class="token function">testExampleSQL</span><span class="token punctuation">(</span>example<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> QueryExample <span class="token function">buildExample</span><span class="token punctuation">(</span>QueryRequest request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        QueryExample example <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">QueryExample</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        example<span class="token punctuation">.</span><span class="token function">setUser</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        example<span class="token punctuation">.</span><span class="token function">setOrderByClause</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getSortType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> example<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// CodeQL默认扫不出来</span>
+    <span class="token comment" spellcheck="true">// 检测是否是 HashMap导致没扫出来</span>
+    <span class="token comment" spellcheck="true">// 因为HashMap的get方法返回值不会被标记为污染，但因为走了兜底规则，将sortFieldMap.get(request.getUser())标记为了污点，然后成功扫出真实存在漏洞的链路</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul17testExec"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">vul17testExec</span><span class="token punctuation">(</span>QueryRequest request<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        QueryExample example <span class="token operator">=</span> <span class="token function">buildExample2</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        TestExec test <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TestExec</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> test<span class="token punctuation">.</span><span class="token function">testExampleSQL</span><span class="token punctuation">(</span>example<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> QueryExample <span class="token function">buildExample2</span><span class="token punctuation">(</span>QueryRequest request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        QueryExample example <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">QueryExample</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        example<span class="token punctuation">.</span><span class="token function">setOrderByClause</span><span class="token punctuation">(</span><span class="token string">"created_at desc"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        example<span class="token punctuation">.</span><span class="token function">setUser</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String field <span class="token operator">=</span> sortFieldMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        example<span class="token punctuation">.</span><span class="token function">setOrderByClause</span><span class="token punctuation">(</span>field<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> example<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// CodeQL默认扫出来</span>
+    <span class="token comment" spellcheck="true">// 检测是否是 String.format()导致没扫出来</span>
+    <span class="token comment" spellcheck="true">// 说明String.format(taint) 会将结果标记为污染</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul18testExec"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">vul18testExec</span><span class="token punctuation">(</span>QueryRequest request<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        QueryExample example <span class="token operator">=</span> <span class="token function">buildExample3</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        TestExec test <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TestExec</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> test<span class="token punctuation">.</span><span class="token function">testExampleSQL</span><span class="token punctuation">(</span>example<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> QueryExample <span class="token function">buildExample3</span><span class="token punctuation">(</span>QueryRequest request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        QueryExample example <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">QueryExample</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        example<span class="token punctuation">.</span><span class="token function">setOrderByClause</span><span class="token punctuation">(</span><span class="token string">"created_at desc"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        example<span class="token punctuation">.</span><span class="token function">setUser</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String field <span class="token operator">=</span> sortFieldMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        example<span class="token punctuation">.</span><span class="token function">setOrderByClause</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>SORT_STR<span class="token punctuation">,</span> field<span class="token punctuation">,</span> field<span class="token punctuation">,</span> request<span class="token punctuation">.</span><span class="token function">getSortType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> example<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul19testExec"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">vul19testExec</span><span class="token punctuation">(</span>QueryRequest request<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        QueryExample example <span class="token operator">=</span> <span class="token function">buildExample4</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        TestExec test <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TestExec</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> test<span class="token punctuation">.</span><span class="token function">testExampleSQL</span><span class="token punctuation">(</span>example<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> QueryExample <span class="token function">buildExample4</span><span class="token punctuation">(</span>QueryRequest request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        QueryExample example <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">QueryExample</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        example<span class="token punctuation">.</span><span class="token function">setOrderByClause</span><span class="token punctuation">(</span><span class="token string">"created_at desc"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        example<span class="token punctuation">.</span><span class="token function">setUser</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String field <span class="token operator">=</span> sortFieldMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">isNotBlank</span><span class="token punctuation">(</span>field<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> StringUtils<span class="token punctuation">.</span><span class="token function">isNotBlank</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getSortType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            example<span class="token punctuation">.</span><span class="token function">setOrderByClause</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>SORT_STR<span class="token punctuation">,</span> field<span class="token punctuation">,</span> field<span class="token punctuation">,</span> request<span class="token punctuation">.</span><span class="token function">getSortType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> example<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// [-] CodeQL默认的TaintStep扫不出来</span>
+    <span class="token comment" spellcheck="true">// 漏报问题</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/vul100"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">vul100</span><span class="token punctuation">(</span>String templateContent<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">,</span> TemplateException <span class="token punctuation">{</span>
+        Configuration cfg <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Configuration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        StringTemplateLoader stringLoader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringTemplateLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        stringLoader<span class="token punctuation">.</span><span class="token function">putTemplate</span><span class="token punctuation">(</span><span class="token string">"tpl"</span><span class="token punctuation">,</span> templateContent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        cfg<span class="token punctuation">.</span><span class="token function">setTemplateLoader</span><span class="token punctuation">(</span>stringLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+        Template template <span class="token operator">=</span> cfg<span class="token punctuation">.</span><span class="token function">getTemplate</span><span class="token punctuation">(</span><span class="token string">"tpl"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        StringWriter stringWriter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringWriter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//在模版上执行插值操作，并输出到制定的输出流中</span>
+        template<span class="token punctuation">.</span><span class="token function">process</span><span class="token punctuation">(</span>null<span class="token punctuation">,</span> stringWriter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String resultStr <span class="token operator">=</span> stringWriter<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>resultStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">package</span> org<span class="token punctuation">.</span>joychou<span class="token punctuation">.</span>dao<span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>Serializable<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DSTest</span> <span class="token keyword">implements</span> <span class="token class-name">Serializable</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">public</span> String username<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> String cmd<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getUsername</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> username<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setUsername</span><span class="token punctuation">(</span>String username<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>username <span class="token operator">=</span> username<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getCmd</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> cmd<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setCmd</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>cmd <span class="token operator">=</span> cmd<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">package</span> org<span class="token punctuation">.</span>joychou<span class="token punctuation">.</span>dao<span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>Serializable<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DSUser</span> <span class="token keyword">implements</span> <span class="token class-name">Serializable</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">public</span> String user<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> String pass<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> String cmd<span class="token punctuation">;</span>
+
+
+    <span class="token keyword">public</span> <span class="token function">DSUser</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>cmd <span class="token operator">=</span> cmd<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> user<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setUser</span><span class="token punctuation">(</span>String user<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>user <span class="token operator">=</span> user<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getPass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> pass<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setPass</span><span class="token punctuation">(</span>String pass<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>pass <span class="token operator">=</span> pass<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getCmd</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> cmd<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">package</span> org<span class="token punctuation">.</span>joychou<span class="token punctuation">.</span>dao<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">QueryExample</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> String user<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> String orderByClause<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> user<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setUser</span><span class="token punctuation">(</span>String user<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>user <span class="token operator">=</span> user<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getOrderByClause</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> orderByClause<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setOrderByClause</span><span class="token punctuation">(</span>String orderByClause<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>orderByClause <span class="token operator">=</span> orderByClause<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Criteria</span> <span class="token punctuation">{</span>
+
+        <span class="token keyword">protected</span> <span class="token function">Criteria</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> Criteria <span class="token function">createCriteria</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">createCriteriaInternal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> Criteria <span class="token function">createCriteriaInternal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Criteria</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">package</span> org<span class="token punctuation">.</span>joychou<span class="token punctuation">.</span>dao<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">QueryRequest</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> String user<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> String pass<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> String cmd<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> String sortType<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> user<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setUser</span><span class="token punctuation">(</span>String user<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>user <span class="token operator">=</span> user<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getPass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> pass<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setPass</span><span class="token punctuation">(</span>String pass<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>pass <span class="token operator">=</span> pass<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getCmd</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> cmd<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setCmd</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>cmd <span class="token operator">=</span> cmd<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getSortType</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> sortType<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setSortType</span><span class="token punctuation">(</span>String sortType<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>sortType <span class="token operator">=</span> sortType<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">package</span> org<span class="token punctuation">.</span>joychou<span class="token punctuation">.</span>dao<span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>IOException<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TestExec</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> String <span class="token function">testExecDSUser</span><span class="token punctuation">(</span>DSUser dsUser<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> dsUser<span class="token punctuation">.</span><span class="token function">getCmd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">testExecDSUserCmd</span><span class="token punctuation">(</span>String cmd<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> cmd<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">testExecDSTest</span><span class="token punctuation">(</span>DSTest dsTest<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> dsTest<span class="token punctuation">.</span><span class="token function">getCmd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">testExampleSQL</span><span class="token punctuation">(</span>QueryExample example<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+            </div>
+            <hr />
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        <p class="reprint-tip">
+            <i class="fa fa-exclamation-triangle"></i>&nbsp;&nbsp;
+            <span>转载规则</span>
+        </p>
+        
+            <div class="center-align">
+                <a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh">
+                    <img alt=""
+                         style="border-width:0"
+                         src="https://i.creativecommons.org/l/by/4.0/88x31.png"/>
+                </a>
+            </div>
+            <br/>
+            <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
+                  property="dct:title" rel="dct:type">
+                    《CodeQL系列之域敏感和兜底规则冲突的解决过程》
+                </span> 由
+            <a xmlns:cc="http://creativecommons.org/ns#" href="/2022/07/21/codeql-xi-lie-zhi-yu-min-gan-he-dou-di-gui-ze-de-chong-tu-jie-jue-fang-an/" property="cc:attributionName"
+               rel="cc:attributionURL">
+                ske
+            </a> 采用
+            <a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh">
+                知识共享署名 4.0 国际许可协议
+            </a>进行许可。
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+        </div>
+    </div>
+
+    
+    <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: 'SkewwG.github.io',
+        owner: 'SkewwG',
+        admin: "SkewwG",
+        id: '2022/07/21/codeql-xi-lie-zhi-yu-min-gan-he-dou-di-gui-ze-de-chong-tu-jie-jue-fang-an/',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+    <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments input[type=text],
+    #vcomments input[type=email],
+    #vcomments input[type=url],
+    #vcomments textarea {
+        box-sizing: border-box;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #42b983;
+        font-weight: 500;
+        text-decoration: underline;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div id="vcomments" class="card-content"></div>
+</div>
+
+<script src="/libs/valine/av-min.js"></script>
+<script src="/libs/valine/Valine.min.js"></script>
+<!-- <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script> -->
+
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: '',
+        appKey: '',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'false' === 'true',
+        avatar: 'wavatar',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: '如果你没有GitHub账号，还可以在这里评论啦！'
+    });
+</script>
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2022/08/03/docker-tao-yi/">
+                    <div class="card-image">
+                        
+                        <img src="/img/DockerEscape/image-20211102211340974.png" class="responsive-img" alt="Docker逃逸">
+                        
+                        <span class="card-title">Docker逃逸</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            Docker逃逸
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2022-08-03
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Docker/" class="post-category" target="_blank">
+                                    Docker
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Docker逃逸/" target="_blank">
+                        <span class="chip bg-color">Docker逃逸</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/01/04/codeql-xi-lie-zhi-spring/">
+                    <div class="card-image">
+                        
+                        <img src="/img/CodeQLSpring/image-20220105112858778.png" class="responsive-img" alt="CodeQL系列之Spring">
+                        
+                        <span class="card-title">CodeQL系列之Spring</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            CodeQL系列之Spring
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2022-01-04
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/CodeQL/" class="post-category" target="_blank">
+                                    CodeQL
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/CodeQL系列之Spring/" target="_blank">
+                        <span class="chip bg-color">CodeQL系列之Spring</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('120')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: ske的博客<br />'
+            + '作者: ske<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () { bodyElement.removeChild(newdiv); }, 200);
+    });
+</script>
+
+    
+
+</main>
+
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            &copy; 2020-~ Ske. 版权所有
+
+            
+            &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+            <span class="white-color">60.3k</span>
+            
+
+            <br>
+            <span id="sitetime"></span>
+
+            
+            
+            <br>
+            
+			<span id="busuanzi_container_site_pv" style='display:none'>
+				<i class="fa fa-heart-o"></i>
+				
+			</span>
+			
+			
+			<span id="busuanzi_container_site_uv" style='display:none'>
+				
+			</span>
+			
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/SkewwG" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:446106525@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+    <a href="http://wpa.qq.com/msgrd?v=3&uin=446106525&site=qq&menu=yes" class="tooltipped" target="_blank" data-tooltip="访问我的知乎" data-position="top" data-delay="50">
+        <i class="fa fa-qq"></i>
+    </a>
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script language=javascript>
+    function siteTime() {
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth() + 1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+        var t1 = Date.UTC(2020, 11, 25, 00, 00, 00); //北京时间2018-2-13 00:00:00
+        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+        var diff = t2 - t1;
+        var diffYears = Math.floor(diff / years);
+        var diffDays = Math.floor((diff / days) - diffYears * 365);
+        var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+        var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+        var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds);
+        document.getElementById("sitetime").innerHTML = "本站已运行 " + diffYears + " 年 " + diffDays + " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+    }/*因为建站时间还没有一年，就将之注释掉了。需要的可以取消*/
+    siteTime();
+</script>
+
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+    $(document).ready(function () {
+
+        var int = setInterval(fixCount, 50);
+        var pvcountOffset = 80000;
+        var uvcountOffset = 20000;
+
+        function fixCount() {
+            if (document.getElementById("busuanzi_container_site_pv").style.display != "none") {
+                $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + pvcountOffset);
+                clearInterval(int);
+            }
+            if ($("#busuanzi_container_site_pv").css("display") != "none") {
+                $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + uvcountOffset); // 加上初始数据 
+                clearInterval(int);
+            }
+        }
+    });
+</script>
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <script type="text/javascript"> var OriginTitile = document.title, st; document.addEventListener("visibilitychange", function () { document.hidden ? (document.title = "Σ(っ °Д °;)っ喔哟，崩溃啦！", clearTimeout(st)) : (document.title = "φ(゜▽゜*)♪咦，又好了！", st = setTimeout(function () { document.title = OriginTitile }, 3e3)) })
+    </script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', '');
+</script>
+
+
+
+    
+    <script src="/libs/others/clicklove.js"></script>
+    
+
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    <!-- 雪花特效 -->
+    
+
+</body>
+
+</html>
