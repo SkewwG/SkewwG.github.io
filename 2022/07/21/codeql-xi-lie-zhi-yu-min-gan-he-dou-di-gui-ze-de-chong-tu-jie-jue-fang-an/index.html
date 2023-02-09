@@ -421,36 +421,36 @@
             <div id="articleContent">
                 <h1 id="CodeQL系列之域敏感和兜底规则冲突的解决过程"><a href="#CodeQL系列之域敏感和兜底规则冲突的解决过程" class="headerlink" title="CodeQL系列之域敏感和兜底规则冲突的解决过程"></a>CodeQL系列之域敏感和兜底规则冲突的解决过程</h1><p><strong>效果: 检测SQL注入漏洞准确率达到90%以上，几乎无误报漏报。</strong></p>
 <h2 id="0x01-问题"><a href="#0x01-问题" class="headerlink" title="0x01 问题"></a>0x01 问题</h2><p>起初isAdditionalTaintStep的污染转播链规则是将所有情况都标记为污染。目的是为了避免漏报的情况发生。</p>
-<p><img src="imgs/image-20220708151742789.png" alt="image-20220708151742789"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708151742789.png" alt="image-20220708151742789"></p>
 <p>例如：此种情况下CodeQL默认的TaintStep不会扫出链路，加了兜底规则后则会扫出该链路。</p>
-<p><img src="imgs/image-20220708152117102.png" alt="image-20220708152117102"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708152117102.png" alt="image-20220708152117102"></p>
 <p>但是因为兜底规则将所有的情况都标记为了污染，那么也会出现误报的情况。</p>
 <p>例如：模拟XML的SQL注入漏洞情况，在XML文件里，直接是获取对象的属性然后执行sql语句，而在触发SQL语句的入口点却传入的是对象。如下例子vul11testExec，souce传递进来后赋值给dsUser的cmd属性，然后dsUser的user属性赋值为常量，最后将整个对象dsUser传递给执行SQL语句的函数，在xml里的sql语句可能是select cmd from table或者是select user from table。那么当sql语句里是cmd属性时，那么是存在漏洞的，如果是user属性时，则不存在漏洞。但是因为兜底规则的影响，将dsUser整个对象标记为了污染，因此无论xml里的sql语句是cmd属性还是user属性，都会认为该链路存在SQL注入漏洞。这样就造成了误报。</p>
-<p><img src="imgs/image-20220708152338938.png" alt="image-20220708152338938"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708152338938.png" alt="image-20220708152338938"></p>
 <h2 id="0x02-解决过程"><a href="#0x02-解决过程" class="headerlink" title="0x02 解决过程"></a>0x02 解决过程</h2><h3 id="0x02-1-方案1（解决了部分误报）"><a href="#0x02-1-方案1（解决了部分误报）" class="headerlink" title="0x02-1 方案1（解决了部分误报）"></a>0x02-1 方案1（解决了部分误报）</h3><p>链路中出现getXXX、setXXX时，不走兜底规则，走CodeQL默认的链路，这样就不会因为当出现setXXX赋值的语句时，将整个对象标记为污染，从而解决了部分误报漏报的情况。</p>
 <h4 id="第一次优化"><a href="#第一次优化" class="headerlink" title="第一次优化"></a>第一次优化</h4><p>isAdditionalTaintStep只有兜底规则</p>
-<p><img src="imgs/image-20220711204819242.png" alt="image-20220711204819242"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220711204819242.png" alt="image-20220711204819242"></p>
 <p>则会出现如下的误报，因为在<code>dstest.setCmd(cmd);</code>中，node1是cmd，node2是dstest，将对象dstest标记为污染了。所以最终能够扫出下面的误报链路。</p>
-<p><img src="imgs/image-20220711204722358.png" alt="image-20220711204722358"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220711204722358.png" alt="image-20220711204722358"></p>
 <p><strong>解决方案：CodeQL默认是会处理域敏感问题，那么当链路中出现了setXXX、getXXX方法时，不让走我们定义的兜底规则，走CodeQL默认的域敏感处理规则，那么就会将dstest的cmd属性标记为污染，不会将整个dstest对象标记污染，因此解决该误报链路问题。</strong></p>
 <p>在<code>isAdditionalTaintStep</code>方法里，通过if判断条件，如果链路中存在setXXX、getXXX方法，那么执行none语句，即不走兜底规则，走CodeQL默认的域敏感处理规则。可以看到结果里没有了getUsername这条链路了。的确解决了误报问题。</p>
-<p><img src="imgs/image-20220711205217191.png" alt="image-20220711205217191"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220711205217191.png" alt="image-20220711205217191"></p>
 <h4 id="第二次优化"><a href="#第二次优化" class="headerlink" title="第二次优化"></a>第二次优化</h4><p>但是发现该if判断条件较简单粗暴，是直接粗暴的将所有setXXX、getXXX方法都走默认的CodeQL规则,但是没有将其和node1、node2连接起来。</p>
 <p>忘记当时的场景是什么状况了，反正要优化下，将node1和node2连接起来。</p>
-<p><img src="imgs/image-20220711213340269.png" alt="image-20220711213340269"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220711213340269.png" alt="image-20220711213340269"></p>
 <h4 id="第三次优化"><a href="#第三次优化" class="headerlink" title="第三次优化"></a>第三次优化</h4><p>后面又发现一处bug，通过下面的if判断条件，居然扫出了一条误报链路</p>
 <p>误报情况如下，dstest对象仍然被标记为污染</p>
-<p><img src="imgs/8b6ddf1bcdd2f81fc461c33e9ad8aac041479e20.png" alt="8b6ddf1bcdd2f81fc461c33e9ad8aac041479e20"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/8b6ddf1bcdd2f81fc461c33e9ad8aac041479e20.png" alt="8b6ddf1bcdd2f81fc461c33e9ad8aac041479e20"></p>
 <p>解决方案：isAdditionalTaintStep里Method m起初放在最外层的exists中，会出现dstest.setUsername(“zhangsan”);的误报链路，将Method m移到if判断语句里，解决了该误报问题。</p>
-<p><img src="imgs/5922b5fd611140cd7d82c551b2074650961e989f.png" alt="5922b5fd611140cd7d82c551b2074650961e989f"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/5922b5fd611140cd7d82c551b2074650961e989f.png" alt="5922b5fd611140cd7d82c551b2074650961e989f"></p>
 <p>优化后如下</p>
-<p><img src="imgs/d5447e44cdf6e812a9cc32fe20578eb453c89df9.png" alt="d5447e44cdf6e812a9cc32fe20578eb453c89df9"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/d5447e44cdf6e812a9cc32fe20578eb453c89df9.png" alt="d5447e44cdf6e812a9cc32fe20578eb453c89df9"></p>
 <p>解决了误报问题。</p>
 <h4 id="第四次优化"><a href="#第四次优化" class="headerlink" title="第四次优化"></a>第四次优化</h4><p>下图红框走了兜底规则，将dsUser对象标记为污染。</p>
-<p><img src="imgs/image-20220711213556190.png" alt="image-20220711213556190"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220711213556190.png" alt="image-20220711213556190"></p>
 <p>解决方案：实例化对象的时候，不走兜底规则，走codeql默认的TaintStep，则添加一条规则，判断call是不是实例化。即下图红框里的代码。</p>
 <p>优化后如下，成功解决了上面的误报问题。</p>
-<p><img src="imgs/image-20220711213711929.png" alt="image-20220711213711929"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220711213711929.png" alt="image-20220711213711929"></p>
 <h4 id="最终规则"><a href="#最终规则" class="headerlink" title="最终规则"></a>最终规则</h4><p>优化后代码如下：</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 链路里的所有可能污染的地方</span>
   override predicate <span class="token function">isAdditionalTaintStep</span><span class="token punctuation">(</span>DataFlow<span class="token operator">:</span><span class="token operator">:</span>Node node1<span class="token punctuation">,</span> DataFlow<span class="token operator">:</span><span class="token operator">:</span>Node node2<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -498,54 +498,54 @@
 <h4 id="跟踪CodeQL默认的污染传播链路"><a href="#跟踪CodeQL默认的污染传播链路" class="headerlink" title="跟踪CodeQL默认的污染传播链路"></a>跟踪CodeQL默认的污染传播链路</h4><p>为了读取Sink点的污染属性，起初想到的是寻找方法能够读取最后sink点被污染的属性（最终证实该方法并不可行，因为当sink是对象的链路打印出来后，其实整个对象就已经被标记为污染了，那么就不可能打印出被污染的属性，但是当时没有想到这一点）。于是一步步的分析跟踪CodeQL默认的污染传播链路。</p>
 <p><strong><code>TaintTracking::Configuration#isAdditionalFlowStep</code>方法入口开始分析</strong></p>
 <p>发现<code>isAdditionalFlowStep</code>方法里调用了<code>isAdditionalTaintStep</code>（我们自写的污染转播规则）和<code>defaultAdditionalTaintStep</code>（CodeQL默认的污点传播规则）</p>
-<p><img src="imgs/image-20220708155345397.png" alt="image-20220708155345397"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708155345397.png" alt="image-20220708155345397"></p>
 <p>跟入到<code>defaultAdditionalTaintStep</code>（CodeQL默认的污点传播规则）里</p>
-<p><img src="imgs/image-20220708155633318.png" alt="image-20220708155633318"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708155633318.png" alt="image-20220708155633318"></p>
 <p>后面一顿分析</p>
-<p><img src="imgs/image-20220708161047400.png" alt="image-20220708161047400"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708161047400.png" alt="image-20220708161047400"></p>
 <h4 id="分析PathNode节点"><a href="#分析PathNode节点" class="headerlink" title="分析PathNode节点"></a>分析PathNode节点</h4><p><strong>PathNode入口开始分析</strong></p>
 <p>发现了<code>PathNodeImpl</code>类，该类继承于<code>PathNode</code></p>
-<p><img src="imgs/image-20220708161255114.png" alt="image-20220708161255114"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708161255114.png" alt="image-20220708161255114"></p>
 <p>看了下所有的方法，发现了<code>toString</code>方法，猜测可能是通过该方法打印每条链路里的每一节点信息。于是继续深入跟踪测试。</p>
 <p>更改了原先的<code>toString</code>方法里的内容，添加了一下<code>---</code>字符串做测试，发现的确影响到了链路里的每一个节点的内容。</p>
-<p><img src="imgs/image-20220708161417531.png" alt="image-20220708161417531"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708161417531.png" alt="image-20220708161417531"></p>
 <p>跟入<code>this.ppAp()</code>方法里，发现如果节点PathNode是PathNodeSink时，则返回空，如果节点PathNode是PathNodeMid时，返回getAp()方法的结果。</p>
-<p><img src="imgs/image-20220708163903532.png" alt="image-20220708163903532"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708163903532.png" alt="image-20220708163903532"></p>
 <p>那么PathNodeSink和PathNodeMid的区别是什么？在toString方法里，添加打印this.getAQlClass()方法</p>
-<p><img src="imgs/image-20220708164109822.png" alt="image-20220708164109822"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708164109822.png" alt="image-20220708164109822"></p>
 <p>从结果中可以分析出来，PathNodeSink是链路中最后的一个节点，PathNodeMid是链路中的每个过程的中间节点</p>
-<p><img src="imgs/image-20220708164242863.png" alt="image-20220708164242863"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708164242863.png" alt="image-20220708164242863"></p>
 <p>接下来分析PathNodeMid的getAp()方法返回了什么内容，通过PathNodeMid的定义知道，getAp()返回了AccessPath对象。</p>
-<p><img src="imgs/image-20220708164409004.png" alt="image-20220708164409004"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708164409004.png" alt="image-20220708164409004"></p>
 <p>继续跟入分析AccessPath类，通过介绍猜测是链路中的每条路径里的信息</p>
-<p><img src="imgs/image-20220708164759222.png" alt="image-20220708164759222"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708164759222.png" alt="image-20220708164759222"></p>
 <p>继续分析发现不少类继承了AccessPath类，通过一个个测试发现AccessPathCons类的toString()方法会影响到我们结果的内容</p>
-<p><img src="imgs/image-20220708164653390.png" alt="image-20220708164653390"></p>
-<p><img src="imgs/image-20220708165911028.png" alt="image-20220708165911028"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708164653390.png" alt="image-20220708164653390"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708165911028.png" alt="image-20220708165911028"></p>
 <p>继续跟入到<code>AccessPathCons#toStringImpl()</code>方法里，红框里的内容就是展示结果里打印的内容。</p>
-<p><img src="imgs/image-20220708165957056.png" alt="image-20220708165957056"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708165957056.png" alt="image-20220708165957056"></p>
 <p>有意思的地方是<code>head.toSting()</code>，该方法打印了对象被污染了的属性。于是分析下head的类<code>TypedContent</code></p>
-<p><img src="imgs/image-20220708170119931.png" alt="image-20220708170119931"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708170119931.png" alt="image-20220708170119931"></p>
 <p>类<code>TypedContent</code></p>
-<p><img src="imgs/image-20220708170140420.png" alt="image-20220708170140420"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708170140420.png" alt="image-20220708170140420"></p>
 <p>执行<code>TypedContent#toString()</code>方法，发现打印的结果均是对象的属性。</p>
-<p><img src="imgs/image-20220708170229912.png" alt="image-20220708170229912"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708170229912.png" alt="image-20220708170229912"></p>
 <p>那么就能理解了为什么<code>AccessPathCons#toStringImpl()</code>里的<code>head.toSting()</code>能够将对象里被污染的属性打印出来了。</p>
 <p>将打印污染属性的中括号里加上*测试效果</p>
-<p><img src="imgs/image-20220708170640172.png" alt="image-20220708170640172"></p>
-<p><img src="imgs/image-20220708170718953.png" alt="image-20220708170718953"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708170640172.png" alt="image-20220708170640172"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708170718953.png" alt="image-20220708170718953"></p>
 <p>效果如下：的确将source传递给dstest对象的cmd属性污染了，在链路中打印出了[*cmd*]</p>
-<p><img src="imgs/image-20220708170611336.png" alt="image-20220708170611336"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708170611336.png" alt="image-20220708170611336"></p>
 <p>此时想的是以为已经能够打印对象被污染的属性，那么在PathNodeSink节点时也通过getAp()方法将对象被污染的属性打印出来。如下例子，将dsUser对象的cmd属性打印出来。</p>
-<p><img src="imgs/image-20220708171701421.png" alt="image-20220708171701421"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708171701421.png" alt="image-20220708171701421"></p>
 <p>但是发现PathNodeSink没有getAp()方法，那么可能就得需要改动大量源码，给PathNodeSink增加类似PathNodeMid的getAp()方法。但是因为感觉改动太大，就先暂时放一边了。<strong>后面重新回顾了下，发现该方案不可行。因为当出现该链路时，dsUser整个对象就已经被标记为污染了，不再存在dsUser对象没被污染，dsUser的cmd属性被污染的情况。</strong></p>
 <p>证明如下例子：</p>
 <p>之所以vul11testExec扫不出来，而vul12testExec能够扫出来，问题出在sink点一个是对象，一个是对象的属性，当sink是对象时，因为污染的是对象的属性，所以对象dsUser并不认为被污染，因此没扫出来<br>当重构isAdditionalTaintStep时，因为默认的TaintStep没扫出来，然后经过我们的规则，在DSUser dsUser = new DSUser(cmd);时将dsUser设置为污染，因此到test.testExecDSUser(dsUser)时，sink点dsUser也是污染的。所以能够扫出来，但也会因此造成误报。</p>
-<p><img src="imgs/image-20220708173950316.png" alt="image-20220708173950316"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220708173950316.png" alt="image-20220708173950316"></p>
 <h3 id="0x02-3-方案三（获取存在漏洞链路）"><a href="#0x02-3-方案三（获取存在漏洞链路）" class="headerlink" title="0x02-3 方案三（获取存在漏洞链路）"></a>0x02-3 方案三（获取存在漏洞链路）</h3><p>解决方案：将对象的属性设置为Sink点</p>
 <h4 id="allowImplicitRead-匹配对象被污染的属性"><a href="#allowImplicitRead-匹配对象被污染的属性" class="headerlink" title="allowImplicitRead-匹配对象被污染的属性"></a>allowImplicitRead-匹配对象被污染的属性</h4><p>没有重构<code>allowImplicitRead</code>方法，打印出来的链路是走了我们的兜底规则，直接将example对象标记为污染。</p>
-<p><img src="imgs/image-20220712154022109.png" alt="image-20220712154022109"></p>
-<p><img src="imgs/image-20220712154102349.png" alt="image-20220712154102349"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220712154022109.png" alt="image-20220712154022109"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220712154102349.png" alt="image-20220712154102349"></p>
 <p>重构<code>allowImplicitRead</code>方法，将Content类对象c的值设置为sink对象污染属性的值，下面例子就是匹配example对象的orderByClause属性。可以看到结果里多出了一条链路，并且打印出污染属性orderByClause。</p>
 <pre class="line-numbers language-java"><code class="language-java">override predicate <span class="token function">allowImplicitRead</span><span class="token punctuation">(</span>DataFlow<span class="token operator">:</span><span class="token operator">:</span>Node node<span class="token punctuation">,</span> DataFlow<span class="token operator">:</span><span class="token operator">:</span>Content c<span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">isSink</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span> or <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">isAdditionalTaintStep</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> _<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token function">and</span>
@@ -554,31 +554,31 @@
         c<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token string">"orderByClause"</span>
     <span class="token punctuation">)</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><img src="imgs/image-20220712154301015.png" alt="image-20220712154301015"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220712154301015.png" alt="image-20220712154301015"></p>
 <p>SQL注入实践效果，成功的打印出对象属性被污染的链路。</p>
-<p><img src="imgs/image-20220712161450560.png" alt="image-20220712161450560"></p>
-<p><img src="imgs/image-20220712161547815.png" alt="image-20220712161547815"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220712161450560.png" alt="image-20220712161450560"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220712161547815.png" alt="image-20220712161547815"></p>
 <p><strong>但是最后测试发现，误报链路还是存在，说明allowImplicitRead只能增加真实存在漏洞的链路，但是并不能过滤掉误报链路。</strong></p>
 <h3 id="0x03-方案四（sink点分类讨论，彻底解决了误报）"><a href="#0x03-方案四（sink点分类讨论，彻底解决了误报）" class="headerlink" title="0x03 方案四（sink点分类讨论，彻底解决了误报）"></a>0x03 方案四（sink点分类讨论，彻底解决了误报）</h3><p>发现新的问题：大量的误报还来源于将sql函数的所有参数标记为sink点的原因，然后结合了兜底规则造成了大量的误报。</p>
 <p>解决方案：针对sink点分类讨论，共三种情况（Object.getAttrName()，String，Obejct）</p>
 <h4 id="Object-getAttrName-对象调用get获取属性值"><a href="#Object-getAttrName-对象调用get获取属性值" class="headerlink" title="Object.getAttrName() 对象调用get获取属性值"></a>Object.getAttrName() 对象调用get获取属性值</h4><p>漏洞代码如下：</p>
 <p><code>test.testExampleTwoString(request.getSortType(), request.getCmd());</code></p>
 <p>如果sink点是object.getAttrName()会造成大量的误报，那么思路就是将getAttrName中的AttrName取出来，然后和xml里的注入点参数名一一做对比，只有相同时才说明是个漏洞，这样可以减少大量的误报。代码<code>arg.toString().substring(3, arg.toString().length()-5)</code>取出Object.getAttrName()的AttrName值，然后全部转换成小写，和xml里取出来的注入点参数名作比较。</p>
-<p><img src="imgs/image-20220720200323555.png" alt="image-20220720200323555"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220720200323555.png" alt="image-20220720200323555"></p>
 <h4 id="String-字符串"><a href="#String-字符串" class="headerlink" title="String 字符串"></a>String 字符串</h4><p>漏洞代码如下：</p>
 <p><code>test.testExampleTwoString(sortType, cmd);</code></p>
 <p>如果sink点是字符串类型，那么就直接和xml里的注入点参数名一一做对比即可。</p>
-<p><img src="imgs/image-20220720200745625.png" alt="image-20220720200745625"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220720200745625.png" alt="image-20220720200745625"></p>
 <h4 id="Object-对象"><a href="#Object-对象" class="headerlink" title="Object 对象"></a>Object 对象</h4><p>漏洞代码如下：</p>
 <p><code>test.testExampleTwoString(dsUser);</code></p>
 <p>如果sink点是对象，检测sink点打印是否有   [被污染的属性]    ，如果有则提取出被污染的属性，然后和xml的注入点参数名做比较，如果一样则是真实链路，如果不一样则是误报。如果没有，就是对象本身，那么获取对象的所有属性名,然后比较对象的属性里面有没有注入点参数名。</p>
-<p><img src="imgs/image-20220721173541870.png" alt="image-20220721173541870"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220721173541870.png" alt="image-20220721173541870"></p>
 <p>sink点没有    [被污染的属性]     ，提取出对象的所有属性名,然后比较对象的属性里面有没有注入点参数名。下图认为是真实存在漏洞的链路</p>
-<p><img src="imgs/image-20220721173657521.png" alt="image-20220721173657521"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220721173657521.png" alt="image-20220721173657521"></p>
 <p>sink点有    [被污染的属性]     ，提取出被污染的属性，然后和xml的注入点参数名做比较。下图认为是真实存在漏洞的链路</p>
-<p><img src="imgs/image-20220721173714418.png" alt="image-20220721173714418"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220721173714418.png" alt="image-20220721173714418"></p>
 <p>sink点有    [被污染的属性]     ，提取出被污染的属性，然后和xml的注入点参数名做比较。因为不一致，所以下图认为是误报链路。</p>
-<p><img src="imgs/image-20220721173741205.png" alt="image-20220721173741205"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220721173741205.png" alt="image-20220721173741205"></p>
 <p>最终判断代码如下（添加到isMyBatisXMLSQL方法里）：经过测试，的确大幅度的提升了漏洞的准确率。</p>
 <pre><code>// 如果sink点是object.getAttrName()会造成大量的误报，如下例子。那么通过正则将attrName取出来，然后和xml里的参数名一一做对比，这样可以减少大量的误报
 // test.testExampleTwoString(request.getSortType(), request.getCmd());
@@ -604,12 +604,12 @@ else
     else
       // 如果sink点没有     [被污染的属性]        ，就是对象本身，那么获取对象的所有属性名,然后比较对象的属性里面有没有注入点参数名。
       objectAttrName = arg.getType().(RefType).getAField().toString() and
-      objectAttrName = argumentName</code></pre><p><img src="imgs/image-20220720201238618.png" alt="image-20220720201238618"></p>
+      objectAttrName = argumentName</code></pre><p><img src="/img/CodeQLDomainSensitiveSQL/image-20220720201238618.png" alt="image-20220720201238618"></p>
 <h2 id="0x03-总结"><a href="#0x03-总结" class="headerlink" title="0x03 总结"></a>0x03 总结</h2><h3 id="问题的根源"><a href="#问题的根源" class="headerlink" title="问题的根源"></a>问题的根源</h3><p>是在sink点的定义上，之前是将sink点标记为每一个参数，然后又通过兜底规则将整个对象也标记为污染，所以造成了大量的误报。</p>
 <h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>是将兜底规则直接删除，然后增加allowImplicitRead方法（可以打印出真实存在漏洞的链路），再对sink点分类讨论过滤误报。最终几乎0误报检测出SQL注入漏洞。</p>
 <h3 id="技术难点突破"><a href="#技术难点突破" class="headerlink" title="技术难点突破"></a>技术难点突破</h3><p>其实很多的误报都是来源于sink点为对象时导致的，其实通过<code>PartialPathNode</code>可以打印出sink点为对象时被污染的属性。那么为什么<code>PartialPathNode</code>可以打印出对象被污染的属性，而<code>PathNode</code>却不能打印出来（之前在这里研究了好久），通过定义可以看出<code>PartialPathNode</code>的<code>toString()</code>打印出了<code>ppAp()</code>，而ppAP在之前分析过，就是AccessPath，也可以理解为路径吧。所以在最后的链路中，通过<code>PartialPathNode</code>的<code>toString()</code>就能够取出被污染的属性，而如果使用<code>PathNode</code>就不行了。</p>
-<p><img src="imgs/image-20220721175019359.png" alt="image-20220721175019359"></p>
-<p><img src="imgs/image-20220721175031901.png" alt="image-20220721175031901"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220721175019359.png" alt="image-20220721175019359"></p>
+<p><img src="/img/CodeQLDomainSensitiveSQL/image-20220721175031901.png" alt="image-20220721175031901"></p>
 <h2 id="0x04-靶场测试代码"><a href="#0x04-靶场测试代码" class="headerlink" title="0x04 靶场测试代码"></a>0x04 靶场测试代码</h2><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">package</span> org<span class="token punctuation">.</span>joychou<span class="token punctuation">.</span>controller<span class="token punctuation">;</span>
 
 <span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>commons<span class="token punctuation">.</span>lang<span class="token punctuation">.</span>StringUtils<span class="token punctuation">;</span>
