@@ -121,6 +121,32 @@
   </entry>
   
   <entry>
+    <title>Java代码审计之Fastjson1.2.68 AutoType绕过分析</title>
+    <link href="https://skewwg.github.io/2022/05/25/java-dai-ma-shen-ji-zhi-fastjson1.2.68autotype-rao-guo-fen-xi/"/>
+    <id>https://skewwg.github.io/2022/05/25/java-dai-ma-shen-ji-zhi-fastjson1.2.68autotype-rao-guo-fen-xi/</id>
+    <published>2022-05-25T15:50:00.000Z</published>
+    <updated>2023-02-10T08:35:05.844Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Java代码审计之Fastjson-1-2-68-AutoType绕过分析&quot;&gt;&lt;a href=&quot;#Java代码审计之Fastjson-1-2-68-AutoType绕过分析&quot; class=&quot;headerlink&quot; title=&quot;Java代码审计之Fastjson
+        
+      
+    
+    </summary>
+    
+      <category term="Java代码审计" scheme="https://skewwg.github.io/categories/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+    
+      <category term="Java代码审计之Fastjson1.2.68 AutoType绕过分析" scheme="https://skewwg.github.io/tags/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E4%B9%8BFastjson1-2-68-AutoType%E7%BB%95%E8%BF%87%E5%88%86%E6%9E%90/"/>
+    
+  </entry>
+  
+  <entry>
     <title>CodeQL系列之Spring</title>
     <link href="https://skewwg.github.io/2022/01/04/codeql-xi-lie-zhi-spring/"/>
     <id>https://skewwg.github.io/2022/01/04/codeql-xi-lie-zhi-spring/</id>
@@ -507,32 +533,6 @@
     
     
       <category term="CobalStrike扫盲" scheme="https://skewwg.github.io/tags/CobalStrike%E6%89%AB%E7%9B%B2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>内网穿透</title>
-    <link href="https://skewwg.github.io/2020/11/27/nei-wang-chuan-tou/"/>
-    <id>https://skewwg.github.io/2020/11/27/nei-wang-chuan-tou/</id>
-    <published>2020-11-27T12:40:00.000Z</published>
-    <updated>2020-11-27T10:37:32.597Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;内网穿透&quot;&gt;&lt;a href=&quot;#内网穿透&quot; class=&quot;headerlink&quot; title=&quot;内网穿透&quot;&gt;&lt;/a&gt;内网穿透&lt;/h1&gt;&lt;h2 id=&quot;0x00-环境-工具&quot;&gt;&lt;a href=&quot;#0x00-环境-工具&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-      <category term="内网渗透" scheme="https://skewwg.github.io/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"/>
-    
-    
-      <category term="内网穿透" scheme="https://skewwg.github.io/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/"/>
     
   </entry>
   
