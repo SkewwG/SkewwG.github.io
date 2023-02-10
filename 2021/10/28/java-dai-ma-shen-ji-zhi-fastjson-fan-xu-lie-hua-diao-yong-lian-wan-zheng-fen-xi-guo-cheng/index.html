@@ -8,7 +8,7 @@
     <meta name="baidu-site-verification" content="fmlEuI34ir">
     <meta name="google-site-verification" content="yCy2azpds5XSuGZvis6OuA-XIGF5GuGpYRAaGfD6o48">
     <meta name="360-site-verification" content="b7c11a830ef90fd1464ad6206bb7b6e7">
-    <meta name="description" content="Java代码审计之Fastjson反序列化调用链完整分析过程0x01.TemplatesImpl利用链分析1.为什么会触发？fastjson反序列化会返回TemplatesImpl对象，并且自动调用TemplatesImpl类的属性对应的s">
+    <meta name="description" content="Fastjson反序列化调用链完整分析过程0x01.TemplatesImpl利用链分析1.为什么会触发？fastjson反序列化会返回TemplatesImpl对象，并且自动调用TemplatesImpl类的属性对应的set和get方法。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -357,8 +357,8 @@
                     
                     <div class="article-tag">
                         
-                        <a href="/tags/Fastjson/" target="_blank">
-                            <span class="chip bg-color">Fastjson</span>
+                        <a href="/tags/Java代码审计之Fastjson反序列化调用链完整分析过程/" target="_blank">
+                            <span class="chip bg-color">Java代码审计之Fastjson反序列化调用链完整分析过程</span>
                         </a>
                         
                     </div>
@@ -418,7 +418,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="Java代码审计之Fastjson反序列化调用链完整分析过程"><a href="#Java代码审计之Fastjson反序列化调用链完整分析过程" class="headerlink" title="Java代码审计之Fastjson反序列化调用链完整分析过程"></a>Java代码审计之Fastjson反序列化调用链完整分析过程</h1><h2 id="0x01-TemplatesImpl利用链分析"><a href="#0x01-TemplatesImpl利用链分析" class="headerlink" title="0x01.TemplatesImpl利用链分析"></a>0x01.TemplatesImpl利用链分析</h2><h3 id="1-为什么会触发？"><a href="#1-为什么会触发？" class="headerlink" title="1.为什么会触发？"></a>1.为什么会触发？</h3><p><strong>fastjson反序列化会返回TemplatesImpl对象，并且自动调用TemplatesImpl类的属性对应的set和get方法。而TemplatesImpl类的_outputProperties属性的getter方法（getOutputProperties）符合fastjson反序列化时调用的条件，那么就会执行TemplatesImpl#getOutputProperties，而getOutputProperties里调用了<code>newTransformer()</code>。从而执行了<code>_bytecodes</code>的值转换出来的类里的静态方法或者构造方法里的代码。为什么会执行，详细分析过程见《Java动态加载字节码》的”Gadgets 7u21 调试过程 - TemplatesImpl触发原理”。</strong></p>
+                <h1 id="Fastjson反序列化调用链完整分析过程"><a href="#Fastjson反序列化调用链完整分析过程" class="headerlink" title="Fastjson反序列化调用链完整分析过程"></a>Fastjson反序列化调用链完整分析过程</h1><h2 id="0x01-TemplatesImpl利用链分析"><a href="#0x01-TemplatesImpl利用链分析" class="headerlink" title="0x01.TemplatesImpl利用链分析"></a>0x01.TemplatesImpl利用链分析</h2><h3 id="1-为什么会触发？"><a href="#1-为什么会触发？" class="headerlink" title="1.为什么会触发？"></a>1.为什么会触发？</h3><p><strong>fastjson反序列化会返回TemplatesImpl对象，并且自动调用TemplatesImpl类的属性对应的set和get方法。而TemplatesImpl类的_outputProperties属性的getter方法（getOutputProperties）符合fastjson反序列化时调用的条件，那么就会执行TemplatesImpl#getOutputProperties，而getOutputProperties里调用了<code>newTransformer()</code>。从而执行了<code>_bytecodes</code>的值转换出来的类里的静态方法或者构造方法里的代码。为什么会执行，详细分析过程见《Java动态加载字节码》的”Gadgets 7u21 调试过程 - TemplatesImpl触发原理”。</strong></p>
 <h3 id="2-利用条件"><a href="#2-利用条件" class="headerlink" title="2.利用条件"></a>2.利用条件</h3><p>Fastjson中使用<code>TemplatesImpl</code>链的条件比较苛刻，</p>
 <ol>
 <li>服务端使用parseObject()时，必须使用如下格式才能触发漏洞：<br><code>JSON.parseObject(input, Object.class, Feature.SupportNonPublicField);</code></li>
@@ -1068,7 +1068,7 @@ https://www.cnblogs.com/nice0e3/p/14601670.html</code></pre>
 
             
             &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-            <span class="white-color">61.9k</span>
+            <span class="white-color">62.5k</span>
             
 
             <br>

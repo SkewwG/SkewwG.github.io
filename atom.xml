@@ -95,6 +95,32 @@
   </entry>
   
   <entry>
+    <title>Java代码审计之Fastjson1.2.80反序列化漏洞</title>
+    <link href="https://skewwg.github.io/2022/06/06/java-dai-ma-shen-ji-zhi-fastjson1.2.80-fan-xu-lie-hua-fen-xi/"/>
+    <id>https://skewwg.github.io/2022/06/06/java-dai-ma-shen-ji-zhi-fastjson1.2.80-fan-xu-lie-hua-fen-xi/</id>
+    <published>2022-06-06T15:50:00.000Z</published>
+    <updated>2023-02-10T06:42:15.033Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Java代码审计之Fastjson1-2-80反序列化漏洞&quot;&gt;&lt;a href=&quot;#Java代码审计之Fastjson1-2-80反序列化漏洞&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="Java代码审计" scheme="https://skewwg.github.io/categories/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+    
+      <category term="Java代码审计之Fastjson1.2.80反序列化漏洞" scheme="https://skewwg.github.io/tags/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E4%B9%8BFastjson1-2-80%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"/>
+    
+  </entry>
+  
+  <entry>
     <title>CodeQL系列之Spring</title>
     <link href="https://skewwg.github.io/2022/01/04/codeql-xi-lie-zhi-spring/"/>
     <id>https://skewwg.github.io/2022/01/04/codeql-xi-lie-zhi-spring/</id>
@@ -177,7 +203,7 @@
     <link href="https://skewwg.github.io/2021/10/28/java-dai-ma-shen-ji-zhi-fastjson-fan-xu-lie-hua-diao-yong-lian-wan-zheng-fen-xi-guo-cheng/"/>
     <id>https://skewwg.github.io/2021/10/28/java-dai-ma-shen-ji-zhi-fastjson-fan-xu-lie-hua-diao-yong-lian-wan-zheng-fen-xi-guo-cheng/</id>
     <published>2021-10-28T15:50:00.000Z</published>
-    <updated>2023-02-10T06:21:35.969Z</updated>
+    <updated>2023-02-10T06:42:09.977Z</updated>
     
     <summary type="html">
     
@@ -185,7 +211,7 @@
       
         
         
-          &lt;h1 id=&quot;Java代码审计之Fastjson反序列化调用链完整分析过程&quot;&gt;&lt;a href=&quot;#Java代码审计之Fastjson反序列化调用链完整分析过程&quot; class=&quot;headerlink&quot;
+          &lt;h1 id=&quot;Fastjson反序列化调用链完整分析过程&quot;&gt;&lt;a href=&quot;#Fastjson反序列化调用链完整分析过程&quot; class=&quot;headerlink&quot;
         
       
     
@@ -194,7 +220,7 @@
       <category term="Java代码审计" scheme="https://skewwg.github.io/categories/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
     
     
-      <category term="Fastjson" scheme="https://skewwg.github.io/tags/Fastjson/"/>
+      <category term="Java代码审计之Fastjson反序列化调用链完整分析过程" scheme="https://skewwg.github.io/tags/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E4%B9%8BFastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E8%B0%83%E7%94%A8%E9%93%BE%E5%AE%8C%E6%95%B4%E5%88%86%E6%9E%90%E8%BF%87%E7%A8%8B/"/>
     
   </entry>
   
@@ -507,32 +533,6 @@
     
     
       <category term="内网穿透" scheme="https://skewwg.github.io/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>动态调试360安全浏览器获取密钥</title>
-    <link href="https://skewwg.github.io/2020/11/26/dong-tai-diao-shi-360-an-quan-liu-lan-qi-huo-qu-mi-yao/"/>
-    <id>https://skewwg.github.io/2020/11/26/dong-tai-diao-shi-360-an-quan-liu-lan-qi-huo-qu-mi-yao/</id>
-    <published>2020-11-26T13:40:00.000Z</published>
-    <updated>2020-11-26T04:14:39.408Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;动态调试360安全浏览器获取密钥&quot;&gt;&lt;a href=&quot;#动态调试360安全浏览器获取密钥&quot; class=&quot;headerlink&quot; title=&quot;动态调试360安全浏览器获取密钥&quot;&gt;&lt;/a&gt;动态调试360安全浏览器获取密钥&lt;/h1&gt;&lt;p&gt;&lt;img
-        
-      
-    
-    </summary>
-    
-      <category term="逆向" scheme="https://skewwg.github.io/categories/%E9%80%86%E5%90%91/"/>
-    
-    
-      <category term="动态调试360安全浏览器获取密钥" scheme="https://skewwg.github.io/tags/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95360%E5%AE%89%E5%85%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E8%8E%B7%E5%8F%96%E5%AF%86%E9%92%A5/"/>
     
   </entry>
   
