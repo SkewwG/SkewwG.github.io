@@ -8,6 +8,7 @@ https://skewwg.github.io/2021/12/30/codeql-xi-lie-zhi-ji-chu-yu-fa/
 https://skewwg.github.io/2021/11/17/codeql-xi-lie-zhi-an-zhuang-codeql/
 https://skewwg.github.io/2021/11/02/java-dai-ma-shen-ji-zhi-groovy-dai-ma-zhi-xing/
 https://skewwg.github.io/2021/10/29/java-dai-ma-shen-ji-zhi-jackson-xu-lie-hua-he-fan-xu-lie-hua/
+https://skewwg.github.io/2021/10/29/java-dai-ma-shen-ji-zhi-jackson-fan-xu-lie-hua-diao-yong-lian-wan-zheng-fen-xi-guo-cheng/
 https://skewwg.github.io/2021/10/28/java-dai-ma-shen-ji-zhi-fastjson-fan-xu-lie-hua-diao-yong-lian-wan-zheng-fen-xi-guo-cheng/
 https://skewwg.github.io/2021/10/28/java-dai-ma-shen-ji-zhi-java-dong-tai-jia-zai-zi-jie-ma/
 https://skewwg.github.io/2021/07/05/java-dai-ma-shen-ji-zhi-zhi-yuan-htmlofficeservlet-lou-dong-fen-xi/
