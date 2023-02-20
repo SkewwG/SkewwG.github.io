@@ -445,7 +445,7 @@
 <p>*<em>但是高版本好像也可以绕，后续在研究，参考链接: <code>https://xz.aliyun.com/t/10035</code>    *</em></p>
 <h4 id="class的编译环境和jdk的环境不一致导致无法执行恶意代码"><a href="#class的编译环境和jdk的环境不一致导致无法执行恶意代码" class="headerlink" title="class的编译环境和jdk的环境不一致导致无法执行恶意代码"></a>class的编译环境和jdk的环境不一致导致无法执行恶意代码</h4><p>在debug下看到如下的报错：</p>
 <pre class="line-numbers language-java"><code class="language-java">Caused by<span class="token operator">:</span> java<span class="token punctuation">.</span>lang<span class="token punctuation">.</span>UnsupportedClassVersionError<span class="token operator">:</span> JNDIObject has been compiled by a more recent version of the Java <span class="token function">Runtime</span> <span class="token punctuation">(</span><span class="token keyword">class</span> <span class="token class-name">file</span> version <span class="token number">60.0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">this</span> version of the Java Runtime only recognizes <span class="token keyword">class</span> <span class="token class-name">file</span> versions up to <span class="token number">52.0</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p><img src=".//img/JolokiaRealmJNDIRMIRCE/image-20211026153646810.png" alt="image-20211026153646810"></p>
+<p><img src="/img/JolokiaRealmJNDIRMIRCE/image-20211026153646810.png" alt="image-20211026153646810"></p>
 <p>所以使用8u121版本的javac去编译</p>
 <p><img src="/img/JolokiaRealmJNDIRMIRCE/image-20211026161642709.png" alt="image-20211026161642709"></p>
 <h3 id="2-访问-jolokia-list-接口"><a href="#2-访问-jolokia-list-接口" class="headerlink" title="2. 访问/jolokia/list 接口"></a>2. 访问<code>/jolokia/list</code> 接口</h3><p>查看是否存在 <code>type=MBeanFactory</code> 和 <code>createJNDIRealm</code> 关键词。</p>
@@ -1136,23 +1136,23 @@ https://static.anquanke.com/download/b/security-geek-2019-q1/article-10.html</co
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/10/25/java-dai-ma-shen-ji-zhi-spring-cloud-snakeyaml-rce/">
+                <a href="/2021/10/27/java-dai-ma-shen-ji-zhi-jolokia-logback-jndi-ldap-rce/">
                     <div class="card-image">
                         
-                        <img src="/img/springCloudSnakeYAMLRCE/image-20211024201944806.png" class="responsive-img" alt="Java代码审计之Spring Cloud SnakeYAML RCE">
+                        <img src="/img/jolokiaLogbackJNDILDAPRCE/image-20211026171856539.png" class="responsive-img" alt="Java代码审计之jolokia logback JNDI LDAP RCE">
                         
-                        <span class="card-title">Java代码审计之Spring Cloud SnakeYAML RCE</span>
+                        <span class="card-title">Java代码审计之jolokia logback JNDI LDAP RCE</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Java代码审计之Spring Cloud SnakeYAML RCE
+                            Java代码审计之jolokia logback JNDI LDAP RCE
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-10-25
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-10-27
                             </span>
                         <span class="publish-author">
                             
@@ -1169,8 +1169,8 @@ https://static.anquanke.com/download/b/security-geek-2019-q1/article-10.html</co
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Java代码审计之Spring-Cloud-SnakeYAML-RCE/" target="_blank">
-                        <span class="chip bg-color">Java代码审计之Spring Cloud SnakeYAML RCE</span>
+                    <a href="/tags/Java代码审计之jolokia-logback-JNDI-LDAP-RCE/" target="_blank">
+                        <span class="chip bg-color">Java代码审计之jolokia logback JNDI LDAP RCE</span>
                     </a>
                     
                 </div>
@@ -1232,7 +1232,7 @@ https://static.anquanke.com/download/b/security-geek-2019-q1/article-10.html</co
 
             
             &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-            <span class="white-color">79.3k</span>
+            <span class="white-color">81.2k</span>
             
 
             <br>
