@@ -433,6 +433,32 @@
   </entry>
   
   <entry>
+    <title>Java代码审计之Eureka Xstream RCE</title>
+    <link href="https://skewwg.github.io/2021/10/25/java-dai-ma-shen-ji-zhi-eureka-xstream-rce/"/>
+    <id>https://skewwg.github.io/2021/10/25/java-dai-ma-shen-ji-zhi-eureka-xstream-rce/</id>
+    <published>2021-10-25T15:50:00.000Z</published>
+    <updated>2023-02-20T12:17:23.753Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Java代码审计之Eureka-Xstream-RCE&quot;&gt;&lt;a href=&quot;#Java代码审计之Eureka-Xstream-RCE&quot; class=&quot;headerlink&quot; title=&quot;Java代码审计之Eureka Xstream
+        
+      
+    
+    </summary>
+    
+      <category term="Java代码审计" scheme="https://skewwg.github.io/categories/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+    
+      <category term="Java代码审计之Eureka Xstream RCE" scheme="https://skewwg.github.io/tags/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E4%B9%8BEureka-Xstream-RCE/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Java代码审计之致远HtmlOfficeServlet漏洞分析</title>
     <link href="https://skewwg.github.io/2021/07/05/java-dai-ma-shen-ji-zhi-zhi-yuan-htmlofficeservlet-lou-dong-fen-xi/"/>
     <id>https://skewwg.github.io/2021/07/05/java-dai-ma-shen-ji-zhi-zhi-yuan-htmlofficeservlet-lou-dong-fen-xi/</id>
@@ -507,32 +533,6 @@
     
     
       <category term="Shellcode进程注入" scheme="https://skewwg.github.io/tags/Shellcode%E8%BF%9B%E7%A8%8B%E6%B3%A8%E5%85%A5/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>上传漏洞</title>
-    <link href="https://skewwg.github.io/2021/02/19/shang-chuan-lou-dong/"/>
-    <id>https://skewwg.github.io/2021/02/19/shang-chuan-lou-dong/</id>
-    <published>2021-02-19T08:40:00.000Z</published>
-    <updated>2021-02-19T07:44:50.966Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;上传漏洞&quot;&gt;&lt;a href=&quot;#上传漏洞&quot; class=&quot;headerlink&quot; title=&quot;上传漏洞&quot;&gt;&lt;/a&gt;上传漏洞&lt;/h1&gt;&lt;h2 id=&quot;0x01-概要说明&quot;&gt;&lt;a href=&quot;#0x01-概要说明&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-      <category term="Web漏洞" scheme="https://skewwg.github.io/categories/Web%E6%BC%8F%E6%B4%9E/"/>
-    
-    
-      <category term="上传漏洞" scheme="https://skewwg.github.io/tags/%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/"/>
     
   </entry>
   
