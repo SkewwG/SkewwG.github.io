@@ -407,6 +407,32 @@
   </entry>
   
   <entry>
+    <title>Java代码审计之Spring Cloud SnakeYAML RCE</title>
+    <link href="https://skewwg.github.io/2021/10/25/java-dai-ma-shen-ji-zhi-spring-cloud-snakeyaml-rce/"/>
+    <id>https://skewwg.github.io/2021/10/25/java-dai-ma-shen-ji-zhi-spring-cloud-snakeyaml-rce/</id>
+    <published>2021-10-25T15:50:00.000Z</published>
+    <updated>2023-02-20T12:06:25.624Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Java代码审计之Spring-Cloud-SnakeYAML-RCE&quot;&gt;&lt;a href=&quot;#Java代码审计之Spring-Cloud-SnakeYAML-RCE&quot; class=&quot;headerlink&quot; title=&quot;Java代码审计之Spring Cloud
+        
+      
+    
+    </summary>
+    
+      <category term="Java代码审计" scheme="https://skewwg.github.io/categories/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+    
+      <category term="Java代码审计之Spring Cloud SnakeYAML RCE" scheme="https://skewwg.github.io/tags/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E4%B9%8BSpring-Cloud-SnakeYAML-RCE/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Java代码审计之致远HtmlOfficeServlet漏洞分析</title>
     <link href="https://skewwg.github.io/2021/07/05/java-dai-ma-shen-ji-zhi-zhi-yuan-htmlofficeservlet-lou-dong-fen-xi/"/>
     <id>https://skewwg.github.io/2021/07/05/java-dai-ma-shen-ji-zhi-zhi-yuan-htmlofficeservlet-lou-dong-fen-xi/</id>
@@ -507,32 +533,6 @@
     
     
       <category term="上传漏洞" scheme="https://skewwg.github.io/tags/%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>组策略之xml保存的密码</title>
-    <link href="https://skewwg.github.io/2021/02/07/zu-ce-lue-zhi-xml-bao-cun-de-mi-ma/"/>
-    <id>https://skewwg.github.io/2021/02/07/zu-ce-lue-zhi-xml-bao-cun-de-mi-ma/</id>
-    <published>2021-02-07T08:40:00.000Z</published>
-    <updated>2021-02-07T09:02:55.954Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;组策略之xml保存的密码&quot;&gt;&lt;a href=&quot;#组策略之xml保存的密码&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-      <category term="域渗透" scheme="https://skewwg.github.io/categories/%E5%9F%9F%E6%B8%97%E9%80%8F/"/>
-    
-    
-      <category term="Gpp" scheme="https://skewwg.github.io/tags/Gpp/"/>
     
   </entry>
   

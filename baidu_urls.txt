@@ -13,6 +13,7 @@ https://skewwg.github.io/2021/10/29/java-dai-ma-shen-ji-zhi-jackson-xu-lie-hua-h
 https://skewwg.github.io/2021/10/29/java-dai-ma-shen-ji-zhi-jackson-fan-xu-lie-hua-diao-yong-lian-wan-zheng-fen-xi-guo-cheng/
 https://skewwg.github.io/2021/10/28/java-dai-ma-shen-ji-zhi-fastjson-fan-xu-lie-hua-diao-yong-lian-wan-zheng-fen-xi-guo-cheng/
 https://skewwg.github.io/2021/10/28/java-dai-ma-shen-ji-zhi-java-dong-tai-jia-zai-zi-jie-ma/
+https://skewwg.github.io/2021/10/25/java-dai-ma-shen-ji-zhi-spring-cloud-snakeyaml-rce/
 https://skewwg.github.io/2021/07/05/java-dai-ma-shen-ji-zhi-zhi-yuan-htmlofficeservlet-lou-dong-fen-xi/
 https://skewwg.github.io/2021/06/15/diao-yu-yu-she-gong-xi-lie-zhi-wei-xin-liao-tian-ji-lu-jie-mi/
 https://skewwg.github.io/2021/03/09/shellcode-jin-cheng-zhu-ru/
