@@ -407,6 +407,32 @@
   </entry>
   
   <entry>
+    <title>Java代码审计之Jolokia_Realm_JNDI_RMI_RCE</title>
+    <link href="https://skewwg.github.io/2021/10/27/java-dai-ma-shen-ji-zhi-jolokia-realm-jndi-rmi-rce/"/>
+    <id>https://skewwg.github.io/2021/10/27/java-dai-ma-shen-ji-zhi-jolokia-realm-jndi-rmi-rce/</id>
+    <published>2021-10-27T15:50:00.000Z</published>
+    <updated>2023-02-20T12:34:30.204Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Java代码审计之Jolokia-Realm-JNDI-RMI-RCE&quot;&gt;&lt;a href=&quot;#Java代码审计之Jolokia-Realm-JNDI-RMI-RCE&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="Java代码审计" scheme="https://skewwg.github.io/categories/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+    
+      <category term="Java代码审计之Jolokia_Realm_JNDI_RMI_RCE" scheme="https://skewwg.github.io/tags/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E4%B9%8BJolokia-Realm-JNDI-RMI-RCE/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Java代码审计之Spring Cloud SnakeYAML RCE</title>
     <link href="https://skewwg.github.io/2021/10/25/java-dai-ma-shen-ji-zhi-spring-cloud-snakeyaml-rce/"/>
     <id>https://skewwg.github.io/2021/10/25/java-dai-ma-shen-ji-zhi-spring-cloud-snakeyaml-rce/</id>
@@ -507,32 +533,6 @@
     
     
       <category term="钓鱼与社工系列之某信聊天记录解密" scheme="https://skewwg.github.io/tags/%E9%92%93%E9%B1%BC%E4%B8%8E%E7%A4%BE%E5%B7%A5%E7%B3%BB%E5%88%97%E4%B9%8B%E6%9F%90%E4%BF%A1%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BD%95%E8%A7%A3%E5%AF%86/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Shellcode进程注入</title>
-    <link href="https://skewwg.github.io/2021/03/09/shellcode-jin-cheng-zhu-ru/"/>
-    <id>https://skewwg.github.io/2021/03/09/shellcode-jin-cheng-zhu-ru/</id>
-    <published>2021-03-09T13:40:00.000Z</published>
-    <updated>2021-03-09T12:53:45.462Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;shellcode进程注入理解&quot;&gt;&lt;a href=&quot;#shellcode进程注入理解&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-      <category term="Shellcode" scheme="https://skewwg.github.io/categories/Shellcode/"/>
-    
-    
-      <category term="Shellcode进程注入" scheme="https://skewwg.github.io/tags/Shellcode%E8%BF%9B%E7%A8%8B%E6%B3%A8%E5%85%A5/"/>
     
   </entry>
   
